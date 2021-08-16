@@ -1,0 +1,3 @@
+# Formation Hibernate Avancee
+
+Suite de la formation hibernate basique. Présentation des concepts et fonctionnalités d'Hibernate plus avancées. Plan : principes d'optimisation des performances, cache de second, verrous, hibernate envers...
