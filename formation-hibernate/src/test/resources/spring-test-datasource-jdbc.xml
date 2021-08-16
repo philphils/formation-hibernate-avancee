@@ -1,0 +1,39 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        ">
+
+	<context:property-placeholder location="classpath:env.properties" />
+
+	<bean class="fr.insee.formation.hibernate.dao.impl.EntrepriseDAOJDBCImpl" />
+
+	<bean id="inseeDataSource" class="fr.insee.config.InseeConfig"
+		factory-method="getPool">
+		<constructor-arg type="String">
+			<value>hibernate</value>
+		</constructor-arg>
+	</bean>
+
+	<!-- On créé pour les tests une datasource avec un proxy, qui permet de 
+		compter et de logger les requêtes -->
+	<bean id="dataSource" class="net.ttddyy.dsproxy.support.ProxyDataSource">
+		<property name="dataSource" ref="inseeDataSource" />
+		<property name="listener">
+			<bean class="net.ttddyy.dsproxy.listener.ChainListener">
+				<property name="listeners">
+					<list>
+						<bean
+							class="net.ttddyy.dsproxy.listener.logging.CommonsQueryLoggingListener">
+							<property name="logLevel" value="DEBUG" />
+						</bean>
+						<bean class="net.ttddyy.dsproxy.listener.DataSourceQueryCountListener" />
+					</list>
+				</property>
+			</bean>
+		</property>
+	</bean>
+
+</beans>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//LOGGER" "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd">
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<!-- Déclaration de l'appender console -->
+	<appender class="org.apache.log4j.ConsoleAppender" name="console">
+		<param value="UTF-8" name="encoding" />
+		<param value="true" name="ImmediateFlush" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param value="%d{dd/MM/yy HH:mm:ss} %-5p : %c{10} [%L] - %m%n" name="ConversionPattern" />
+		</layout>
+	</appender>
+
+	<logger name="fr.insee.formation.hibernate" additivity="false">
+		<level value="trace" />
+		<appender-ref ref="console" />
+	</logger>
+
+	<!-- <logger name="org.hibernate" additivity="false"> -->
+	<!-- <level value="trace" /> -->
+	<!-- <appender-ref ref="console" /> -->
+	<!-- </logger> -->
+
+	<!-- Configuration du logger de base - en production, mettre le niveau à WARN -->
+	<root>
+		<level value="info" />
+		<appender-ref ref="console" />
+	</root>
+
+</log4j:configuration>
