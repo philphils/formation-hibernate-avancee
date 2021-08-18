@@ -1,22 +1,31 @@
-<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/tx 
-        http://www.springframework.org/schema/tx/spring-tx.xsd">
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/data/jpa
+        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-	<context:component-scan base-package="fr.insee.formation.hibernate" />
+	<context:component-scan
+		base-package="fr.insee.formation.hibernate" />
 
-	<context:property-placeholder location="classpath:env.properties" />
+	<context:property-placeholder
+		location="classpath:env.properties" />
 
 	<beans>
 
-		<bean id="myEmf" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<bean id="myEmf"
+			class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 
 			<property name="jpaVendorAdapter">
-				<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+				<bean
+					class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
 			</property>
 
 			<property name="dataSource" ref="dataSource" />
@@ -26,7 +35,8 @@
 					<prop key="hibernate.default_schema">${fr.insee.formation.hibernate.schema}</prop>
 
 					<!-- generate ddl -->
-					<prop key="javax.persistence.schema-generation.database.action">drop-and-create</prop>
+					<prop
+						key="javax.persistence.schema-generation.database.action">drop-and-create</prop>
 					<prop key="hibernate.query.substitutions">true 1, false 0 </prop>
 
 					<!-- dialect -->
@@ -40,8 +50,10 @@
 
 					<!-- Java Persistence properties -->
 					<prop key="javax.persistence.schema-generation.scripts.action">drop-and-create</prop>
-					<prop key="javax.persistence.schema-generation.scripts.create-target">script-create.ddl</prop>
-					<prop key="javax.persistence.schema-generation.scripts.drop-target">script-drop.ddl</prop>
+					<prop
+						key="javax.persistence.schema-generation.scripts.create-target">script-create.ddl</prop>
+					<prop
+						key="javax.persistence.schema-generation.scripts.drop-target">script-drop.ddl</prop>
 					<prop key="hibernate.hbm2ddl.delimiter">;</prop>
 
 				</props>
@@ -49,16 +61,22 @@
 
 		</bean>
 
-		<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<bean id="transactionManager"
+			class="org.springframework.orm.jpa.JpaTransactionManager">
 			<property name="entityManagerFactory" ref="myEmf" />
 		</bean>
 
 		<!-- Bean pour pouvoir utilsier une transaction dans les test unitaires -->
-		<bean class="org.springframework.transaction.support.TransactionTemplate">
+		<bean
+			class="org.springframework.transaction.support.TransactionTemplate">
 			<constructor-arg ref="transactionManager" />
 		</bean>
 
-		<tx:annotation-driven transaction-manager="transactionManager" />
+		<tx:annotation-driven
+			transaction-manager="transactionManager" />
+
+		<jpa:repositories
+			base-package="fr.insee.formation.hibernate.repositories" />
 
 
 
