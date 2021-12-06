@@ -10,12 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
-import fr.insee.formation.hibernate.config.TestConfiguration;
+import fr.insee.formation.hibernate.config.AbstractTestConfiguration;
 import fr.insee.formation.hibernate.util.JeuxTestUtil;
 import net.ttddyy.dsproxy.QueryCountHolder;
 
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-public class DeclarationRepositoryTest extends TestConfiguration {
+public class DeclarationRepositoryTest extends AbstractTestConfiguration {
 
 	@Autowired
 	private DeclarationRepository declarationRepository;
