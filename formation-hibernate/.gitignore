@@ -9,3 +9,4 @@ build/
 .metadata
 script-create.ddl
 script-drop.ddl
+.~lock*
