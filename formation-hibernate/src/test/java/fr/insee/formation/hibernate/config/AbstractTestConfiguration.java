@@ -10,6 +10,6 @@ import fr.insee.formation.hibernate.Application;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { Application.class })
 @ActiveProfiles("test")
-public class TestConfiguration {
+public abstract class AbstractTestConfiguration {
 
 }
