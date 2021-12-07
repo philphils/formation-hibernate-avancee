@@ -11,6 +11,15 @@ import org.springframework.stereotype.Component;
 import net.ttddyy.dsproxy.listener.logging.CommonsLogLevel;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 
+/**
+ * Cette classe permet de wrappé (enrobé) la {@link DataSource} pour lui ajouter
+ * d'autres fonctionnalité pour les tests seulement (sinon dégradation des
+ * performances)
+ * 
+ * @author SYV27O
+ *
+ */
+
 @Component
 public class DataSourceTestWrapper implements BeanPostProcessor {
 

@@ -7,6 +7,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import fr.insee.formation.hibernate.Application;
 
+/**
+ * Classe abstraite dont doivent hériter toutes les classes de test
+ * 
+ * @author SYV27O
+ *
+ */
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { Application.class })
 @ActiveProfiles("test")
