@@ -14,6 +14,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Setter;
+
+@Data
+@EqualsAndHashCode(exclude = { "indices", "entreprises" })
 @Entity
 public class Secteur {
 
@@ -25,25 +32,27 @@ public class Secteur {
 
 	private String libelleNomenclature;
 
+	@Setter(value = AccessLevel.NONE)
+	@OneToMany(mappedBy = "secteur", cascade = CascadeType.ALL)
+	private Set<Indice> indices = new HashSet<Indice>();
+
+	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "secteur", cascade = CascadeType.ALL)
 	private Set<Entreprise> entreprises = new HashSet<Entreprise>();
 
 	/*
-	 * Limitation d'Hibernate : mappedBy ne peut référencer un attribut héritée
-	 * avec les héritage @Inheritance (cf
+	 * Limitation d'Hibernate : mappedBy ne peut référencer un attribut héritée avec
+	 * les héritage @Inheritance (cf
 	 * http://chriswongdevblog.blogspot.fr/2009/10/polymorphic-one-to-many-
 	 * relationships.html) On peu s'en sortir avec @JoinColumn et @Where.
-	 * Avec @MappedSuperclass c'est possible, mais on perd la possibilité de
-	 * faire du polymorhpisme...
+	 * Avec @MappedSuperclass c'est possible, mais on perd la possibilité de faire
+	 * du polymorhpisme...
 	 */
-	//	@OneToMany(mappedBy = "secteur")
-	//	private Set<IndiceAnnuel> indiceAnnuels = new HashSet<IndiceAnnuel>();
+	// @OneToMany(mappedBy = "secteur")
+	// private Set<IndiceAnnuel> indiceAnnuels = new HashSet<IndiceAnnuel>();
 	//
-	//	@OneToMany(mappedBy = "secteur")
-	//	private Set<IndiceMensuel> indiceMensuels = new HashSet<IndiceMensuel>();
-
-	@OneToMany(mappedBy = "secteur", cascade = CascadeType.ALL)
-	private Set<Indice> indices = new HashSet<Indice>();
+	// @OneToMany(mappedBy = "secteur")
+	// private Set<IndiceMensuel> indiceMensuels = new HashSet<IndiceMensuel>();
 
 	public Entreprise addEntreprise(Entreprise entreprise) {
 		entreprises.add(entreprise);
@@ -69,49 +78,9 @@ public class Secteur {
 		return indice;
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getCodeNaf() {
-		return codeNaf;
-	}
-
-	public void setCodeNaf(String codeNaf) {
-		this.codeNaf = codeNaf;
-	}
-
-	public String getLibelleNomenclature() {
-		return libelleNomenclature;
-	}
-
-	public void setLibelleNomenclature(String libelleNomenclature) {
-		this.libelleNomenclature = libelleNomenclature;
-	}
-
 	public Set<Entreprise> getEntreprises() {
 		return Collections.unmodifiableSet(entreprises);
 	}
-
-	//	public Set<IndiceAnnuel> getIndiceAnnuels() {
-	//		return indiceAnnuels;
-	//	}
-	//
-	//	public void setIndiceAnnuels(Set<IndiceAnnuel> indiceAnnuels) {
-	//		this.indiceAnnuels = indiceAnnuels;
-	//	}
-	//
-	//	public Set<IndiceMensuel> getIndiceMensuels() {
-	//		return indiceMensuels;
-	//	}
-	//
-	//	public void setIndiceMensuels(Set<IndiceMensuel> indiceMensuels) {
-	//		this.indiceMensuels = indiceMensuels;
-	//	}
 
 	public Set<Indice> getIndices() {
 		return Collections.unmodifiableSet(indices);

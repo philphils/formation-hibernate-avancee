@@ -1,17 +1,19 @@
 package fr.insee.formation.hibernate.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
 public enum TypeVoie {
 
-	RUE("Rue"), AVENUE("Avenue"), BOULEVARD("Boulevard"), IMPASSE("Impasse");
+	//// @formatter:off
+	RUE("Rue"),
+	AVENUE("Avenue"),
+	BOULEVARD("Boulevard"),
+	IMPASSE("Impasse");
+	// @formatter:on
 
+	@Getter
 	private String libelle;
-
-	private TypeVoie(String libelle) {
-		this.libelle = libelle;
-	}
-
-	public String getLibelle() {
-		return libelle;
-	}
 
 }

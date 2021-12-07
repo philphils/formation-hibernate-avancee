@@ -1,7 +1,5 @@
 package fr.insee.formation.hibernate.batch;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -15,7 +13,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import fr.insee.formation.hibernate.repositories.DeclarationRepository;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Configuration
 public class HelloWorldBatchConfig {
 
@@ -28,8 +28,6 @@ public class HelloWorldBatchConfig {
 	@Autowired
 	private DeclarationRepository declarationRepository;
 
-	Logger logger = LoggerFactory.getLogger(HelloWorldBatchConfig.class);
-
 	@Bean
 	public Job helloWorldJob() {
 		return jobBuilderFactory.get("helloWorldJob").start(helloWorldTaskletStep()).build();
@@ -41,7 +39,7 @@ public class HelloWorldBatchConfig {
 
 			@Override
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-				logger.info("Nombre de déclarations : {}", declarationRepository.count());
+				log.info("Nombre de déclarations : {}", declarationRepository.count());
 				return RepeatStatus.FINISHED;
 			}
 		}).build();

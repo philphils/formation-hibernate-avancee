@@ -8,6 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import lombok.Data;
+
+@Data
 @Entity
 public class Declaration {
 
@@ -22,39 +25,5 @@ public class Declaration {
 	private Date date;
 
 	private Double montant;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public Entreprise getEntreprise() {
-		return entreprise;
-	}
-
-	public void setEntreprise(Entreprise entreprise) {
-		this.entreprise = entreprise;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-
-	public Double getMontant() {
-		return montant;
-	}
-
-	public void setMontant(Double montant) {
-		this.montant = montant;
-	}
-	
-	
 
 }

@@ -23,6 +23,7 @@
 		<maven.compiler.target>11</maven.compiler.target>
 		<maven.compiler.source>11</maven.compiler.source>
 		<datasource-proxy.version>1.7</datasource-proxy.version>
+		<lombok.version>1.18.22</lombok.version>
 	</properties>
 
 	<dependencies>
@@ -86,6 +87,13 @@
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
+		</dependency>
+
 	</dependencies>
 
 

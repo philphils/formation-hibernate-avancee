@@ -4,16 +4,16 @@ import javax.sql.DataSource;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import fr.insee.formation.hibernate.config.AbstractTestConfiguration;
 import fr.insee.formation.hibernate.util.JeuxTestUtil;
+import lombok.extern.slf4j.Slf4j;
 import net.ttddyy.dsproxy.QueryCountHolder;
 
+@Slf4j
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class DeclarationRepositoryTest extends AbstractTestConfiguration {
 
@@ -25,8 +25,6 @@ public class DeclarationRepositoryTest extends AbstractTestConfiguration {
 
 	@Autowired
 	private DataSource dataSource;
-
-	Logger logger = LoggerFactory.getLogger(DeclarationRepositoryTest.class);
 
 	@Before
 	public void testMappingAssociation() {
@@ -40,11 +38,11 @@ public class DeclarationRepositoryTest extends AbstractTestConfiguration {
 
 		Long total = declarationRepository.count();
 
-		logger.info("Nombre de déclarations en base : {}", total);
+		log.info("Nombre de déclarations en base : {}", total);
 
-		logger.info("Nombre de requête SELECT exécutées : {}", QueryCountHolder.getGrandTotal().getSelect());
+		log.info("Nombre de requête SELECT exécutées : {}", QueryCountHolder.getGrandTotal().getSelect());
 
-		logger.info("Hello World Test is working !!!");
+		log.info("Hello World Test is working !!!");
 
 	}
 
