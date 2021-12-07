@@ -44,6 +44,8 @@ public class DeclarationRepositoryTest extends AbstractTestConfiguration {
 
 		logger.info("Nombre de requête SELECT exécutées : {}", QueryCountHolder.getGrandTotal().getSelect());
 
+		logger.info("Hello World Test is working !!!");
+
 	}
 
 }
