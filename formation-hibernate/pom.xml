@@ -23,7 +23,7 @@
 		<lombok.version>1.18.22</lombok.version>
 		<opencsv.version>4.1</opencsv.version>
 		<javafaker.version>1.0.2</javafaker.version>
-		<hsqldb.version>2.6.1</hsqldb.version>
+		<hsqldb.version>2.4.0</hsqldb.version>
 	</properties>
 
 	<dependencies>
@@ -110,7 +110,7 @@
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
-			<version>2.4.0</version>
+			<version>${hsqldb.version}</version>
 			<scope>test</scope>
 		</dependency>
 
