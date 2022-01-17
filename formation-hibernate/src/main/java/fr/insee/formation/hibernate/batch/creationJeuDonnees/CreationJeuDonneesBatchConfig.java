@@ -8,6 +8,7 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,6 +20,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 public class CreationJeuDonneesBatchConfig {
+
+	@Value("${batch.data_scale}")
+	private Integer dataScale;
 
 	@Autowired
 	private JobBuilderFactory jobs;
@@ -33,7 +37,7 @@ public class CreationJeuDonneesBatchConfig {
 
 	@Bean
 	public ItemProcessor<String[], Secteur> itemProcessor() {
-		return new CreationSecteurProcessor();
+		return new CreationSecteurProcessor(dataScale);
 	}
 
 	@Bean

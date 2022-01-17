@@ -44,7 +44,7 @@ public class Entreprise {
 	private String siren;
 
 	@Embedded
-	private Adresse adresse;
+	private Adresse adresse = new Adresse();
 
 	@Column(length = 10)
 	private String telephone;
