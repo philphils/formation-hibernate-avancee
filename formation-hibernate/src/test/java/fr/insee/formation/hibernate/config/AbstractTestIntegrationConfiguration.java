@@ -21,7 +21,7 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase.DatabaseProvider;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { Application.class })
-@ActiveProfiles("test")
+@ActiveProfiles("test-integration")
 @Rollback
 @AutoConfigureEmbeddedDatabase(provider = DatabaseProvider.ZONKY)
 public abstract class AbstractTestIntegrationConfiguration {
