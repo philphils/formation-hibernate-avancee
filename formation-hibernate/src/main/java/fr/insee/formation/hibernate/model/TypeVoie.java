@@ -8,9 +8,13 @@ public enum TypeVoie {
 
 	//// @formatter:off
 	RUE("Rue"),
+	PLACE("Place"),
 	AVENUE("Avenue"),
 	BOULEVARD("Boulevard"),
-	IMPASSE("Impasse");
+	IMPASSE("Impasse"),
+	QUAI("Quai"),
+	PASSAGE("Passage")
+	;
 	// @formatter:on
 
 	@Getter
