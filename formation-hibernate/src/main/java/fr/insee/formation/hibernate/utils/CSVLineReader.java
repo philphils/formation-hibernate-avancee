@@ -28,8 +28,7 @@ public class CSVLineReader implements ItemReader<String[]>, StepExecutionListene
 	@Override
 	public String[] read() throws Exception {
 		String[] line = fu.readLine();
-		if (line != null)
-			log.debug("Read line: " + line.toString());
+		log.debug("Read line: {}", line);
 		return line;
 	}
 
