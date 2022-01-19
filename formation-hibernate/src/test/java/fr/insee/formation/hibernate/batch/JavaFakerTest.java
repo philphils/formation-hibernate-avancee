@@ -10,11 +10,11 @@ import org.junit.Test;
 
 import com.github.javafaker.Faker;
 
-import fr.insee.formation.hibernate.config.AbstractTestConfiguration;
+import fr.insee.formation.hibernate.config.AbstractTest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class JavaFakerTest extends AbstractTestConfiguration {
+public class JavaFakerTest extends AbstractTest {
 
 	@Test
 	public void helloWorldTest() {
