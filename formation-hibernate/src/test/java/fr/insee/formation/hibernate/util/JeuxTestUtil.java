@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import fr.insee.formation.hibernate.model.Adresse;
 import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.model.Entreprise;
-import fr.insee.formation.hibernate.model.FormeJuridique;
 import fr.insee.formation.hibernate.model.IndiceAnnuel;
 import fr.insee.formation.hibernate.model.IndiceMensuel;
 import fr.insee.formation.hibernate.model.Secteur;
@@ -92,8 +91,6 @@ public class JeuxTestUtil {
 
 		entreprise1.setDenomination("Le bar à Momo");
 
-		entreprise1.setFormeJuridique(FormeJuridique.SARL);
-
 		entreprise1.setSiren("123456789");
 
 		entreprise1.setTelephone("0123456789");
@@ -122,8 +119,6 @@ public class JeuxTestUtil {
 
 		entreprise2.setDenomination("Confiserie");
 
-		entreprise2.setFormeJuridique(FormeJuridique.INDIV);
-
 		entreprise2.setSiren("234567891");
 
 		entreprise2.setTelephone("0234567890");
@@ -151,8 +146,6 @@ public class JeuxTestUtil {
 		entreprise3.setDateCreation(Date.from(instant3));
 
 		entreprise3.setDenomination("Le p'tit nantais");
-
-		entreprise3.setFormeJuridique(FormeJuridique.SNC);
 
 		entreprise3.setSiren("345678912");
 
@@ -196,7 +189,8 @@ public class JeuxTestUtil {
 
 				Declaration declaration = new Declaration();
 
-				declaration.setDate(Date.from(YearMonth.of(2016, month).atDay(1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
+				declaration.setDate(
+						Date.from(YearMonth.of(2016, month).atDay(1).atStartOfDay(ZoneId.systemDefault()).toInstant()));
 
 				declaration.setMontant(new Double(month.getValue() * compteur));
 
