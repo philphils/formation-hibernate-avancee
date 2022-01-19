@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import fr.insee.formation.hibernate.model.Secteur;
 import fr.insee.formation.hibernate.utils.CSVLineReader;
@@ -19,10 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
+@PropertySource(value = "batch.properties")
 public class CreationJeuDonneesBatchConfig {
 
-	@Value("${batch.data_scale}")
-	private Integer dataScale;
+	@Value("${batch.chunkSize}")
+	private Integer chunkSize;
 
 	@Autowired
 	private JobBuilderFactory jobs;
@@ -37,7 +39,7 @@ public class CreationJeuDonneesBatchConfig {
 
 	@Bean
 	public ItemProcessor<String[], Secteur> itemProcessor() {
-		return new CreationSecteurProcessor(dataScale);
+		return new CreationSecteurProcessor();
 	}
 
 	@Bean
@@ -48,7 +50,7 @@ public class CreationJeuDonneesBatchConfig {
 	@Bean
 	protected Step processLines(ItemReader<String[]> reader, ItemProcessor<String[], Secteur> processor,
 			ItemWriter<Secteur> writer) {
-		return steps.get("processLines").<String[], Secteur>chunk(100).reader(reader).processor(processor)
+		return steps.get("processLines").<String[], Secteur>chunk(chunkSize).reader(reader).processor(processor)
 				.writer(writer).build();
 	}
 
