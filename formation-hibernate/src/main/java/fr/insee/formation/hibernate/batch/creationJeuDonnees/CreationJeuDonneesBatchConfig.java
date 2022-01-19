@@ -20,8 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
-@PropertySource(value = "batch.properties")
+@PropertySource(value = "classpath:batch.properties")
 public class CreationJeuDonneesBatchConfig {
+
+	@Value("${batch.nomFichierCreationJeuDonnees}")
+	private String nomFichierCreationJeuDonnees;
 
 	@Value("${batch.chunkSize}")
 	private Integer chunkSize;
@@ -34,7 +37,7 @@ public class CreationJeuDonneesBatchConfig {
 
 	@Bean
 	public ItemReader<String[]> itemReader() {
-		return new CSVLineReader("code_naf.csv");
+		return new CSVLineReader(nomFichierCreationJeuDonnees);
 	}
 
 	@Bean

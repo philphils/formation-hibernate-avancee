@@ -2,6 +2,7 @@ package fr.insee.formation.hibernate.config;
 
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -24,5 +25,6 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase.DatabaseProvider;
 @ActiveProfiles("test-integration")
 @Rollback
 @AutoConfigureEmbeddedDatabase(provider = DatabaseProvider.ZONKY)
-public abstract class AbstractTestIntegrationConfiguration {
+@PropertySource(value = "/batch.properties")
+public abstract class AbstractTestIntegration {
 }

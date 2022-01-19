@@ -17,5 +17,5 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 @DataJpaTest
-public abstract class AbstractTestConfiguration {
+public abstract class AbstractTest {
 }
