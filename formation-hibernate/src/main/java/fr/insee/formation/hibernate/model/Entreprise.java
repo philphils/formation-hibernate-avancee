@@ -9,8 +9,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,20 +38,26 @@ public class Entreprise {
 
 	private String denomination;
 
-	@Column(length = 9, unique = true, nullable = false)
+	@Column(length = 9, nullable = false)
 	private String siren;
 
 	@Embedded
 	private Adresse adresse = new Adresse();
 
-	@Column(length = 10)
+	@Column(length = 20)
 	private String telephone;
 
-	@Enumerated(EnumType.STRING)
-	private FormeJuridique formeJuridique;
+	@Column(length = 50)
+	private String url;
 
 	@Temporal(TemporalType.DATE)
 	private Date dateCreation;
+
+	@Column(length = 50)
+	private String nomFondateur;
+
+	@Column(length = 50)
+	private String prenomFondateur;
 
 	@ManyToOne
 	@JoinColumn
