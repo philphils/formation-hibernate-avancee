@@ -1,14 +1,15 @@
 package fr.insee.formation.hibernate.config;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.sql.DataSource;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.stereotype.Component;
 
-import net.ttddyy.dsproxy.listener.logging.CommonsLogLevel;
+import com.p6spy.engine.spy.P6DataSource;
+
+import net.ttddyy.dsproxy.listener.logging.SLF4JLogLevel;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 
 /**
@@ -23,16 +24,34 @@ import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 @Component
 public class DataSourceTestWrapper implements BeanPostProcessor {
 
+	@Value("${activate.p6spy}")
+	Boolean activateP6spy;
+
+	@Value("${activate.datasource-proxy}")
+	Boolean activateDatasourceProxy;
+
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
 		if (bean instanceof DataSource) {
-			//// @formatter:off
-			DataSource dataSource = ProxyDataSourceBuilder.create((DataSource) bean)
-					.logQueryByCommons(CommonsLogLevel.DEBUG)
-					.countQuery()
-					.logSlowQueryByCommons(10, TimeUnit.MINUTES)
-					.proxyResultSet().build();
-			// @formatter:on
+
+			DataSource dataSource = (DataSource) bean;
+
+			if (activateDatasourceProxy) {
+				// Datasource proxy
+				//// @formatter:off
+				dataSource = ProxyDataSourceBuilder.create((DataSource) dataSource)
+						.name("dataSource")
+			            .logQueryBySlf4j(SLF4JLogLevel.DEBUG)
+			            .countQuery()          // collect query metrics
+			            .proxyResultSet()
+			            .multiline()           // enable multiline output
+			     .build();
+				// @formatter:on
+			}
+
+			if (activateP6spy) {
+				dataSource = new P6DataSource(dataSource);
+			}
 
 			return dataSource;
 		}

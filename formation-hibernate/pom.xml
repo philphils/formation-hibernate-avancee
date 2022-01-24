@@ -19,11 +19,12 @@
 		<project.java.version>11</project.java.version>
 		<maven.compiler.target>11</maven.compiler.target>
 		<maven.compiler.source>11</maven.compiler.source>
-		<datasource-proxy.version>1.7</datasource-proxy.version>
 		<lombok.version>1.18.22</lombok.version>
 		<opencsv.version>4.1</opencsv.version>
 		<javafaker.version>1.0.2</javafaker.version>
 		<hsqldb.version>2.4.0</hsqldb.version>
+		<p6spy.version>3.9.1</p6spy.version>
+		<datasource-proxy.version>1.7</datasource-proxy.version>
 	</properties>
 
 	<dependencies>
@@ -69,12 +70,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.ttddyy</groupId>
-			<artifactId>datasource-proxy</artifactId>
-			<version>${datasource-proxy.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.glassfish.jaxb</groupId>
 			<artifactId>jaxb-runtime</artifactId>
 		</dependency>
@@ -111,6 +106,20 @@
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<version>${hsqldb.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>p6spy</groupId>
+			<artifactId>p6spy</artifactId>
+			<version>${p6spy.version}</version>
+			<scope>test</scope>		
+		</dependency>
+
+		<dependency>
+			<groupId>net.ttddyy</groupId>
+			<artifactId>datasource-proxy</artifactId>
+			<version>${datasource-proxy.version}</version>
 			<scope>test</scope>
 		</dependency>
 

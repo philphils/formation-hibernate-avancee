@@ -1,9 +1,11 @@
 package fr.insee.formation.hibernate.config;
 
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import fr.insee.formation.hibernate.Application;
 
 /**
  * Classe abstraite dont doivent hériter toutes les classes de test. Elle
@@ -15,7 +17,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 
 @RunWith(SpringRunner.class)
+@SpringBootTest(classes = { Application.class })
 @ActiveProfiles("test")
-@DataJpaTest
 public abstract class AbstractTest {
 }
