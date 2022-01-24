@@ -1,4 +1,4 @@
-package fr.insee.formation.hibernate.batch;
+package fr.insee.formation.hibernate.batch.helloWorld;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.StepContribution;
