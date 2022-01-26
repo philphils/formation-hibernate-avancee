@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import fr.insee.formation.hibernate.batch.listener.ChunkTimingListener;
 import fr.insee.formation.hibernate.model.Secteur;
 import fr.insee.formation.hibernate.utils.CSVLineReader;
 import fr.insee.formation.hibernate.utils.JPAPersistWriter;
@@ -53,13 +54,30 @@ public class CreationJeuDonneesBatchConfig {
 	@Bean
 	protected Step processLines(ItemReader<String[]> reader, ItemProcessor<String[], Secteur> processor,
 			ItemWriter<Secteur> writer) {
-		return steps.get("processLines").<String[], Secteur>chunk(chunkSize).reader(reader).processor(processor)
-				.writer(writer).build();
+		return
+		//// @formatter:off
+				steps
+					.get("processLines")
+					.<String[], Secteur>chunk(chunkSize)
+					.reader(reader)
+					.processor(processor)
+					.writer(writer)
+					.listener(new ChunkTimingListener(chunkSize))
+				.build();
+		// @formatter:on
+
 	}
 
 	@Bean
 	public Job creationJeuDonneesJob() {
-		return jobs.get("chunksJob").start(processLines(itemReader(), itemProcessor(), itemWriter())).build();
+		return
+		//// @formatter:off
+			jobs
+				.get("chunksJob")
+				.start(processLines(itemReader(), itemProcessor(), itemWriter()))
+			.build();
+		// @formatter:on
+
 	}
 
 }
