@@ -154,14 +154,14 @@ public class CreationSecteurProcessor implements ItemProcessor<String[], Secteur
 			Long secondesPourCetteBoucle = ChronoUnit.SECONDS.between(localTimeDebutBoucle, localTimeFinBoucle);
 
 			if (secondesPourCetteBoucle != 0)
-				log.info("{} déclarations par secondes pour les {} dernières",
+				log.debug("{} déclarations par secondes pour les {} dernières",
 						compteurAffichageDeclarationsCrees / secondesPourCetteBoucle,
 						compteurAffichageDeclarationsCrees);
 
 			Long secondesDepuisDebutJob = ChronoUnit.SECONDS.between(localTimeDebutJob, localTimeFinBoucle);
 
 			if (secondesDepuisDebutJob != 0)
-				log.info("{} déclaration par seconde en moyenne depuis le début et {} déclarations créées au total.",
+				log.debug("{} déclaration par seconde en moyenne depuis le début et {} déclarations créées au total.",
 						compteurDeclarationsCreees / secondesDepuisDebutJob, compteurDeclarationsCreees);
 
 		}
