@@ -1,6 +1,9 @@
 package fr.insee.formation.hibernate.batch.creationJeuDonnees;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -29,13 +32,23 @@ public class CreationSecteurProcessor implements ItemProcessor<String[], Secteur
 	@Value("${batch.nbMoisHistorique}")
 	private Integer nbMoisHistorique;
 
+	/*
+	 * Variable pour mesurer la vitesse de création des déclarations
+	 */
 	@Value("${batch.affichageDeclarationsCreees}")
-	private Integer compteurDeclarationsCrees;
+	private Integer compteurAffichageDeclarationsCrees;
 
-	private Integer compteurDeclarations = 0;
+	private Integer compteurDeclarationsCreees = 1;
+
+	LocalTime localTimeDebutJob = null;
+	LocalTime localTimeDebutBoucle = null;
+	LocalTime localTimeFinBoucle = null;
 
 	@Override
 	public Secteur process(String[] item) throws Exception {
+
+		if (localTimeDebutJob == null)
+			localTimeDebutJob = LocalTime.now(ZoneId.of("Europe/Paris"));
 
 		Secteur secteur = new Secteur();
 
@@ -87,6 +100,10 @@ public class CreationSecteurProcessor implements ItemProcessor<String[], Secteur
 
 			entreprise.setTelephone(faker.phoneNumber().phoneNumber());
 
+			entreprise.setPrenomFondateur(faker.name().firstName());
+
+			entreprise.setNomFondateur(faker.name().lastName());
+
 			secteur.addEntreprise(entreprise);
 
 			/*
@@ -96,6 +113,7 @@ public class CreationSecteurProcessor implements ItemProcessor<String[], Secteur
 			Date dateDeclaration = null;
 			Double montant = null;
 			Integer montantMoyen = random.nextInt(100000);
+
 			for (int nbMois = 0; nbMois < nbMoisHistorique; nbMois++) {
 
 				dateDeclaration = java.sql.Date.valueOf(LocalDate.of(2022, 01, 01).minusMonths(nbMois));
@@ -109,14 +127,44 @@ public class CreationSecteurProcessor implements ItemProcessor<String[], Secteur
 
 				entreprise.addDeclaration(declaration);
 
-				if ((compteurDeclarations++) % compteurDeclarationsCrees == 0)
-					log.info("Il y a {} déclarations qui ont été créées", compteurDeclarations);
+				comptageDeclarationsCreees();
+
+				compteurDeclarationsCreees++;
 
 			}
 
 		}
 
 		return secteur;
+	}
+
+	private void comptageDeclarationsCreees() {
+
+		if (compteurDeclarationsCreees % compteurAffichageDeclarationsCrees == 0) {
+
+			if (localTimeFinBoucle == null)
+				/* Premier passage -> on prend la date de début du job */
+				localTimeDebutBoucle = localTimeDebutJob;
+			else
+				/* Sinon on récupère la date de fin de la dernière boucle */
+				localTimeDebutBoucle = localTimeFinBoucle;
+
+			localTimeFinBoucle = LocalTime.now(ZoneId.of("Europe/Paris"));
+
+			Long secondesPourCetteBoucle = ChronoUnit.SECONDS.between(localTimeDebutBoucle, localTimeFinBoucle);
+
+			if (secondesPourCetteBoucle != 0)
+				log.info("{} déclarations par secondes pour les {} dernières",
+						compteurAffichageDeclarationsCrees / secondesPourCetteBoucle,
+						compteurAffichageDeclarationsCrees);
+
+			Long secondesDepuisDebutJob = ChronoUnit.SECONDS.between(localTimeDebutJob, localTimeFinBoucle);
+
+			if (secondesDepuisDebutJob != 0)
+				log.info("{} déclaration par seconde en moyenne depuis le début et {} déclarations créées au total.",
+						compteurDeclarationsCreees / secondesDepuisDebutJob, compteurDeclarationsCreees);
+
+		}
 	}
 
 }
