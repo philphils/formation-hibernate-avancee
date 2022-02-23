@@ -1,5 +1,7 @@
 package fr.insee.formation.hibernate.config;
 
+import java.sql.SQLException;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.BeansException;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.p6spy.engine.spy.P6DataSource;
 
+import lombok.extern.slf4j.Slf4j;
 import net.ttddyy.dsproxy.listener.logging.SLF4JLogLevel;
 import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
 
@@ -22,6 +25,7 @@ import net.ttddyy.dsproxy.support.ProxyDataSourceBuilder;
  */
 
 @Component
+@Slf4j
 public class DataSourceTestWrapper implements BeanPostProcessor {
 
 	@Value("${activate.p6spy}")
@@ -35,6 +39,13 @@ public class DataSourceTestWrapper implements BeanPostProcessor {
 		if (bean instanceof DataSource) {
 
 			DataSource dataSource = (DataSource) bean;
+
+			try {
+				log.info("Connection URL : {}", dataSource.getConnection().getMetaData().getURL());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 			if (activateDatasourceProxy) {
 				// Datasource proxy
