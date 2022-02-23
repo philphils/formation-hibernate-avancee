@@ -1,0 +1,11 @@
+CreationJeuDonnée : 22 min sans paramètre
+CreationJeuDonnée : idem avec paramètre order insert (env. 2min150 le chunk de 100)
+CreationJeuDonnée : plus long avec entityManager.clear()  (env. 3min200)
+CreationJeuDonnée : 18min avec chunk = 10 (6000 declaration / sec) sans entityManager.clear()
+CreationJeuDonnée : 11min avec chunk = 10 et paramétrage ci-dessous (10 000 declaration / sec) sans entityManager.clear()) -> gain de 40%
+	spring.jpa.properties.hibernate.order_inserts=true
+	spring.jpa.properties.hibernate.order_updates=true
+	spring.jpa.properties.hibernate.jdbc.batch_size=20
+	spring.jpa.properties.hibernate.jdbc.batch_versioned_data=true
+CreationJeuDonnée : 11min avec chunk = 10 (10 000 declaration / sec) avec entityManager.clear() (pas de différence notable)
+CreationJeuDonnée : 9min avec chunk = 10 (12 500 declaration / sec) reWriteBatchedInserts=true !!! -> gain de 25%
