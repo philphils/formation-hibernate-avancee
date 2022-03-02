@@ -23,9 +23,6 @@ public class JPAPersistWriter<X> implements ItemWriter<X> {
 		}
 
 		log.trace("{} items de type {} sont persistés", items.size(), items.get(0).getClass().getName());
-		entityManager.flush();
-		entityManager.clear();
-
 	}
 
 }
