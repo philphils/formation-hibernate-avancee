@@ -37,7 +37,7 @@ public class BatchControllers {
 				.toJobParameters();
 		jobLauncher.run(creationJeuDonneesJob, jobParameters);
 
-		return "Hello World Batch is working !!!";
+		return "Données correctement créées";
 	}
 
 }
