@@ -1,6 +1,9 @@
 package fr.insee.formation.hibernate.repositories;
 
 import java.util.List;
+import java.util.stream.Stream;
+
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +20,9 @@ public class DeclarationRepositoryTestIntegration extends AbstractTestIntegratio
 
 	@Autowired
 	private DeclarationRepository declarationRepository;
+
+	@Autowired
+	private EntityManager entityManager;
 
 	@Autowired
 	private JeuxTestUtil jeuxTestUtil;
@@ -40,6 +46,24 @@ public class DeclarationRepositoryTestIntegration extends AbstractTestIntegratio
 		for (Declaration declaration : declarations) {
 			declaration.setMontant(declaration.getMontant() * 110 / 100);
 		}
+
+	}
+
+	@Test
+	@Transactional
+	public void testStreamFindAll() {
+
+		Stream<Declaration> streamDeclaration = declarationRepository.findAllStream();
+
+		List result = entityManager.createNativeQuery("select * from pg_catalog.pg_cursors").getResultList();
+
+		result.stream().forEach(tableauObj -> log.info("{}", (Object) tableauObj));
+
+		declarationRepository.deleteAll();
+
+		streamDeclaration.forEach(decl -> {
+			log.info("La déclaration d'id {} est en train d'être traitée", decl.getId());
+		});
 
 	}
 

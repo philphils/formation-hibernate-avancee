@@ -3,12 +3,16 @@ package fr.insee.formation.hibernate.repositories;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import fr.insee.formation.hibernate.config.AbstractTest;
 import fr.insee.formation.hibernate.model.Declaration;
@@ -97,6 +101,47 @@ public class DeclarationRepositoryTest extends AbstractTest {
 		 * qu'une requête
 		 */
 		assertEquals(2, QueryCountHolder.getGrandTotal().getSelect());
+	}
+
+	@Test
+	public void testFindAllPage() {
+
+		Page<Declaration> page = declarationRepository.findAll(PageRequest.of(0, 2, Sort.by("date")));
+
+		while (page.hasNext()) {
+
+			log.info("Il y a {} declaration dans la page n°{}", page.getNumberOfElements(), page.getNumber());
+
+			log.info("Déclarations d'identifiant : {}",
+					page.get().map(d -> Integer.toString(d.getId())).collect(Collectors.joining(",")));
+
+			page = declarationRepository.findAll(page.nextPageable());
+
+		}
+
+	}
+
+	@Test
+	public void testFindDeclarationByEntreprisePage() {
+
+		Declaration declaration = declarationRepository.findAll().get(0);
+
+		Page<Declaration> pageDeclarations = declarationRepository.findByEntreprise(declaration.getEntreprise(),
+				PageRequest.of(0, 3, Sort.by("date")));
+
+		while (pageDeclarations.hasNext()) {
+
+			log.info("Il y a {} declaration dans la page n°{}", pageDeclarations.getNumberOfElements(),
+					pageDeclarations.getNumber());
+
+			log.info("Déclarations d'identifiant : {}",
+					pageDeclarations.get().map(d -> Integer.toString(d.getId())).collect(Collectors.joining(",")));
+
+			pageDeclarations = declarationRepository.findByEntreprise(declaration.getEntreprise(),
+					pageDeclarations.nextPageable());
+
+		}
+
 	}
 
 }
