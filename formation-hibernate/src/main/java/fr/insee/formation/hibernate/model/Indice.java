@@ -3,6 +3,7 @@ package fr.insee.formation.hibernate.model;
 import java.time.Instant;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
@@ -21,7 +22,7 @@ public abstract class Indice {
 	@GeneratedValue
 	private int id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
 	private Secteur secteur;
 
