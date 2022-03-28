@@ -79,6 +79,21 @@ public class JeuxTestUtil {
 
 	}
 
+	@Transactional
+	public void creerJeux3Secteurs() {
+
+		Secteur secteur1 = jeuxMappingAssociation();
+
+		Secteur secteur2 = jeuxMappingAssociation();
+
+		Secteur secteur3 = jeuxMappingAssociation();
+
+		entityManager.persist(secteur1);
+		entityManager.persist(secteur2);
+		entityManager.persist(secteur3);
+
+	}
+
 	public static List<Entreprise> jeuxEntreprisesReduit() {
 
 		List<Entreprise> listEntreprises = new ArrayList<Entreprise>();
