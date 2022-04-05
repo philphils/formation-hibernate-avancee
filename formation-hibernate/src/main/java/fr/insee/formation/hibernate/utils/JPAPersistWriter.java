@@ -3,16 +3,18 @@ package fr.insee.formation.hibernate.utils;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Component
 public class JPAPersistWriter<X> implements ItemWriter<X> {
 
-	@Autowired
+	@PersistenceContext
 	EntityManager entityManager;
 
 	@Override
@@ -24,6 +26,7 @@ public class JPAPersistWriter<X> implements ItemWriter<X> {
 
 		log.debug("{} items de type {} sont persistés", items.size(), items.get(0).getClass().getName());
 		entityManager.flush();
+		entityManager.clear();
 
 	}
 
