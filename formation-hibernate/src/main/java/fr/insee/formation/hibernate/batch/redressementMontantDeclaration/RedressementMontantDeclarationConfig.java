@@ -34,15 +34,6 @@ public class RedressementMontantDeclarationConfig {
 	@Autowired
 	DeclarationRepository declarationRepository;
 
-//	@Autowired
-//	ItemProcessor<Declaration, Declaration> redressementItemProcessor;
-//
-//	@Autowired
-//	ItemWriter<Declaration> redressementItemWriter;
-//
-//	@Autowired
-//	Tasklet redressementTasklet;
-
 	@Bean
 	public ItemProcessor<Declaration, Declaration> redressementItemProcessor() {
 		return new RedressementProcessor();
@@ -60,7 +51,7 @@ public class RedressementMontantDeclarationConfig {
 				redressementItemWriter(), chunkSize, true);
 	}
 
-	@Bean()
+	@Bean
 	protected Step redressementProcessLines() {
 		return steps.get("processLines").tasklet(redressementTasklet()).build();
 	}
