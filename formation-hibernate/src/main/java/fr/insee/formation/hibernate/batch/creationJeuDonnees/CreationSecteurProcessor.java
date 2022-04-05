@@ -57,6 +57,8 @@ public class CreationSecteurProcessor implements ItemProcessor<String[], Secteur
 
 		Random random = new Random();
 
+		secteur.setCoeffRedressementSecteur(random.nextDouble());
+
 		Integer nbEntreprises = random.nextInt(dataScale);
 
 		Faker faker = new Faker(new Locale("fr"));
@@ -103,6 +105,8 @@ public class CreationSecteurProcessor implements ItemProcessor<String[], Secteur
 			entreprise.setPrenomFondateur(faker.name().firstName());
 
 			entreprise.setNomFondateur(faker.name().lastName());
+
+			entreprise.setCoeffRedressementEntreprise(random.nextDouble());
 
 			secteur.addEntreprise(entreprise);
 

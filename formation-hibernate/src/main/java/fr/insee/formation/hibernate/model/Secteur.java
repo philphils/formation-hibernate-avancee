@@ -40,6 +40,8 @@ public class Secteur {
 	@OneToMany(mappedBy = "secteur", cascade = CascadeType.ALL)
 	private Set<Entreprise> entreprises = new HashSet<Entreprise>();
 
+	private Double coeffRedressementSecteur;
+
 	/*
 	 * Limitation d'Hibernate : mappedBy ne peut référencer un attribut héritée avec
 	 * les héritage @Inheritance (cf

@@ -70,6 +70,8 @@ public class Entreprise {
 	@MapKeyTemporal(TemporalType.DATE)
 	private Map<Date, Declaration> declarations = new HashMap<Date, Declaration>();
 
+	private Double coeffRedressementEntreprise;
+
 	public Map<Date, Declaration> getDeclarations() {
 		return Collections.unmodifiableMap(declarations);
 	}
