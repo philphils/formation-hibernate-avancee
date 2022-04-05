@@ -36,6 +36,9 @@ public class CreationJeuDonneesBatchConfig {
 	@Autowired
 	private StepBuilderFactory steps;
 
+	@Autowired
+	JPAPersistWriter<Secteur> jpaPersistWriter;
+
 	@Bean
 	public ItemReader<String[]> itemReader() {
 		return new CSVLineReader(nomFichierCreationJeuDonnees);
@@ -44,11 +47,6 @@ public class CreationJeuDonneesBatchConfig {
 	@Bean
 	public ItemProcessor<String[], Secteur> itemProcessor() {
 		return new CreationSecteurProcessor();
-	}
-
-	@Bean
-	public ItemWriter<Secteur> itemWriter() {
-		return new JPAPersistWriter<Secteur>();
 	}
 
 	@Bean
@@ -74,7 +72,7 @@ public class CreationJeuDonneesBatchConfig {
 		//// @formatter:off
 			jobs
 				.get("chunksJob")
-				.start(processLines(itemReader(), itemProcessor(), itemWriter()))
+				.start(processLines(itemReader(), itemProcessor(), jpaPersistWriter))
 			.build();
 		// @formatter:on
 
