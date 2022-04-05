@@ -20,6 +20,9 @@ public class BatchControllers {
 	@Autowired
 	Job creationJeuDonneesJob;
 
+	@Autowired
+	Job redressementMontantDeclarationJob;
+
 	@RequestMapping("/helloWorldJob")
 	public String helloWorldJob() throws Exception {
 
@@ -31,11 +34,21 @@ public class BatchControllers {
 	}
 
 	@RequestMapping("/CreationJeuDonneesJob")
-	public String CreationJeuDonneesJob() throws Exception {
+	public String creationJeuDonneesJob() throws Exception {
 
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
 		jobLauncher.run(creationJeuDonneesJob, jobParameters);
+
+		return "Données correctement créées";
+	}
+
+	@RequestMapping("/RedressementMontantDeclarationJob")
+	public String redressementMontantDeclarationJob() throws Exception {
+
+		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+				.toJobParameters();
+		jobLauncher.run(redressementMontantDeclarationJob, jobParameters);
 
 		return "Données correctement créées";
 	}

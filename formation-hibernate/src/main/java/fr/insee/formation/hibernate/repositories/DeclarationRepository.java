@@ -23,11 +23,20 @@ public interface DeclarationRepository extends JpaRepository<Declaration, Intege
 	@Query("SELECT decl FROM Declaration decl "
 			+ "JOIN FETCH decl.entreprise entreprise "
 			+ "WHERE decl.id = :identifiant ")
+	 
+	// @formatter:on
 	public Optional<Declaration> findByIdWithEntreprise(Integer identifiant);
-	
+
 	public Page<Declaration> findByEntreprise(Entreprise entreprise, Pageable pageable);
-	
+
 	@Query("SELECT decl FROM Declaration decl")
 	public Stream<Declaration> findAllStream();
+
+	//// @formatter:off
+	@Query("SELECT decl FROM Declaration decl "
+			+ " JOIN FETCH decl.entreprise entreprise "
+			+ " JOIN FETCH entreprise.secteur secteur ")
+	// @formatter:on
+	public Stream<Declaration> findAllDeclarationWithEntrepriseWithSecteur();
 
 }
