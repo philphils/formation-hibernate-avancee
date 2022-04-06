@@ -8,6 +8,14 @@ import fr.insee.formation.hibernate.model.Secteur;
 
 public interface SecteurRepository extends JpaRepository<Secteur, Integer> {
 
+	/**
+	 * TP2 : Exercice 2 : Modifier la requête pour récupérer un {@link Secteur}
+	 * ayant une {@link Entreprise} donnée en paramètre, avec toutes ses
+	 * {@link Entreprise}
+	 * 
+	 * @param entreprise
+	 * @return
+	 */
 	//// @formatter:off
 	@Query("SELECT secteur FROM Secteur secteur")
 	// @formatter:on

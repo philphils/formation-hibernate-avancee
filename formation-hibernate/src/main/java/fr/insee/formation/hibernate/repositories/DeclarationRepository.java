@@ -32,17 +32,19 @@ public interface DeclarationRepository extends JpaRepository<Declaration, Intege
 	@Query("SELECT decl FROM Declaration decl")
 	public Stream<Declaration> findAllStream();
 
+	/**
+	 * TP2 - Exercice 3 : Remplacer la requête ci-dessous par une requête permettant
+	 * de récupérer les déclarations avec leur entreprises et leur secteur associés
+	 * 
+	 * @return
+	 */
 	//// @formatter:off
-	@Query("SELECT decl FROM Declaration decl "
-			+ "	JOIN FETCH decl.entreprise entreprise "
-			+ " JOIN FETCH entreprise.secteur secteur ")
+	@Query("SELECT decl FROM Declaration decl ")
 	// @formatter:on
 	public Set<Declaration> findAllDeclarationWithEntrepriseWithSecteur();
 
 	//// @formatter:off
-	@Query("SELECT decl FROM Declaration decl "
-			+ " JOIN FETCH decl.entreprise entreprise "
-			+ " JOIN FETCH entreprise.secteur secteur ")
+	@Query("SELECT decl FROM Declaration decl ")
 	// @formatter:on
 	public Stream<Declaration> streamAllDeclarationWithEntrepriseWithSecteur();
 
