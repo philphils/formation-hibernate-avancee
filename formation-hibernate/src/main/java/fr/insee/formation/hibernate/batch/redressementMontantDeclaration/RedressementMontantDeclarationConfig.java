@@ -6,12 +6,14 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import fr.insee.formation.hibernate.batch.listener.ChunkTimingListener;
 import fr.insee.formation.hibernate.batch.utils.ChunkingStreamTasklet;
 import fr.insee.formation.hibernate.batch.utils.JPAUpdateWriter;
 import fr.insee.formation.hibernate.model.Declaration;
@@ -22,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 public class RedressementMontantDeclarationConfig {
 
-	@Value("${batch.chunkSize}")
+	@Value("${batch.chunkSizeRedressement}")
 	private Integer chunkSize;
 
 	@Autowired
@@ -35,6 +37,11 @@ public class RedressementMontantDeclarationConfig {
 	DeclarationRepository declarationRepository;
 
 	@Bean
+	public ItemReader<Declaration> redressementItemReader() {
+		return new RedressementItemReader();
+	}
+
+	@Bean
 	public ItemProcessor<Declaration, Declaration> redressementItemProcessor() {
 		return new RedressementProcessor();
 	}
@@ -45,15 +52,20 @@ public class RedressementMontantDeclarationConfig {
 	}
 
 	@Bean
-	public Tasklet redressementTasklet() {
-		return new ChunkingStreamTasklet<Declaration, Declaration>(
-				declarationRepository::findAllDeclarationWithEntrepriseWithSecteur, redressementItemProcessor(),
-				redressementItemWriter(), chunkSize, true);
-	}
+	protected Step redressementProcessLines(ItemReader<Declaration> reader,
+			ItemProcessor<Declaration, Declaration> processor, ItemWriter<Declaration> writer) {
+		return
+		//// @formatter:off
+				steps
+					.get("redressementProcessLines")
+					.<Declaration, Declaration>chunk(chunkSize)
+					.reader(reader)
+					.processor(processor)
+					.writer(writer)
+					.listener(new ChunkTimingListener(chunkSize))
+				.build();
+		// @formatter:on
 
-	@Bean
-	protected Step redressementProcessLines() {
-		return steps.get("processLines").tasklet(redressementTasklet()).build();
 	}
 
 	@Bean
@@ -62,7 +74,31 @@ public class RedressementMontantDeclarationConfig {
 		//// @formatter:off
 			jobs
 				.get("chunksJob")
-				.start(redressementProcessLines())
+				.start(redressementProcessLines(redressementItemReader(), redressementItemProcessor(), redressementItemWriter()))
+			.build();
+		// @formatter:on
+
+	}
+
+	@Bean
+	public Tasklet redressementTasklet() {
+		return new ChunkingStreamTasklet<Declaration, Declaration>(
+				declarationRepository::streamAllDeclarationWithEntrepriseWithSecteur, redressementItemProcessor(),
+				redressementItemWriter(), chunkSize, false);
+	}
+
+	@Bean
+	protected Step redressementStreamProcessLines() {
+		return steps.get("processLines").tasklet(redressementTasklet()).build();
+	}
+
+	@Bean
+	public Job redressementMontantDeclarationStreamJob() {
+		return
+		//// @formatter:off
+			jobs
+				.get("chunksJob")
+				.start(redressementStreamProcessLines())
 			.build();
 		// @formatter:on
 
