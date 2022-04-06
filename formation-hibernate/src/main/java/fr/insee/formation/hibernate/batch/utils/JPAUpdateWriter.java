@@ -1,4 +1,4 @@
-package fr.insee.formation.hibernate.utils;
+package fr.insee.formation.hibernate.batch.utils;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class JPAPersistWriter<X> implements ItemWriter<X> {
+public class JPAUpdateWriter<X> implements ItemWriter<X> {
 
 	@PersistenceContext
 	EntityManager entityManager;
@@ -21,7 +21,7 @@ public class JPAPersistWriter<X> implements ItemWriter<X> {
 	public void write(List<? extends X> items) throws Exception {
 
 		for (X item : items) {
-			entityManager.persist(item);
+			entityManager.merge(item);
 		}
 
 		log.debug("{} items de type {} sont persistés", items.size(), items.get(0).getClass().getName());

@@ -14,9 +14,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import fr.insee.formation.hibernate.batch.listener.ChunkTimingListener;
+import fr.insee.formation.hibernate.batch.utils.CSVLineReader;
+import fr.insee.formation.hibernate.batch.utils.JPAPersistWriter;
 import fr.insee.formation.hibernate.model.Secteur;
-import fr.insee.formation.hibernate.utils.CSVLineReader;
-import fr.insee.formation.hibernate.utils.JPAPersistWriter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

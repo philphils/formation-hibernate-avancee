@@ -12,10 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import fr.insee.formation.hibernate.batch.utils.ChunkingStreamTasklet;
+import fr.insee.formation.hibernate.batch.utils.JPAUpdateWriter;
 import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.repositories.DeclarationRepository;
-import fr.insee.formation.hibernate.utils.ChunkingStreamTasklet;
-import fr.insee.formation.hibernate.utils.JPAUpdateWriter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

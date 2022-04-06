@@ -1,4 +1,4 @@
-package fr.insee.formation.hibernate.utils;
+package fr.insee.formation.hibernate.batch.utils;
 
 import java.util.ArrayList;
 import java.util.List;
