@@ -30,6 +30,9 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 	private SecteurRepository secteurRepository;
 
 	@Autowired
+	private EntrepriseRepository entrepriseRepository;
+
+	@Autowired
 	private EntityManager entityManager;
 
 	@Autowired
@@ -62,23 +65,13 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 		// Remplacer "null" par votre appel à la méthode que vous
 		// écrirez dans EntrepriseRepository avec les paramètres (siren, null)
 
-		assertTrue(optionalEntreprise.isPresent());
-
-		Entreprise entreprise = optionalEntreprise.get();
-
-		assertEquals("Adresse(numero=12, typeVoie=RUE, nomVoie=Jean Jaurès, ville=PARIS, pays=FRANCE)",
-				entreprise.getAdresse().toString());
+		assertFalse(optionalEntreprise.isPresent());
 
 		optionalEntreprise = null;
 		// Remplacer "null" par votre appel à la méthode que vous
 		// écrirez dans EntrepriseRepository avec les paramètres (null, denomination)
 
-		assertTrue(optionalEntreprise.isPresent());
-
-		entreprise = optionalEntreprise.get();
-
-		assertEquals("Adresse(numero=12, typeVoie=RUE, nomVoie=Jean Jaurès, ville=PARIS, pays=FRANCE)",
-				entreprise.getAdresse().toString());
+		assertFalse(optionalEntreprise.isPresent());
 
 		optionalEntreprise = null;
 		// Remplacer "null" par votre appel à la méthode que vous
@@ -86,7 +79,7 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 
 		assertTrue(optionalEntreprise.isPresent());
 
-		entreprise = optionalEntreprise.get();
+		Entreprise entreprise = optionalEntreprise.get();
 
 		assertEquals("Adresse(numero=12, typeVoie=RUE, nomVoie=Jean Jaurès, ville=PARIS, pays=FRANCE)",
 				entreprise.getAdresse().toString());
