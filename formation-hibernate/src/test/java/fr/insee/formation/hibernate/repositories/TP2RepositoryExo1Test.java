@@ -30,9 +30,6 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 	private SecteurRepository secteurRepository;
 
 	@Autowired
-	private EntrepriseRepository entrepriseRepository;
-
-	@Autowired
 	private EntityManager entityManager;
 
 	@Autowired
