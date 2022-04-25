@@ -66,7 +66,9 @@ public class TP2RepositoryExo2Test extends AbstractTest {
 
 		QueryCountHolder.clear();
 
-		Secteur secteur2 = secteurRepository.findByEntrepriseWithAllEntreprises(entreprise);
+		Secteur secteur2 = null;
+		// Remplacer "null" par votre appel à la méthode
+		// findByEntrepriseWithAllEntreprises de SecteurRepository
 
 		for (Entreprise entreprise2 : secteur2.getEntreprises()) {
 			log.info("L'Entreprise {} est dans le secteur {}", entreprise2.getDenomination(),
@@ -77,27 +79,11 @@ public class TP2RepositoryExo2Test extends AbstractTest {
 
 		assertTrue(secteur2.getEntreprises().stream().anyMatch(ent -> ent.getId() == entreprise.getId()));
 
+		/*
+		 * On vérifie qu'il n'y a bien eu qu'une seule requête effectuée
+		 */
 		assertEquals(1, QueryCountHolder.getGrandTotal().getSelect());
 
 	}
-
-//	public Entreprise getEntrepriseFromASecteur() {
-//
-//		Entreprise entreprise = null;
-//
-//		transactionTemplate.execute(new TransactionCallback {
-//			@Override
-//			protected void doInTransactionWithoutResult(TransactionStatus status) {
-//				Secteur secteur = secteurRepository.findAll().get(0);
-//
-//				Integer idSecteur = secteur.getId();
-//
-//				entreprise = secteur.getEntreprises().iterator().next();
-//
-//			}
-//		});
-//
-//		return entreprise;
-//	}
 
 }
