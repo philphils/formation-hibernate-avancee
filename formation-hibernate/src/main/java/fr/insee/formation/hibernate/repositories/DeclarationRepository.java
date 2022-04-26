@@ -39,12 +39,16 @@ public interface DeclarationRepository extends JpaRepository<Declaration, Intege
 	 * @return
 	 */
 	//// @formatter:off
-	@Query("SELECT decl FROM Declaration decl ")
+	@Query("SELECT declaration FROM Declaration declaration "
+			+ "JOIN FETCH declaration.entreprise entreprise "
+			+ "JOIN FETCH entreprise.secteur secteur")
 	// @formatter:on
 	public Set<Declaration> findAllDeclarationWithEntrepriseWithSecteur();
 
 	//// @formatter:off
-	@Query("SELECT decl FROM Declaration decl ")
+	@Query("SELECT declaration FROM Declaration declaration "
+			+ "JOIN FETCH declaration.entreprise entreprise "
+			+ "JOIN FETCH entreprise.secteur secteur")
 	// @formatter:on
 	public Stream<Declaration> streamAllDeclarationWithEntrepriseWithSecteur();
 

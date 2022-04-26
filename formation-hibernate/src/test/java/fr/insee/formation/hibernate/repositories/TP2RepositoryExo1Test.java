@@ -30,6 +30,9 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 	private SecteurRepository secteurRepository;
 
 	@Autowired
+	private EntrepriseRepository entrepriseRepository;
+
+	@Autowired
 	private EntityManager entityManager;
 
 	@Autowired
@@ -58,19 +61,19 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 
 		String denomination = "Le bar à Momo";
 
-		Optional<Entreprise> optionalEntreprise = null;
+		Optional<Entreprise> optionalEntreprise = entrepriseRepository.findBySirenAndDenomination(siren, null);
 		// Remplacer "null" par votre appel à la méthode que vous
 		// écrirez dans EntrepriseRepository avec les paramètres (siren, null)
 
 		assertFalse(optionalEntreprise.isPresent());
 
-		optionalEntreprise = null;
+		optionalEntreprise = entrepriseRepository.findBySirenAndDenomination(null, denomination);
 		// Remplacer "null" par votre appel à la méthode que vous
 		// écrirez dans EntrepriseRepository avec les paramètres (null, denomination)
 
 		assertFalse(optionalEntreprise.isPresent());
 
-		optionalEntreprise = null;
+		optionalEntreprise = entrepriseRepository.findBySirenAndDenomination(siren, denomination);
 		// Remplacer "null" par votre appel à la méthode que vous
 		// écrirez dans EntrepriseRepository avec les paramètres (siren, denomination)
 
@@ -81,7 +84,7 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 		assertEquals("Adresse(numero=12, typeVoie=RUE, nomVoie=Jean Jaurès, ville=PARIS, pays=FRANCE)",
 				entreprise.getAdresse().toString());
 
-		optionalEntreprise = null;
+		optionalEntreprise = entrepriseRepository.findBySirenAndDenomination("faux_siren", "N'importe quoi");
 		// Remplacer "null" par votre appel à la méthode que vous
 		// écrirez dans EntrepriseRepository avec les paramètres ("faux_siren",
 		// "N'importe quoi")

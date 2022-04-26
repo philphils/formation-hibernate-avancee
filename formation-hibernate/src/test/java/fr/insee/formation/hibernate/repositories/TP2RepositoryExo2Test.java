@@ -66,9 +66,7 @@ public class TP2RepositoryExo2Test extends AbstractTest {
 
 		QueryCountHolder.clear();
 
-		Secteur secteur2 = null;
-		// Remplacer "null" par votre appel à la méthode
-		// findByEntrepriseWithAllEntreprises de SecteurRepository
+		Secteur secteur2 = secteurRepository.findByEntrepriseWithAllEntreprises(entreprise);
 
 		for (Entreprise entreprise2 : secteur2.getEntreprises()) {
 			log.info("L'Entreprise {} est dans le secteur {}", entreprise2.getDenomination(),
