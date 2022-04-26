@@ -1,6 +1,8 @@
 package fr.insee.formation.hibernate.batch;
 
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -31,9 +33,9 @@ public class BatchControllers {
 
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
-		jobLauncher.run(helloWorldJob, jobParameters);
+		JobExecution jobExecution = jobLauncher.run(helloWorldJob, jobParameters);
 
-		return "Hello World Batch is working !!!";
+		return returnMessageIfNotFailed("Hello World Batch is working !!!", jobExecution);
 	}
 
 	@RequestMapping("/CreationJeuDonneesJob")
@@ -41,9 +43,9 @@ public class BatchControllers {
 
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
-		jobLauncher.run(creationJeuDonneesJob, jobParameters);
+		JobExecution jobExecution = jobLauncher.run(creationJeuDonneesJob, jobParameters);
 
-		return "Données correctement créées";
+		return returnMessageIfNotFailed("Données correctement créées", jobExecution);
 	}
 
 	@RequestMapping("/RedressementMontantDeclarationJob")
@@ -51,9 +53,9 @@ public class BatchControllers {
 
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
-		jobLauncher.run(redressementMontantDeclarationJob, jobParameters);
+		JobExecution jobExecution = jobLauncher.run(redressementMontantDeclarationJob, jobParameters);
 
-		return "Les déclarations ont bien été redressées";
+		return returnMessageIfNotFailed("Les déclarations ont bien été redressées", jobExecution);
 	}
 
 	@RequestMapping("/RedressementMontantDeclarationStreamJob")
@@ -61,9 +63,17 @@ public class BatchControllers {
 
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
-		jobLauncher.run(redressementMontantDeclarationStreamJob, jobParameters);
+		JobExecution jobExecution = jobLauncher.run(redressementMontantDeclarationStreamJob, jobParameters);
 
-		return "Les déclarations ont bien été redressées";
+		return returnMessageIfNotFailed("Les déclarations ont bien été redressées", jobExecution);
+	}
+
+	private String returnMessageIfNotFailed(String message, JobExecution jobExecution) {
+		if (jobExecution.getExitStatus() == ExitStatus.COMPLETED)
+			return message;
+		else
+			return "Le batch ne s'est pas terminé correctement. Consulter la log pour plus d'info. ExitStatus : "
+					+ jobExecution.getExitStatus();
 	}
 
 }
