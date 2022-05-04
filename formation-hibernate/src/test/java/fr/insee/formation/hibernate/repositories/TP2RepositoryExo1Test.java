@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import fr.insee.formation.hibernate.config.AbstractTest;
 import fr.insee.formation.hibernate.model.Entreprise;
@@ -29,9 +28,6 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 
 	@Autowired
 	Job creationJeuDonneesJob;
-
-	@Autowired
-	TransactionTemplate transactionTemplate;
 
 	private static boolean databaseIsInitialized = false;
 
