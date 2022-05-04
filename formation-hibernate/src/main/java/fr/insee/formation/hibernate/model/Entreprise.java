@@ -22,6 +22,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -62,7 +63,7 @@ public class Entreprise {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
-	private Secteur secteur;
+	private AbstractNiveau secteur;
 
 	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "entreprise", cascade = CascadeType.ALL)
