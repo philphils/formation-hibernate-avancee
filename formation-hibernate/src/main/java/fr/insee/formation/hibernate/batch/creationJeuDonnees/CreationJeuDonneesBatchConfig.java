@@ -16,7 +16,7 @@ import org.springframework.context.annotation.PropertySource;
 import fr.insee.formation.hibernate.batch.listener.ChunkTimingListener;
 import fr.insee.formation.hibernate.batch.utils.CSVLineReader;
 import fr.insee.formation.hibernate.batch.utils.JPAPersistWriter;
-import fr.insee.formation.hibernate.model.Secteur;
+import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -37,7 +37,7 @@ public class CreationJeuDonneesBatchConfig {
 	private StepBuilderFactory steps;
 
 	@Autowired
-	JPAPersistWriter<Secteur> jpaPersistWriter;
+	JPAPersistWriter<AbstractNiveau> jpaPersistWriter;
 
 	@Bean
 	public ItemReader<String[]> itemReader() {
@@ -45,18 +45,18 @@ public class CreationJeuDonneesBatchConfig {
 	}
 
 	@Bean
-	public ItemProcessor<String[], Secteur> itemProcessor() {
+	public ItemProcessor<String[], AbstractNiveau> itemProcessor() {
 		return new CreationSecteurProcessor();
 	}
 
 	@Bean
-	protected Step processLines(ItemReader<String[]> reader, ItemProcessor<String[], Secteur> processor,
-			ItemWriter<Secteur> writer) {
+	protected Step processLines(ItemReader<String[]> reader, ItemProcessor<String[], AbstractNiveau> processor,
+			ItemWriter<AbstractNiveau> writer) {
 		return
 		//// @formatter:off
 				steps
 					.get("processLines")
-					.<String[], Secteur>chunk(chunkSize)
+					.<String[], AbstractNiveau>chunk(chunkSize)
 					.reader(reader)
 					.processor(processor)
 					.writer(writer)

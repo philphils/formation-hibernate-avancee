@@ -19,12 +19,12 @@ import com.github.javafaker.Faker;
 
 import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.model.Entreprise;
-import fr.insee.formation.hibernate.model.Secteur;
 import fr.insee.formation.hibernate.model.TypeVoie;
+import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class CreationSecteurProcessor implements ItemProcessor<String[], Secteur> {
+public class CreationSecteurProcessor implements ItemProcessor<String[], AbstractNiveau> {
 
 	@Value("${batch.dataScale}")
 	private Integer dataScale;
@@ -45,19 +45,19 @@ public class CreationSecteurProcessor implements ItemProcessor<String[], Secteur
 	LocalTime localTimeFinBoucle = null;
 
 	@Override
-	public Secteur process(String[] item) throws Exception {
+	public AbstractNiveau process(String[] item) throws Exception {
 
 		if (localTimeDebutJob == null)
 			localTimeDebutJob = LocalTime.now(ZoneId.of("Europe/Paris"));
 
-		Secteur secteur = new Secteur();
+		AbstractNiveau secteur = null; // TODO gérer la création des niveau aux différents échelons
 
 		secteur.setCodeNaf(item[0]);
 		secteur.setLibelleNomenclature(item[1]);
 
 		Random random = new Random();
 
-		secteur.setCoeffRedressementSecteur(random.nextDouble());
+		secteur.setCoeffRedressementNiveau(random.nextDouble());
 
 		Integer nbEntreprises = random.nextInt(dataScale);
 
@@ -108,7 +108,8 @@ public class CreationSecteurProcessor implements ItemProcessor<String[], Secteur
 
 			entreprise.setCoeffRedressementEntreprise(random.nextDouble());
 
-			secteur.addEntreprise(entreprise);
+			// TODO gérer l'ajout entreprise pour le niveau sous-classe
+			// secteur.addEntreprise(entreprise);
 
 			/*
 			 * Création des déclarations
