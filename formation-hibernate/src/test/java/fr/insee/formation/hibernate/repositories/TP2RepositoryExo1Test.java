@@ -6,8 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.batch.core.Job;
@@ -25,12 +23,6 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 
 	@Autowired
 	private JeuxTestUtil jeuxTestUtil;
-
-	@Autowired
-	private SecteurRepository secteurRepository;
-
-	@Autowired
-	private EntityManager entityManager;
 
 	@Autowired
 	JobLauncher jobLauncher;
