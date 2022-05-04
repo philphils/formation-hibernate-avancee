@@ -15,7 +15,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import fr.insee.formation.hibernate.config.AbstractTest;
 import fr.insee.formation.hibernate.model.Entreprise;
-import fr.insee.formation.hibernate.model.Secteur;
+import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
 import fr.insee.formation.hibernate.util.JeuxTestUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.ttddyy.dsproxy.QueryCountHolder;
@@ -58,7 +58,7 @@ public class TP2RepositoryExo2Test extends AbstractTest {
 		/*
 		 * Récupération d'une entreprise au hasard
 		 */
-		Secteur secteur = secteurRepository.findAll().get(0);
+		AbstractNiveau secteur = secteurRepository.findAll().get(0);
 
 		Entreprise entreprise = secteur.getEntreprises().iterator().next();
 
@@ -66,7 +66,7 @@ public class TP2RepositoryExo2Test extends AbstractTest {
 
 		QueryCountHolder.clear();
 
-		Secteur secteur2 = secteurRepository.findByEntrepriseWithAllEntreprises(entreprise);
+		AbstractNiveau secteur2 = secteurRepository.findByEntrepriseWithAllEntreprises(entreprise);
 
 		for (Entreprise entreprise2 : secteur2.getEntreprises()) {
 			log.info("L'Entreprise {} est dans le secteur {}", entreprise2.getDenomination(),
