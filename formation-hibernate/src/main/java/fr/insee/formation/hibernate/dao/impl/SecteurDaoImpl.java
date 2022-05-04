@@ -15,8 +15,8 @@ import fr.insee.formation.hibernate.dao.SecteurDAO;
 import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.model.Entreprise;
 import fr.insee.formation.hibernate.model.Entreprise_;
-import fr.insee.formation.hibernate.model.Secteur;
 import fr.insee.formation.hibernate.model.Secteur_;
+import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
 
 @Repository
 public class SecteurDaoImpl implements SecteurDAO {
@@ -25,26 +25,26 @@ public class SecteurDaoImpl implements SecteurDAO {
 	private EntityManager entityManager;
 
 	@Override
-	public Secteur find(int id) {
+	public AbstractNiveau find(int id) {
 
-		return entityManager.find(Secteur.class, id);
+		return entityManager.find(AbstractNiveau.class, id);
 
 	}
 
 	@Override
-	public Secteur findByCodeNaf(String codeNaf) {
-		return entityManager.createQuery("SELECT sect FROM Secteur sect WHERE sect.codeNaf = :codeNaf", Secteur.class)
+	public AbstractNiveau findByCodeNaf(String codeNaf) {
+		return entityManager.createQuery("SELECT sect FROM Secteur sect WHERE sect.codeNaf = :codeNaf", AbstractNiveau.class)
 				.setParameter("codeNaf", codeNaf).getSingleResult();
 	}
 
 	@Override
-	public Secteur findByCodeNafWithEntreprisesAndDeclarationAndIndicesJPQL(String codeNaf) {
+	public AbstractNiveau findByCodeNafWithEntreprisesAndDeclarationAndIndicesJPQL(String codeNaf) {
 
 		String requete = "SELECT secteur FROM Secteur secteur " + " JOIN FETCH secteur.indices indice "
 				+ " JOIN FETCH secteur.entreprises entreprise " + " JOIN FETCH entreprise.declarations declaration "
 				+ " WHERE secteur.codeNaf = :codeNaf ";
 
-		TypedQuery<Secteur> query = entityManager.createQuery(requete, Secteur.class);
+		TypedQuery<AbstractNiveau> query = entityManager.createQuery(requete, AbstractNiveau.class);
 
 		query.setParameter("codeNaf", codeNaf);
 
@@ -52,13 +52,13 @@ public class SecteurDaoImpl implements SecteurDAO {
 	}
 
 	@Override
-	public Secteur findByCodeNafWithEntreprisesAndDeclarationAndIndicesCriteria(String codeNaf) {
+	public AbstractNiveau findByCodeNafWithEntreprisesAndDeclarationAndIndicesCriteria(String codeNaf) {
 
 		CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 
-		CriteriaQuery<Secteur> criteria = builder.createQuery(Secteur.class);
+		CriteriaQuery<AbstractNiveau> criteria = builder.createQuery(AbstractNiveau.class);
 
-		Root<Secteur> root = criteria.from(Secteur.class);
+		Root<AbstractNiveau> root = criteria.from(AbstractNiveau.class);
 
 		criteria.select(root);
 
@@ -69,7 +69,7 @@ public class SecteurDaoImpl implements SecteurDAO {
 		 */
 		root.fetch(Secteur_.indices, JoinType.INNER);
 		
-		Fetch<Secteur, Entreprise> fetchEntreprise = root.fetch(Secteur_.entreprises, JoinType.INNER);
+		Fetch<AbstractNiveau, Entreprise> fetchEntreprise = root.fetch(Secteur_.entreprises, JoinType.INNER);
 		
 		Fetch<Entreprise, Declaration> fetchDeclarations = fetchEntreprise.fetch(Entreprise_.declarations, JoinType.INNER);
 		
