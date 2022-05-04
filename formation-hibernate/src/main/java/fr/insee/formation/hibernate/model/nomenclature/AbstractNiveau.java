@@ -1,4 +1,4 @@
-package fr.insee.formation.hibernate.model;
+package fr.insee.formation.hibernate.model.nomenclature;
 
 import java.time.Year;
 import java.time.YearMonth;
@@ -9,11 +9,17 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Entity;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
+import fr.insee.formation.hibernate.model.Indice;
+import fr.insee.formation.hibernate.model.IndiceAnnuel;
+import fr.insee.formation.hibernate.model.IndiceMensuel;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,8 +27,9 @@ import lombok.Setter;
 
 @Data
 @EqualsAndHashCode(exclude = { "indices", "entreprises" })
-@Entity
-public class Secteur {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "niveau", discriminatorType = DiscriminatorType.STRING)
+public abstract class AbstractNiveau {
 
 	@Id
 	@GeneratedValue
@@ -36,11 +43,7 @@ public class Secteur {
 	@OneToMany(mappedBy = "secteur", cascade = CascadeType.ALL)
 	private Set<Indice> indices = new HashSet<Indice>();
 
-	@Setter(value = AccessLevel.NONE)
-	@OneToMany(mappedBy = "secteur", cascade = CascadeType.ALL)
-	private Set<Entreprise> entreprises = new HashSet<Entreprise>();
-
-	private Double coeffRedressementSecteur;
+	private Double coeffRedressementNiveau;
 
 	/*
 	 * Limitation d'Hibernate : mappedBy ne peut référencer un attribut héritée avec
@@ -56,18 +59,6 @@ public class Secteur {
 	// @OneToMany(mappedBy = "secteur")
 	// private Set<IndiceMensuel> indiceMensuels = new HashSet<IndiceMensuel>();
 
-	public Entreprise addEntreprise(Entreprise entreprise) {
-		entreprises.add(entreprise);
-		entreprise.setSecteur(this);
-		return entreprise;
-	}
-
-	public Entreprise removeEntreprise(Entreprise entreprise) {
-		entreprises.remove(entreprise);
-		entreprise.setSecteur(null);
-		return entreprise;
-	}
-
 	public Indice addIndice(Indice indice) {
 		indices.add(indice);
 		indice.setSecteur(this);
@@ -78,10 +69,6 @@ public class Secteur {
 		indices.remove(indice);
 		indice.setSecteur(null);
 		return indice;
-	}
-
-	public Set<Entreprise> getEntreprises() {
-		return Collections.unmodifiableSet(entreprises);
 	}
 
 	public Set<Indice> getIndices() {
