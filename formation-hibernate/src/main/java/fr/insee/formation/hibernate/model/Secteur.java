@@ -15,12 +15,11 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
-@Data
-@EqualsAndHashCode(exclude = { "indices", "entreprises" })
+@Getter
+@Setter
 @Entity
 public class Secteur {
 

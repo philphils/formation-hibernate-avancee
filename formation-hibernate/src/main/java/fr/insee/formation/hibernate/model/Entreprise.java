@@ -23,11 +23,12 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @EqualsAndHashCode(exclude = "declarations")
 @Entity
 public class Entreprise {
