@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.transaction.annotation.Transactional;
 
 import fr.insee.formation.hibernate.config.AbstractTest;
 import fr.insee.formation.hibernate.model.Declaration;
@@ -21,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.ttddyy.dsproxy.QueryCountHolder;
 
 @Slf4j
+@Transactional
 public class DeclarationRepositoryTest extends AbstractTest {
 
 	@Autowired
@@ -40,12 +42,15 @@ public class DeclarationRepositoryTest extends AbstractTest {
 			jeuxTestUtil.creerJeuxMappingAssociation();
 			databaseIsInitialized = true;
 		}
+
+		ouvrirNouvelleTransaction();
+
+		QueryCountHolder.clear();
+
 	}
 
 	@Test
 	public void testCount() {
-
-		QueryCountHolder.clear();
 
 		Long total = declarationRepository.count();
 
@@ -59,8 +64,6 @@ public class DeclarationRepositoryTest extends AbstractTest {
 
 	@Test
 	public void testFindByEntreprise() {
-
-		QueryCountHolder.clear();
 
 		Declaration declaration = declarationRepository.findAll().get(0);
 
@@ -95,12 +98,7 @@ public class DeclarationRepositoryTest extends AbstractTest {
 
 		String denom = declaration2.getEntreprise().getDenomination();
 
-		/*
-		 * On vérifie que la déclaration a bien été récupérée avec 2 requêtes Pourquoi
-		 * n'a-t-on pas une seule requête ? Proposer des amléiorations pour n'avoir
-		 * qu'une requête
-		 */
-		assertEquals(2, QueryCountHolder.getGrandTotal().getSelect());
+		assertEquals(1, QueryCountHolder.getGrandTotal().getSelect());
 	}
 
 	@Test
@@ -141,6 +139,23 @@ public class DeclarationRepositoryTest extends AbstractTest {
 					pageDeclarations.nextPageable());
 
 		}
+
+	}
+
+	@Test
+	public void testLazy() {
+
+		Declaration declaration = declarationRepository.findAll().get(0);
+
+		log.info("{} {}", declaration.getEntreprise().getDenomination(),
+				declaration.getEntreprise().getSecteur().getLibelleNomenclature());
+
+		/*
+		 * On vérifie que la déclaration a bien été récupérée avec 3 requêtes Pourquoi
+		 * n'a-t-on pas une seule requête ? Proposer des amléiorations pour n'avoir
+		 * qu'une requête
+		 */
+		assertEquals(3, QueryCountHolder.getGrandTotal().getSelect());
 
 	}
 
