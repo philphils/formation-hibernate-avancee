@@ -24,13 +24,11 @@ import javax.persistence.TemporalType;
 
 import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@EqualsAndHashCode(exclude = "declarations")
 @Entity
 public class Entreprise {
 

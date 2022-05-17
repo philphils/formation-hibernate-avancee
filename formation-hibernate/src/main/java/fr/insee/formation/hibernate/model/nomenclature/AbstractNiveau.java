@@ -21,12 +21,11 @@ import fr.insee.formation.hibernate.model.Indice;
 import fr.insee.formation.hibernate.model.IndiceAnnuel;
 import fr.insee.formation.hibernate.model.IndiceMensuel;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
-@Data
-@EqualsAndHashCode(exclude = { "indices", "entreprises" })
+@Getter
+@Setter
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "niveau", discriminatorType = DiscriminatorType.STRING)
 public abstract class AbstractNiveau {

@@ -10,13 +10,12 @@ import javax.persistence.OneToMany;
 
 import fr.insee.formation.hibernate.model.Entreprise;
 import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 public class SousClasse extends AbstractNiveau {
 
 	@Setter(value = AccessLevel.NONE)

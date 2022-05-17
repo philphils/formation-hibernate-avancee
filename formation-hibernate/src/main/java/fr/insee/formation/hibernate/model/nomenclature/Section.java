@@ -5,12 +5,12 @@ import java.util.Set;
 
 import javax.persistence.Entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 public class Section extends AbstractNiveau {
 
 	private Set<Division> divisions = new HashSet<Division>();

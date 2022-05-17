@@ -2,12 +2,12 @@ package fr.insee.formation.hibernate.model.nomenclature;
 
 import javax.persistence.Entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 public class Classe extends AbstractNiveau {
 
 }
