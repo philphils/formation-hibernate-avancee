@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.transaction.TestTransaction;
 
 import fr.insee.formation.hibernate.Application;
 
@@ -20,4 +21,22 @@ import fr.insee.formation.hibernate.Application;
 @SpringBootTest(classes = { Application.class })
 @ActiveProfiles("test")
 public abstract class AbstractTest {
+
+	/**
+	 * Ferme la transaction en cours avec un commit et ouvre une nouvelle
+	 * transaction pour la réalisation du test
+	 */
+	protected void ouvrirNouvelleTransaction() {
+		/*
+		 * On commit l'insertion des données et on clos la transaction
+		 */
+		TestTransaction.flagForCommit();
+		TestTransaction.end();
+
+		/*
+		 * On démarre une nouvelle transaction pour le test
+		 */
+		TestTransaction.start();
+	}
+
 }
