@@ -1,7 +1,8 @@
 package fr.insee.formation.hibernate.repositories;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 
@@ -13,23 +14,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.insee.formation.hibernate.config.AbstractTest;
-import fr.insee.formation.hibernate.model.Entreprise;
-import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
+import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.util.JeuxTestUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.ttddyy.dsproxy.QueryCountHolder;
 
 @Slf4j
-public class TP2RepositoryExo2Test extends AbstractTest {
+public class TP2RepositoryExo3Test extends AbstractTest {
 
 	@Autowired
 	private JeuxTestUtil jeuxTestUtil;
 
 	@Autowired
-	private SecteurRepository secteurRepository;
+	DeclarationRepository declarationRepository;
 
 	@Autowired
-	private EntityManager entityManager;
+	EntityManager entityManager;
 
 	@Autowired
 	JobLauncher jobLauncher;
@@ -45,33 +45,36 @@ public class TP2RepositoryExo2Test extends AbstractTest {
 			jeuxTestUtil.creerJeux3Secteurs();
 			databaseIsInitialized = true;
 		}
+
+		ouvrirNouvelleTransaction();
+
+		QueryCountHolder.clear();
+
 	}
 
 	@Test
 	@Transactional
-	public void testExercice2() {
+	public void testExercice3() {
 
 		/*
-		 * Récupération d'une entreprise au hasard
+		 * Récupération des déclarations
 		 */
-		AbstractNiveau secteur = secteurRepository.findAll().get(0);
+		Set<Declaration> declarations = declarationRepository.findAllDeclarationWithEntrepriseWithSecteur();
 
-		Entreprise entreprise = secteur.getEntreprises().iterator().next();
+		assertEquals(108, declarations.size());
 
-		entityManager.clear();
+		for (Declaration declaration : declarations) {
 
-		QueryCountHolder.clear();
+			String denomination = declaration.getEntreprise().getDenomination();
 
-		AbstractNiveau secteur2 = secteurRepository.findByEntrepriseWithAllEntreprises(entreprise);
+			String libelle = declaration.getEntreprise().getSecteur().getLibelleNomenclature();
 
-		for (Entreprise entreprise2 : secteur2.getEntreprises()) {
-			log.info("L'Entreprise {} est dans le secteur {}", entreprise2.getDenomination(),
-					secteur2.getLibelleNomenclature());
+			log.debug("Entreprise {} du Secteur {}", denomination, libelle);
+
 		}
 
-		assertEquals(3, secteur2.getEntreprises().size());
-
-		assertTrue(secteur2.getEntreprises().stream().anyMatch(ent -> ent.getId() == entreprise.getId()));
+		// TODO Comprendre pourquoi on a pas les requetes select pour les entreprises et
+		// les secteur
 
 		/*
 		 * On vérifie qu'il n'y a bien eu qu'une seule requête effectuée

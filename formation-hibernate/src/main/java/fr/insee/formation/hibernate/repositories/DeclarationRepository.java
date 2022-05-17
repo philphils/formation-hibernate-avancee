@@ -23,7 +23,6 @@ public interface DeclarationRepository extends JpaRepository<Declaration, Intege
 	@Query("SELECT decl FROM Declaration decl "
 			+ "JOIN FETCH decl.entreprise entreprise "
 			+ "WHERE decl.id = :identifiant ")
-	 
 	// @formatter:on
 	public Optional<Declaration> findByIdWithEntreprise(Integer identifiant);
 

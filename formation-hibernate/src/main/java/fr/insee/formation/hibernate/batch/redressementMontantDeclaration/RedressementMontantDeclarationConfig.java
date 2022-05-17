@@ -1,5 +1,7 @@
 package fr.insee.formation.hibernate.batch.redressementMontantDeclaration;
 
+import java.util.stream.Stream;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -37,11 +39,6 @@ public class RedressementMontantDeclarationConfig {
 	DeclarationRepository declarationRepository;
 
 	@Bean
-	public ItemReader<Declaration> redressementItemReader() {
-		return new RedressementItemReader();
-	}
-
-	@Bean
 	public ItemProcessor<Declaration, Declaration> redressementItemProcessor() {
 		return new RedressementProcessor();
 	}
@@ -49,6 +46,19 @@ public class RedressementMontantDeclarationConfig {
 	@Bean
 	public ItemWriter<Declaration> redressementItemWriter() {
 		return new JPAUpdateWriter<Declaration>();
+	}
+
+	//// @formatter:off
+	/**
+	 * ---------------PARTIE CHUNK---------------------------- 
+	 * Ici est défini le batch de redressement en mode Chunk "classique", avec donc un reader qui
+	 * s'appuie sur une requête renvoyant une liste de {@link Declaration}
+	 */
+	// @formatter:on
+
+	@Bean
+	public ItemReader<Declaration> redressementItemReader() {
+		return new RedressementItemReader();
 	}
 
 	@Bean
@@ -80,6 +90,19 @@ public class RedressementMontantDeclarationConfig {
 
 	}
 
+	/**
+	 * ---------------FIN PARTIE CHUNK----------------------------
+	 */
+
+	//// @formatter:off
+	/**
+	 * ---------------PARTIE TASKLET STREAM--------------------------------------
+	 * Ici on utilise le composant {@link ChunkingStreamTasklet} qui permet de
+	 * reproduire une partie des fonctionnalités du mode Chunk mais qui rend en
+	 * entrée une fonction renvoyant un {@link Stream} ( un {@link Supplier} de {@link Stream})
+	 */
+	// @formatter:on
+
 	@Bean
 	public Tasklet redressementTasklet() {
 		return new ChunkingStreamTasklet<Declaration, Declaration>(
@@ -101,7 +124,9 @@ public class RedressementMontantDeclarationConfig {
 				.start(redressementStreamProcessLines())
 			.build();
 		// @formatter:on
-
 	}
 
+	/**
+	 * ---------------FIN PARTIE TASKLET STREAM-----------------------------------
+	 */
 }

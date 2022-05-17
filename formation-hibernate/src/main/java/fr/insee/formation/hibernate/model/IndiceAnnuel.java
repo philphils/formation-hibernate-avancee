@@ -4,11 +4,11 @@ import java.time.Year;
 
 import javax.persistence.Entity;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
 @Entity
 public class IndiceAnnuel extends Indice {
 
