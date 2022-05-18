@@ -52,6 +52,8 @@ public abstract class AbstractNiveauNomenclature {
 
 	private Double coeffRedressementNiveau;
 
+	private Double coeffCalculIndice;
+
 	public Indice addIndice(Indice indice) {
 		indices.add(indice);
 		indice.setNiveauNomenclature(this);
