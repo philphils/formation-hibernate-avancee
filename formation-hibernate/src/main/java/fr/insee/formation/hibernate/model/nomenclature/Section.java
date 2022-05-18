@@ -12,13 +12,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
+@Entity
 public class Section extends AbstractNiveauNomenclature {
 
 	@Setter(value = AccessLevel.NONE)
-	@OneToMany(mappedBy = "division", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "section", cascade = CascadeType.ALL)
 	private Set<Division> divisions = new HashSet<Division>();
 
 	public Division addDivision(Division division) {

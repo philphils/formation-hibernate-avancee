@@ -16,9 +16,9 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
+@Entity
 public class SousClasse extends AbstractNiveauNomenclature {
 
 	@ManyToOne(fetch = FetchType.LAZY)

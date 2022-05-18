@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
@@ -13,12 +14,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
+@Entity
 public class Division extends AbstractNiveauNomenclature {
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn
 	private Section section;
 
 	@Setter(value = AccessLevel.NONE)
