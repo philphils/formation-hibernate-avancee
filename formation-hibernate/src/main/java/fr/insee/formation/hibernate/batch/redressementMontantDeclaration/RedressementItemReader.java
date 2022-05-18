@@ -32,7 +32,7 @@ public class RedressementItemReader implements ItemReader<Declaration>, ItemStre
 
 	@Override
 	public void open(ExecutionContext executionContext) throws ItemStreamException {
-		iterator = declarationRepository.findAllDeclarationWithEntrepriseWithSecteur().iterator();
+		iterator = declarationRepository.findAllDeclarationWithEntrepriseWithSousClasse().iterator();
 	}
 
 	@Override

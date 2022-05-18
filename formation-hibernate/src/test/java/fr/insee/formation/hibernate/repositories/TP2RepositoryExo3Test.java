@@ -59,7 +59,7 @@ public class TP2RepositoryExo3Test extends AbstractTest {
 		/*
 		 * Récupération des déclarations
 		 */
-		Set<Declaration> declarations = declarationRepository.findAllDeclarationWithEntrepriseWithSecteur();
+		Set<Declaration> declarations = declarationRepository.findAllDeclarationWithEntrepriseWithSousClasse();
 
 		assertEquals(108, declarations.size());
 

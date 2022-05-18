@@ -106,7 +106,7 @@ public class RedressementMontantDeclarationConfig {
 	@Bean
 	public Tasklet redressementTasklet() {
 		return new ChunkingStreamTasklet<Declaration, Declaration>(
-				declarationRepository::streamAllDeclarationWithEntrepriseWithSecteur, redressementItemProcessor(),
+				declarationRepository::streamAllDeclarationWithEntrepriseWithSousClasse, redressementItemProcessor(),
 				redressementItemWriter(), chunkSize, false);
 	}
 
