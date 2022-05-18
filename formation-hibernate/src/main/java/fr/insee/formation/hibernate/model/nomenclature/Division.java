@@ -16,7 +16,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Division extends AbstractNiveau {
+public class Division extends AbstractNiveauNomenclature {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Section section;

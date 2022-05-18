@@ -15,7 +15,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Section extends AbstractNiveau {
+public class Section extends AbstractNiveauNomenclature {
 
 	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "division", cascade = CascadeType.ALL)

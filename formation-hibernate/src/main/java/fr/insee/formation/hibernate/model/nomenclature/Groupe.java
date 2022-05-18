@@ -17,7 +17,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Groupe extends AbstractNiveau {
+public class Groupe extends AbstractNiveauNomenclature {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn

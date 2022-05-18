@@ -11,7 +11,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
+import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +27,7 @@ public abstract class Indice {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
-	private AbstractNiveau secteur;
+	private AbstractNiveauNomenclature niveauNomenclature;
 
 	private Double valeur;
 
