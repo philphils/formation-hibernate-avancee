@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.model.Entreprise;
+import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
 
 public interface DeclarationRepository extends JpaRepository<Declaration, Integer> {
 
@@ -33,7 +34,8 @@ public interface DeclarationRepository extends JpaRepository<Declaration, Intege
 
 	/**
 	 * TP2 - Exercice 3 : Remplacer la requête ci-dessous par une requête permettant
-	 * de récupérer les déclarations avec leur entreprises et leur secteur associés
+	 * de récupérer les déclarations avec leur entreprises et leur
+	 * {@link SousClasse} associés
 	 * 
 	 * @return
 	 */
