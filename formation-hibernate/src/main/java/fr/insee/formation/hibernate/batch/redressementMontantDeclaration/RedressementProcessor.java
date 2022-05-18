@@ -15,7 +15,7 @@ public class RedressementProcessor implements ItemProcessor<Declaration, Declara
 		declaration.setMontant(
 				declaration.getMontant() 
 				* declaration.getEntreprise().getCoeffRedressementEntreprise()
-				* declaration.getEntreprise().getSecteur().getCoeffRedressementNiveau()
+				* declaration.getEntreprise().getSousClasse().getCoeffRedressementNiveau()
 				);
 		// @formatter:on
 
