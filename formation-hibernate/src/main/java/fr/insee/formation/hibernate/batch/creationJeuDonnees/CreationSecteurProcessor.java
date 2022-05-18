@@ -20,11 +20,11 @@ import com.github.javafaker.Faker;
 import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.model.Entreprise;
 import fr.insee.formation.hibernate.model.TypeVoie;
-import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
+import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class CreationSecteurProcessor implements ItemProcessor<String[], AbstractNiveau> {
+public class CreationSecteurProcessor implements ItemProcessor<String[], AbstractNiveauNomenclature> {
 
 	@Value("${batch.dataScale}")
 	private Integer dataScale;
@@ -45,12 +45,12 @@ public class CreationSecteurProcessor implements ItemProcessor<String[], Abstrac
 	LocalTime localTimeFinBoucle = null;
 
 	@Override
-	public AbstractNiveau process(String[] item) throws Exception {
+	public AbstractNiveauNomenclature process(String[] item) throws Exception {
 
 		if (localTimeDebutJob == null)
 			localTimeDebutJob = LocalTime.now(ZoneId.of("Europe/Paris"));
 
-		AbstractNiveau secteur = null; // TODO gérer la création des niveau aux différents échelons
+		AbstractNiveauNomenclature secteur = null; // TODO gérer la création des niveau aux différents échelons
 
 		secteur.setCodeNaf(item[0]);
 		secteur.setLibelleNomenclature(item[1]);

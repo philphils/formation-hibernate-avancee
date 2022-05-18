@@ -4,12 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import fr.insee.formation.hibernate.model.Entreprise;
-import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
+import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature;
 
-public interface SecteurRepository extends JpaRepository<AbstractNiveau, Integer> {
+public interface SecteurRepository extends JpaRepository<AbstractNiveauNomenclature, Integer> {
 
 	/**
-	 * TP2 : Exercice 2 : Modifier la requête pour récupérer un {@link AbstractNiveau}
+	 * TP2 : Exercice 2 : Modifier la requête pour récupérer un {@link AbstractNiveauNomenclature}
 	 * ayant une {@link Entreprise} donnée en paramètre, avec toutes ses
 	 * {@link Entreprise}
 	 * 
@@ -22,6 +22,6 @@ public interface SecteurRepository extends JpaRepository<AbstractNiveau, Integer
 			+ "JOIN FETCH secteur.entreprises entreprise2 "
 			+ "WHERE entreprise = :entreprise ")
 	// @formatter:on
-	public AbstractNiveau findByEntrepriseWithAllEntreprises(Entreprise entreprise);
+	public AbstractNiveauNomenclature findByEntrepriseWithAllEntreprises(Entreprise entreprise);
 
 }

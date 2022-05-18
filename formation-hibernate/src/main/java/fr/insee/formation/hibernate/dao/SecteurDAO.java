@@ -1,15 +1,15 @@
 package fr.insee.formation.hibernate.dao;
 
-import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
+import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature;
 
 public interface SecteurDAO {
 
-	public AbstractNiveau find(int id);
+	public AbstractNiveauNomenclature find(int id);
 	
-	public AbstractNiveau findByCodeNaf(String codeNaf);
+	public AbstractNiveauNomenclature findByCodeNaf(String codeNaf);
 
-	public AbstractNiveau findByCodeNafWithEntreprisesAndDeclarationAndIndicesJPQL(String codeNaf);
+	public AbstractNiveauNomenclature findByCodeNafWithEntreprisesAndDeclarationAndIndicesJPQL(String codeNaf);
 
-	public AbstractNiveau findByCodeNafWithEntreprisesAndDeclarationAndIndicesCriteria(String codeNaf);
+	public AbstractNiveauNomenclature findByCodeNafWithEntreprisesAndDeclarationAndIndicesCriteria(String codeNaf);
 
 }

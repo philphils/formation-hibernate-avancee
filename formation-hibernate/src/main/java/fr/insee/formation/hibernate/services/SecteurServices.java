@@ -1,13 +1,13 @@
 package fr.insee.formation.hibernate.services;
 
-import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
+import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature;
 
 public interface SecteurServices {
 	
-	public AbstractNiveau calculerIndicesSecteurByCodeNaf(String codeNaf);
+	public AbstractNiveauNomenclature calculerIndicesSecteurByCodeNaf(String codeNaf);
 	
-	public AbstractNiveau calculerIndicesSecteurByCodeNafRequeteJPQL(String codeNaf);
+	public AbstractNiveauNomenclature calculerIndicesSecteurByCodeNafRequeteJPQL(String codeNaf);
 
-	public AbstractNiveau calculerIndicesSecteurByCodeNafRequeteCriteria(String string);
+	public AbstractNiveauNomenclature calculerIndicesSecteurByCodeNafRequeteCriteria(String string);
 
 }

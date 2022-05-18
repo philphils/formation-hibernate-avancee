@@ -23,7 +23,7 @@ import fr.insee.formation.hibernate.model.Entreprise;
 import fr.insee.formation.hibernate.model.IndiceAnnuel;
 import fr.insee.formation.hibernate.model.IndiceMensuel;
 import fr.insee.formation.hibernate.model.TypeVoie;
-import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
+import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature;
 
 @Component
 public class JeuxTestUtil {
@@ -73,7 +73,7 @@ public class JeuxTestUtil {
 	@Transactional
 	public void creerJeuxMappingAssociation() {
 
-		AbstractNiveau secteur = jeuxMappingAssociation();
+		AbstractNiveauNomenclature secteur = jeuxMappingAssociation();
 
 		entityManager.persist(secteur);
 
@@ -82,11 +82,11 @@ public class JeuxTestUtil {
 	@Transactional
 	public void creerJeux3Secteurs() {
 
-		AbstractNiveau secteur1 = jeuxMappingAssociation();
+		AbstractNiveauNomenclature secteur1 = jeuxMappingAssociation();
 
-		AbstractNiveau secteur2 = jeuxMappingAssociation();
+		AbstractNiveauNomenclature secteur2 = jeuxMappingAssociation();
 
-		AbstractNiveau secteur3 = jeuxMappingAssociation();
+		AbstractNiveauNomenclature secteur3 = jeuxMappingAssociation();
 
 		entityManager.persist(secteur1);
 		entityManager.persist(secteur2);
@@ -186,9 +186,9 @@ public class JeuxTestUtil {
 
 	}
 
-	public AbstractNiveau jeuxMappingAssociation() {
+	public AbstractNiveauNomenclature jeuxMappingAssociation() {
 
-		AbstractNiveau secteur = new AbstractNiveau();
+		AbstractNiveauNomenclature secteur = new AbstractNiveauNomenclature();
 
 		secteur.setCodeNaf("1104Z");
 

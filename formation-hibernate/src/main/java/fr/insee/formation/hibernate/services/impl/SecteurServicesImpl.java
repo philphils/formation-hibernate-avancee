@@ -14,7 +14,7 @@ import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.model.Entreprise;
 import fr.insee.formation.hibernate.model.IndiceAnnuel;
 import fr.insee.formation.hibernate.model.IndiceMensuel;
-import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
+import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature;
 import fr.insee.formation.hibernate.services.SecteurServices;
 
 @Service
@@ -25,14 +25,14 @@ public class SecteurServicesImpl implements SecteurServices {
 
 	@Override
 	@Transactional
-	public AbstractNiveau calculerIndicesSecteurByCodeNaf(String codeNaf) {
+	public AbstractNiveauNomenclature calculerIndicesSecteurByCodeNaf(String codeNaf) {
 
-		AbstractNiveau secteur = secteurDAO.findByCodeNaf(codeNaf);
+		AbstractNiveauNomenclature secteur = secteurDAO.findByCodeNaf(codeNaf);
 
 		return calculerIndiceSecteur(secteur);
 	}
 
-	private AbstractNiveau calculerIndiceSecteur(AbstractNiveau secteur) {
+	private AbstractNiveauNomenclature calculerIndiceSecteur(AbstractNiveauNomenclature secteur) {
 		for (Entreprise entreprise : secteur.getEntreprises()) {
 
 			for (Declaration declaration : entreprise.getDeclarations().values()) {
@@ -55,18 +55,18 @@ public class SecteurServicesImpl implements SecteurServices {
 
 	@Override
 	@Transactional
-	public AbstractNiveau calculerIndicesSecteurByCodeNafRequeteJPQL(String codeNaf) {
+	public AbstractNiveauNomenclature calculerIndicesSecteurByCodeNafRequeteJPQL(String codeNaf) {
 
-		AbstractNiveau secteur = secteurDAO.findByCodeNafWithEntreprisesAndDeclarationAndIndicesJPQL(codeNaf);
+		AbstractNiveauNomenclature secteur = secteurDAO.findByCodeNafWithEntreprisesAndDeclarationAndIndicesJPQL(codeNaf);
 
 		return calculerIndiceSecteur(secteur);
 	}
 
 	@Override
 	@Transactional
-	public AbstractNiveau calculerIndicesSecteurByCodeNafRequeteCriteria(String codeNaf) {
+	public AbstractNiveauNomenclature calculerIndicesSecteurByCodeNafRequeteCriteria(String codeNaf) {
 
-		AbstractNiveau secteur = secteurDAO.findByCodeNafWithEntreprisesAndDeclarationAndIndicesCriteria(codeNaf);
+		AbstractNiveauNomenclature secteur = secteurDAO.findByCodeNafWithEntreprisesAndDeclarationAndIndicesCriteria(codeNaf);
 		
 		return calculerIndiceSecteur(secteur);
 		
