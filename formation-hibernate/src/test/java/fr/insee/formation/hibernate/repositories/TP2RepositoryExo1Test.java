@@ -26,7 +26,7 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 	private JeuxTestUtil jeuxTestUtil;
 
 	@Autowired
-	private SecteurRepository secteurRepository;
+	private SousClasseRepository secteurRepository;
 
 	@Autowired
 	private EntrepriseRepository entrepriseRepository;
