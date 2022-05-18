@@ -73,74 +73,87 @@ public class CreationSecteurProcessor implements ItemProcessor<String[], Abstrac
 		Address fakerAddress = null;
 		for (int i = 0; i < nbEntreprises; i++) {
 
-			entreprise = new Entreprise();
-
-			fakerAddress = faker.address();
-
-			entreprise.getAdresse().setNomVoie(fakerAddress.streetName());
-			entreprise.getAdresse().setNumero(fakerAddress.streetAddressNumber());
-
-			String typeVoieString = null;
-			List<String> listTypeVoie = Arrays.stream(TypeVoie.values()).map(t -> t.name().toUpperCase())
-					.collect(Collectors.toList());
-			while (typeVoieString == null || !listTypeVoie.contains(typeVoieString)) {
-				typeVoieString = fakerAddress.streetPrefix().toUpperCase();
-			}
-
-			entreprise.getAdresse().setTypeVoie(TypeVoie.valueOf(typeVoieString));
-
-			entreprise.getAdresse().setVille(fakerAddress.city());
-			entreprise.getAdresse().setPays("France");
-
-			entreprise.setDateCreation(faker.date().between(dateDebutCreation, dateFinCreation));
-
-			entreprise.setSiren(faker.number().digits(9));
-
-			entreprise.setDenomination(faker.company().name());
-
-			entreprise.setUrl(faker.company().url());
-
-			entreprise.setTelephone(faker.phoneNumber().phoneNumber());
-
-			entreprise.setPrenomFondateur(faker.name().firstName());
-
-			entreprise.setNomFondateur(faker.name().lastName());
-
-			entreprise.setCoeffRedressementEntreprise(random.nextDouble());
-
-			// TODO gérer l'ajout entreprise pour le niveau sous-classe
-			// secteur.addEntreprise(entreprise);
-
-			/*
-			 * Création des déclarations
-			 */
-			Declaration declaration = null;
-			Date dateDeclaration = null;
-			Double montant = null;
-			Integer montantMoyen = random.nextInt(100000);
-
-			for (int nbMois = 0; nbMois < nbMoisHistorique; nbMois++) {
-
-				dateDeclaration = java.sql.Date.valueOf(LocalDate.of(2022, 01, 01).minusMonths(nbMois));
-
-				montant = Math.floor(montantMoyen * random.nextGaussian());
-
-				declaration = new Declaration();
-
-				declaration.setDate(dateDeclaration);
-				declaration.setMontant(montant);
-
-				entreprise.addDeclaration(declaration);
-
-				comptageDeclarationsCreees();
-
-				compteurDeclarationsCreees++;
-
-			}
+			creerEntreprise(random, faker, dateDebutCreation, dateFinCreation);
 
 		}
 
 		return secteur;
+	}
+
+	private void creerEntreprise(Random random, Faker faker, Date dateDebutCreation, Date dateFinCreation) {
+		Entreprise entreprise;
+		Address fakerAddress;
+		entreprise = new Entreprise();
+
+		fakerAddress = faker.address();
+
+		entreprise.getAdresse().setNomVoie(fakerAddress.streetName());
+		entreprise.getAdresse().setNumero(fakerAddress.streetAddressNumber());
+
+		String typeVoieString = null;
+		List<String> listTypeVoie = Arrays.stream(TypeVoie.values()).map(t -> t.name().toUpperCase())
+				.collect(Collectors.toList());
+		while (typeVoieString == null || !listTypeVoie.contains(typeVoieString)) {
+			typeVoieString = fakerAddress.streetPrefix().toUpperCase();
+		}
+
+		entreprise.getAdresse().setTypeVoie(TypeVoie.valueOf(typeVoieString));
+
+		entreprise.getAdresse().setVille(fakerAddress.city());
+		entreprise.getAdresse().setPays("France");
+
+		entreprise.setDateCreation(faker.date().between(dateDebutCreation, dateFinCreation));
+
+		entreprise.setSiren(faker.number().digits(9));
+
+		entreprise.setDenomination(faker.company().name());
+
+		entreprise.setUrl(faker.company().url());
+
+		entreprise.setTelephone(faker.phoneNumber().phoneNumber());
+
+		entreprise.setPrenomFondateur(faker.name().firstName());
+
+		entreprise.setNomFondateur(faker.name().lastName());
+
+		entreprise.setCoeffRedressementEntreprise(random.nextDouble());
+
+		// TODO gérer l'ajout entreprise pour le niveau sous-classe
+		// secteur.addEntreprise(entreprise);
+
+		/*
+		 * Création des déclarations
+		 */
+		Declaration declaration = null;
+		Date dateDeclaration = null;
+		Double montant = null;
+		Integer montantMoyen = random.nextInt(100000);
+
+		for (int nbMois = 0; nbMois < nbMoisHistorique; nbMois++) {
+
+			creerDeclaration(random, entreprise, montantMoyen, nbMois);
+
+			comptageDeclarationsCreees();
+
+			compteurDeclarationsCreees++;
+
+		}
+	}
+
+	private void creerDeclaration(Random random, Entreprise entreprise, Integer montantMoyen, int nbMois) {
+		Declaration declaration;
+		Date dateDeclaration;
+		Double montant;
+		dateDeclaration = java.sql.Date.valueOf(LocalDate.of(2022, 01, 01).minusMonths(nbMois));
+
+		montant = Math.floor(montantMoyen * random.nextGaussian());
+
+		declaration = new Declaration();
+
+		declaration.setDate(dateDeclaration);
+		declaration.setMontant(montant);
+
+		entreprise.addDeclaration(declaration);
 	}
 
 	private void comptageDeclarationsCreees() {
