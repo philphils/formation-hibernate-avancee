@@ -1,27 +1,33 @@
 ﻿package fr.insee.formation.hibernate.services.impl;
 
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.insee.formation.hibernate.dao.SecteurDAO;
 import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature;
+import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
+import fr.insee.formation.hibernate.repositories.SousClasseRepository;
 import fr.insee.formation.hibernate.services.SecteurServices;
 
 @Service
 public class SecteurServicesImpl implements SecteurServices {
 
 	@Autowired
-	private SecteurDAO secteurDAO;
+	private SousClasseRepository sousClasseRepository;
 
 	@Override
 	@Transactional
 	public AbstractNiveauNomenclature calculerIndicesSecteurByCodeNaf(String codeNaf) {
 
-		AbstractNiveauNomenclature secteur = secteurDAO.findByCodeNaf(codeNaf);
+		Optional<SousClasse> optionalSousClasse = sousClasseRepository.findByCodeNaf(codeNaf);
 
-		return calculerIndiceSecteur(secteur);
+		if (optionalSousClasse.isEmpty())
+			throw new RuntimeException("Aucune sous-classe ne correspond au code NAF : " + codeNaf);
+
+		return calculerIndiceSecteur(optionalSousClasse.get());
 	}
 
 	private AbstractNiveauNomenclature calculerIndiceSecteur(AbstractNiveauNomenclature secteur) {
@@ -46,27 +52,6 @@ public class SecteurServicesImpl implements SecteurServices {
 //		}
 
 		return secteur;
-	}
-
-	@Override
-	@Transactional
-	public AbstractNiveauNomenclature calculerIndicesSecteurByCodeNafRequeteJPQL(String codeNaf) {
-
-		AbstractNiveauNomenclature secteur = secteurDAO
-				.findByCodeNafWithEntreprisesAndDeclarationAndIndicesJPQL(codeNaf);
-
-		return calculerIndiceSecteur(secteur);
-	}
-
-	@Override
-	@Transactional
-	public AbstractNiveauNomenclature calculerIndicesSecteurByCodeNafRequeteCriteria(String codeNaf) {
-
-		AbstractNiveauNomenclature secteur = secteurDAO
-				.findByCodeNafWithEntreprisesAndDeclarationAndIndicesCriteria(codeNaf);
-
-		return calculerIndiceSecteur(secteur);
-
 	}
 
 }
