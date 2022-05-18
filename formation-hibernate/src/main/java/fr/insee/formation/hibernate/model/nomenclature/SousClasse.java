@@ -6,6 +6,9 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import fr.insee.formation.hibernate.model.Entreprise;
@@ -17,6 +20,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SousClasse extends AbstractNiveau {
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn
+	private Classe classe;
 
 	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "secteur", cascade = CascadeType.ALL)
