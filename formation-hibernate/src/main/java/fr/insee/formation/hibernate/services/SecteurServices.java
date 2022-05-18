@@ -4,6 +4,6 @@ import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclatur
 
 public interface SecteurServices {
 
-	public AbstractNiveauNomenclature calculerIndicesSecteurByCodeNaf(String codeNaf);
+	public AbstractNiveauNomenclature calculerIndicesSousClasseByCodeNaf(String codeNaf);
 
 }

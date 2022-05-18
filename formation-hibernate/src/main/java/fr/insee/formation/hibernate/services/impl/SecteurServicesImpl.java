@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature;
 import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
 import fr.insee.formation.hibernate.repositories.SousClasseRepository;
 import fr.insee.formation.hibernate.services.SecteurServices;
@@ -20,7 +19,7 @@ public class SecteurServicesImpl implements SecteurServices {
 
 	@Override
 	@Transactional
-	public AbstractNiveauNomenclature calculerIndicesSecteurByCodeNaf(String codeNaf) {
+	public SousClasse calculerIndicesSousClasseByCodeNaf(String codeNaf) {
 
 		Optional<SousClasse> optionalSousClasse = sousClasseRepository.findByCodeNaf(codeNaf);
 
@@ -30,7 +29,7 @@ public class SecteurServicesImpl implements SecteurServices {
 		return calculerIndiceSecteur(optionalSousClasse.get());
 	}
 
-	private AbstractNiveauNomenclature calculerIndiceSecteur(AbstractNiveauNomenclature secteur) {
+	private SousClasse calculerIndiceSecteur(SousClasse secteur) {
 		// TODO Faire évoluer le batch pour pouvoir calculer les indices à chaque niveau
 		// de nomenclature
 //		for (Entreprise entreprise :  secteur.getEntreprises()) {
