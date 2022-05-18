@@ -25,7 +25,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-public abstract class AbstractNiveau {
+public abstract class AbstractNiveauNomenclature {
 
 	@Id
 	@GeneratedValue
@@ -35,35 +35,30 @@ public abstract class AbstractNiveau {
 
 	private String libelleNomenclature;
 
-	@Setter(value = AccessLevel.NONE)
-	@OneToMany(mappedBy = "secteur", cascade = CascadeType.ALL)
-	private Set<Indice> indices = new HashSet<Indice>();
-
-	private Double coeffRedressementNiveau;
-
 	/*
 	 * Limitation d'Hibernate : mappedBy ne peut référencer un attribut héritée avec
 	 * les héritage @Inheritance (cf
 	 * http://chriswongdevblog.blogspot.fr/2009/10/polymorphic-one-to-many-
 	 * relationships.html) On peu s'en sortir avec @JoinColumn et @Where.
 	 * Avec @MappedSuperclass c'est possible, mais on perd la possibilité de faire
-	 * du polymorhpisme...
+	 * du polymorhpisme... On stocke donc les indices indiféremment qu'ils soient
+	 * annuels ou mensuels
 	 */
-	// @OneToMany(mappedBy = "secteur")
-	// private Set<IndiceAnnuel> indiceAnnuels = new HashSet<IndiceAnnuel>();
-	//
-	// @OneToMany(mappedBy = "secteur")
-	// private Set<IndiceMensuel> indiceMensuels = new HashSet<IndiceMensuel>();
+	@Setter(value = AccessLevel.NONE)
+	@OneToMany(mappedBy = "niveauNomenclature", cascade = CascadeType.ALL)
+	private Set<Indice> indices = new HashSet<Indice>();
+
+	private Double coeffRedressementNiveau;
 
 	public Indice addIndice(Indice indice) {
 		indices.add(indice);
-		indice.setSecteur(this);
+		indice.setNiveauNomenclature(this);
 		return indice;
 	}
 
 	public Indice removeIndice(Indice indice) {
 		indices.remove(indice);
-		indice.setSecteur(null);
+		indice.setNiveauNomenclature(null);
 		return indice;
 	}
 

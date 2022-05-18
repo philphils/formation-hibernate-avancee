@@ -22,7 +22,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveau;
+import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -62,7 +62,7 @@ public class Entreprise {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
-	private AbstractNiveau secteur;
+	private SousClasse sousClasse;
 
 	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "entreprise", cascade = CascadeType.ALL)

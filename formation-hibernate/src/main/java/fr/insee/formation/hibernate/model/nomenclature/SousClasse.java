@@ -19,25 +19,25 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class SousClasse extends AbstractNiveau {
+public class SousClasse extends AbstractNiveauNomenclature {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
 	private Classe classe;
 
 	@Setter(value = AccessLevel.NONE)
-	@OneToMany(mappedBy = "secteur", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "sousClasse", cascade = CascadeType.ALL)
 	private Set<Entreprise> entreprises = new HashSet<Entreprise>();
 
 	public Entreprise addEntreprise(Entreprise entreprise) {
 		entreprises.add(entreprise);
-		entreprise.setSecteur(this);
+		entreprise.setSousClasse(this);
 		return entreprise;
 	}
 
 	public Entreprise removeEntreprise(Entreprise entreprise) {
 		entreprises.remove(entreprise);
-		entreprise.setSecteur(null);
+		entreprise.setSousClasse(null);
 		return entreprise;
 	}
 
