@@ -1,6 +1,7 @@
 package fr.insee.formation.hibernate.model.nomenclature;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -25,7 +26,7 @@ public class Groupe extends AbstractNiveauNomenclature {
 
 	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "groupe", cascade = CascadeType.ALL)
-	private Set<Classe> classes;
+	private Set<Classe> classes = new HashSet<Classe>();
 
 	public Classe addClasse(Classe classe) {
 		classes.add(classe);

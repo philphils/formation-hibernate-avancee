@@ -1,6 +1,7 @@
 package fr.insee.formation.hibernate.model.nomenclature;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -25,7 +26,7 @@ public class Division extends AbstractNiveauNomenclature {
 
 	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "division", cascade = CascadeType.ALL)
-	private Set<Groupe> groupes;
+	private Set<Groupe> groupes = new HashSet<Groupe>();
 
 	public Groupe addGroupe(Groupe groupe) {
 		groupes.add(groupe);
