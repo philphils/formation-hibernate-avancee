@@ -24,6 +24,7 @@ import fr.insee.formation.hibernate.model.IndiceAnnuel;
 import fr.insee.formation.hibernate.model.IndiceMensuel;
 import fr.insee.formation.hibernate.model.TypeVoie;
 import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature;
+import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
 
 @Component
 public class JeuxTestUtil {
@@ -186,9 +187,9 @@ public class JeuxTestUtil {
 
 	}
 
-	public AbstractNiveauNomenclature jeuxMappingAssociation() {
+	public SousClasse jeuxMappingAssociation() {
 
-		AbstractNiveauNomenclature secteur = new AbstractNiveauNomenclature();
+		SousClasse secteur = new SousClasse();
 
 		secteur.setCodeNaf("1104Z");
 

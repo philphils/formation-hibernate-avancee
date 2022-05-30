@@ -148,7 +148,7 @@ public class DeclarationRepositoryTest extends AbstractTest {
 		Declaration declaration = declarationRepository.findAll().get(0);
 
 		log.info("{} {}", declaration.getEntreprise().getDenomination(),
-				declaration.getEntreprise().getSecteur().getLibelleNomenclature());
+				declaration.getEntreprise().getSousClasse().getLibelleNomenclature());
 
 		/*
 		 * On vérifie que la déclaration a bien été récupérée avec 3 requêtes Pourquoi

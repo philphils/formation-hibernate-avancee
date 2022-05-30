@@ -67,7 +67,7 @@ public class TP2RepositoryExo3Test extends AbstractTest {
 
 			String denomination = declaration.getEntreprise().getDenomination();
 
-			String libelle = declaration.getEntreprise().getSecteur().getLibelleNomenclature();
+			String libelle = declaration.getEntreprise().getSousClasse().getLibelleNomenclature();
 
 			log.debug("Entreprise {} du Secteur {}", denomination, libelle);
 

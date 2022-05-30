@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import fr.insee.formation.hibernate.config.AbstractTest;
 import fr.insee.formation.hibernate.model.Entreprise;
-import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature;
+import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
 import fr.insee.formation.hibernate.util.JeuxTestUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.ttddyy.dsproxy.QueryCountHolder;
@@ -26,7 +26,7 @@ public class TP2RepositoryExo2Test extends AbstractTest {
 	private JeuxTestUtil jeuxTestUtil;
 
 	@Autowired
-	private SousClasseRepository secteurRepository;
+	private SousClasseRepository sousClasseRepository;
 
 	@Autowired
 	private EntityManager entityManager;
@@ -54,7 +54,7 @@ public class TP2RepositoryExo2Test extends AbstractTest {
 		/*
 		 * Récupération d'une entreprise au hasard
 		 */
-		AbstractNiveauNomenclature secteur = secteurRepository.findAll().get(0);
+		SousClasse secteur = sousClasseRepository.findAll().get(0);
 
 		Entreprise entreprise = secteur.getEntreprises().iterator().next();
 
@@ -62,7 +62,7 @@ public class TP2RepositoryExo2Test extends AbstractTest {
 
 		QueryCountHolder.clear();
 
-		AbstractNiveauNomenclature secteur2 = secteurRepository.findByEntrepriseWithAllEntreprises(entreprise);
+		SousClasse secteur2 = sousClasseRepository.findByEntrepriseWithAllEntreprises(entreprise);
 
 		for (Entreprise entreprise2 : secteur2.getEntreprises()) {
 			log.info("L'Entreprise {} est dans le secteur {}", entreprise2.getDenomination(),
