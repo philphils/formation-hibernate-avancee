@@ -206,11 +206,10 @@ public class CreationSecteurProcessor implements ItemProcessor<String[], Abstrac
 	}
 
 	private Entreprise creerEntreprise(Date dateDebutCreation, Date dateFinCreation) {
-		Entreprise entreprise;
-		Address fakerAddress;
-		entreprise = new Entreprise();
 
-		fakerAddress = faker.address();
+		Entreprise entreprise = new Entreprise();
+
+		Address fakerAddress = faker.address();
 
 		entreprise.getAdresse().setNomVoie(fakerAddress.streetName());
 		entreprise.getAdresse().setNumero(fakerAddress.streetAddressNumber());
@@ -249,9 +248,6 @@ public class CreationSecteurProcessor implements ItemProcessor<String[], Abstrac
 		/*
 		 * Création des déclarations
 		 */
-		Declaration declaration = null;
-		Date dateDeclaration = null;
-		Double montant = null;
 		Integer montantMoyen = random.nextInt(100000);
 
 		for (int nbMois = 0; nbMois < nbMoisHistorique; nbMois++) {
