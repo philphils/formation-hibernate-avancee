@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.ehcache.org/v3"
+	xmlns:jsr107="http://www.ehcache.org/v3/jsr107"
+	xsi:schemaLocation="
+            http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd
+            http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.0.xsd">
 
-	<defaultCache maxElementsInMemory="10000" eternal="false"
-		timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true"
-		diskSpoolBufferSizeMB="30" maxElementsOnDisk="10000000"
-		diskPersistent="false" diskExpiryThreadIntervalSeconds="120"
-		memoryStoreEvictionPolicy="LRU" />
+	<cache alias="nomenclature">
+		<expiry>
+			<ttl unit="seconds">300</ttl>
+		</expiry>
+		<heap unit="entries">100</heap>
+	</cache>
 
-	<cache name="nomenclature" maxElementsInMemory="20"
-		maxElementsOnDisk="20" eternal="true" timeToIdleSeconds="0"
-		timeToLiveSeconds="300" />
-
-</ehcache>
+</config>
