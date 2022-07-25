@@ -1,48 +1,15 @@
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://www.ehcache.org/v3"
-	xmlns:jsr107="http://www.ehcache.org/v3/jsr107"
-	xsi:schemaLocation="
-            http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd
-            http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.0.xsd">
-	
-	<cache-template name="nomenclature">
-		<key-type>java.lang.Integer</key-type>
-		<value-type>fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature
-		</value-type>
-		<expiry>
-			<ttl unit="seconds">30</ttl>
-		</expiry>
-		<heap unit="entries">200</heap>
-	</cache-template>
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
 
-	<cache alias="section" uses-template="nomenclature">
-		<value-type>fr.insee.formation.hibernate.model.nomenclature.Section
-		</value-type>
-		<heap unit="entries">10</heap>
-	</cache>
+	<defaultCache maxElementsInMemory="10000" eternal="false"
+		timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true"
+		diskSpoolBufferSizeMB="30" maxElementsOnDisk="10000000"
+		diskPersistent="false" diskExpiryThreadIntervalSeconds="120"
+		memoryStoreEvictionPolicy="LRU" />
 
-	<cache alias="division" uses-template="nomenclature">
-		<value-type>fr.insee.formation.hibernate.model.nomenclature.Division
-		</value-type>
-		<heap unit="entries">100</heap>
-	</cache>
+	<cache name="nomenclature" maxElementsInMemory="20"
+		maxElementsOnDisk="20" eternal="true" timeToIdleSeconds="0"
+		timeToLiveSeconds="300" />
 
-	<cache alias="groupe" uses-template="nomenclature">
-		<value-type>fr.insee.formation.hibernate.model.nomenclature.Groupe
-		</value-type>
-		<heap unit="entries">300</heap>
-	</cache>
-	
-	<cache alias="classe" uses-template="nomenclature">
-		<value-type>fr.insee.formation.hibernate.model.nomenclature.Classe
-		</value-type>
-		<heap unit="entries">1000</heap>
-	</cache>
-	
-	<cache alias="sous-classe" uses-template="nomenclature">
-		<value-type>fr.insee.formation.hibernate.model.nomenclature.SousClasse
-		</value-type>
-		<heap unit="entries">1000</heap>
-	</cache>
-
-</config>
+</ehcache>

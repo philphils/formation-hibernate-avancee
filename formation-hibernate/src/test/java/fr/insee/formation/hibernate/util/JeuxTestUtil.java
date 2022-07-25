@@ -114,6 +114,7 @@ public class JeuxTestUtil {
 
 	}
 
+	@Transactional
 	public void creerJeuNouvelleNomenclatureAvecIndice() {
 
 		Set<Section> sections = jeuNouvelleNomenclature();

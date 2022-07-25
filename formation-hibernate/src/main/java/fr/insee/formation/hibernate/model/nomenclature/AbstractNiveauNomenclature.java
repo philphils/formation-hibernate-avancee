@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,6 +16,9 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import fr.insee.formation.hibernate.model.Indice;
 import fr.insee.formation.hibernate.model.IndiceAnnuel;
@@ -27,6 +31,8 @@ import lombok.Setter;
 @Setter
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Cacheable
+@Cache(region = "nomenclature", usage = CacheConcurrencyStrategy.READ_ONLY)
 public abstract class AbstractNiveauNomenclature {
 
 	@Id
