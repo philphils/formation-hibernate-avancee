@@ -17,7 +17,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import fr.insee.formation.hibernate.model.Indice;
@@ -29,10 +28,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Entity
 @Cacheable
-@Cache(region = "nomenclature", usage = CacheConcurrencyStrategy.READ_ONLY)
+@org.hibernate.annotations.Cache(region = "nomenclature", usage = CacheConcurrencyStrategy.READ_ONLY)
 public abstract class AbstractNiveauNomenclature {
 
 	@Id
