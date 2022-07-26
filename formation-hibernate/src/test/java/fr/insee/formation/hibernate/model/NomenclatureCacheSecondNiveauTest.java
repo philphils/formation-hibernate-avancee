@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -93,6 +94,52 @@ public class NomenclatureCacheSecondNiveauTest extends AbstractTest {
 		 * car l'association doit avoir été mise en cache
 		 */
 		assertEquals(QueryCountHolder.getGrandTotal().getTotal(), 1);
+
+	}
+
+	@Test
+	@Transactional
+	public void testQueryCacheProgramatic() {
+
+		Section section = (Section) entityManager
+				.createQuery("SELECT section FROM Section section WHERE section.codeNaf = :codeNaf")
+				.setParameter("codeNaf", "section1").setHint("org.hibernate.cacheable", true).getSingleResult();
+
+		QueryCountHolder.clear();
+
+		Section section2 = (Section) entityManager
+				.createQuery("SELECT section FROM Section section WHERE section.codeNaf = :codeNaf")
+				.setParameter("codeNaf", "section1").setHint("org.hibernate.cacheable", true).getSingleResult();
+
+		assertEquals(QueryCountHolder.getGrandTotal().getTotal(), 0);
+
+	}
+
+	@Test
+	@Transactional
+	public void testQueryCacheAnnotation() {
+
+		Optional<Section> section = sectionRepository.findByCodeNaf("section1");
+
+		QueryCountHolder.clear();
+
+		Optional<Section> section2 = sectionRepository.findByCodeNaf("section1");
+
+		assertEquals(QueryCountHolder.getGrandTotal().getTotal(), 0);
+
+	}
+
+	@Test
+	@Transactional
+	public void testFindAllCache() {
+
+		List<Section> sections = sectionRepository.findAll();
+
+		QueryCountHolder.clear();
+
+		List<Section> sections2 = sectionRepository.findAll();
+
+		assertEquals(QueryCountHolder.getGrandTotal().getTotal(), 0);
 
 	}
 
