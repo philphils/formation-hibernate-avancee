@@ -4,12 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import fr.insee.formation.hibernate.model.IndiceAnnuel;
+import fr.insee.formation.hibernate.model.IndiceMensuel;
 
-public interface IndiceAnnuelRepository extends JpaRepository<IndiceAnnuel, Integer> {
+public interface IndiceMensuelRepository extends JpaRepository<IndiceMensuel, Integer> {
 
 	@Modifying
-	@Query("DELETE FROM IndiceAnnuel")
+	@Query("DELETE FROM IndiceMensuel")
 	public void deleteAllInOneQuery();
 
 }
