@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,12 +20,10 @@ import lombok.Setter;
 @Entity
 public class Classe extends AbstractNiveauNomenclature {
 
-	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
 	private Groupe groupe;
 
-	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "classe", cascade = CascadeType.ALL)
 	private Set<SousClasse> sousClasses = new HashSet<SousClasse>();

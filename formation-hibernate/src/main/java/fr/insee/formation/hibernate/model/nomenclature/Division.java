@@ -11,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,12 +20,10 @@ import lombok.Setter;
 @Entity
 public class Division extends AbstractNiveauNomenclature {
 
-	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
 	private Section section;
 
-	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "division", cascade = CascadeType.ALL)
 	private Set<Groupe> groupes = new HashSet<Groupe>();

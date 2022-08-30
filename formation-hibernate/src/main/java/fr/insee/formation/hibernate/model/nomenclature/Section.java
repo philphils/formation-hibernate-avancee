@@ -8,8 +8,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +17,6 @@ import lombok.Setter;
 @Entity
 public class Section extends AbstractNiveauNomenclature {
 
-	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "section", cascade = CascadeType.ALL)
 	private Set<Division> divisions = new HashSet<Division>();
