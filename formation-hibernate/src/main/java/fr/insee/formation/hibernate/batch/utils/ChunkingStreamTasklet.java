@@ -1,10 +1,13 @@
 package fr.insee.formation.hibernate.batch.utils;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.batch.core.ExitStatus;
@@ -57,7 +60,16 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 
 	private Integer compteur = 1;
 
+	private Integer affichageLogCompteur;
+
+	private Instant timer;
+
+	private List<S> entryList = new ArrayList<S>();
+
 	private List<T> resultList = new ArrayList<T>();
+
+	@Autowired
+	EntityManager entityManager;
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
@@ -74,47 +86,77 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 		this.newTransactionForEachChunk = newTransactionForEachChunk;
 	}
 
+	public void setAffichageLogCompteur(Integer affichageLogCompteur) {
+		this.affichageLogCompteur = affichageLogCompteur;
+	}
+
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 
+		timer = Instant.now();
+
 		streamSupplier.get().forEach(entry -> {
 			try {
-				processAndWrite(entry);
+				entryList.add(entry);
+				/*
+				 * On ajoute les entrées à la liste et on les trait lorsque le nombre à atteint
+				 * la taille définie des chunks
+				 */
+				if (compteur % chunkSize == 0) {
+					processAndWrite(entryList);
+					entryList.removeAll(entryList);
+				}
+				compteur++;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
 		});
 
+		/*
+		 * On traite les elements restants dont le nombre est inférieur à la taille des
+		 * chunks
+		 */
+		if (!entryList.isEmpty()) {
+			processAndWrite(entryList);
+			entryList.removeAll(entryList);
+		}
+
 		return RepeatStatus.FINISHED;
 	}
 
-	private void processAndWrite(S entry) throws Exception {
+	private void processAndWrite(List<S> entryList) throws Exception {
 
-		T result = itemProcessor.process(entry);
-
-		write(result);
-
-	}
-
-	private void write(T result) throws Exception {
-		if (compteur % chunkSize != 0) {
-			resultList.add(result);
-		} else {
-			transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-				@Override
-				protected void doInTransactionWithoutResult(TransactionStatus status) {
-					try {
-						log.debug("Writing {} objects", chunkSize);
-						itemWriter.write(resultList);
-						resultList.removeAll(resultList);
-					} catch (Exception e) {
-						throw new RuntimeException(e);
-					}
+		/*
+		 * On ouvre une transaction pour le traitement de chaque chunk
+		 */
+		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+			@Override
+			protected void doInTransactionWithoutResult(TransactionStatus status) {
+				try {
+					log.debug("Writing {} objects", chunkSize);
+					resultList = entryList.stream().map(e -> {
+						try {
+							return itemProcessor.process(e);
+						} catch (Exception e1) {
+							throw new RuntimeException(e1);
+						}
+					}).collect(Collectors.toList());
+					itemWriter.write(resultList);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
 				}
-			});
+			}
+		});
 
+		if (newTransactionForEachChunk)
+			entityManager.clear();
+
+		if (affichageLogCompteur != null && compteur % affichageLogCompteur == 0) {
+			Long milliSeconds = Instant.now().toEpochMilli() - timer.toEpochMilli();
+			log.info(milliSeconds + " milli-secondes pour persister " + affichageLogCompteur + " objets");
+			timer = Instant.now();
 		}
-		compteur++;
+
 	}
 
 	@Override
