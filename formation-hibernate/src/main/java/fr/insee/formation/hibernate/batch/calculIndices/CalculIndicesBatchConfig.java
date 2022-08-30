@@ -1,6 +1,7 @@
 package fr.insee.formation.hibernate.batch.calculIndices;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.springframework.batch.core.Job;
@@ -22,9 +23,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Sort.Direction;
 
+import fr.insee.formation.hibernate.batch.utils.ChunkingStreamTasklet;
 import fr.insee.formation.hibernate.batch.utils.JPACollectionPersistWriter;
+import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.model.Indice;
+import fr.insee.formation.hibernate.model.IndiceAnnuel;
+import fr.insee.formation.hibernate.model.IndiceMensuel;
 import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
+import fr.insee.formation.hibernate.repositories.DeclarationRepository;
 import fr.insee.formation.hibernate.repositories.IndiceAnnuelRepository;
 import fr.insee.formation.hibernate.repositories.IndiceMensuelRepository;
 import fr.insee.formation.hibernate.repositories.SousClasseRepository;
@@ -35,8 +41,14 @@ import lombok.extern.slf4j.Slf4j;
 @PropertySource(value = "classpath:batch.properties")
 public class CalculIndicesBatchConfig {
 
+	@Value("${batch.chunkSizeCreationIndices}")
+	private Integer chunkSizeCreation;
+
 	@Value("${batch.chunkSizeCalculIndices}")
-	private Integer chunkSize;
+	private Integer chunkSizeCalcul;
+
+	@Value("${batch.affichageCalculIndices}")
+	private Integer affichageCalculIndices;
 
 	@Autowired
 	private JobBuilderFactory jobs;
@@ -55,6 +67,12 @@ public class CalculIndicesBatchConfig {
 
 	@Autowired
 	JPACollectionPersistWriter jpaCollectionPersistWriter;
+
+	@Autowired
+	IndiceValeurUpdateWriter indiceValeurUpdateWriter;
+
+	@Autowired
+	DeclarationRepository declarationRepository;
 
 	@Bean
 	public Tasklet suppressionIndicesTasklet() {
@@ -90,6 +108,24 @@ public class CalculIndicesBatchConfig {
 	}
 
 	@Bean
+	public ItemProcessor<Declaration, Entry<IndiceMensuel, IndiceAnnuel>> itemCalculIndicesProcessor() {
+		return new CalculIndicesProcessor();
+	}
+
+	@Bean
+	public Tasklet calculIndicesTasklet() {
+
+		ChunkingStreamTasklet taskletCalculIndices = new ChunkingStreamTasklet<Declaration, Entry<IndiceMensuel, IndiceAnnuel>>(
+				declarationRepository::streamAllDeclarationWithEntrepriseAndSousClasseAndIndices,
+				itemCalculIndicesProcessor(), indiceValeurUpdateWriter, chunkSizeCalcul, true);
+
+		taskletCalculIndices.setAffichageLogCompteur(affichageCalculIndices);
+
+		return taskletCalculIndices;
+
+	}
+
+	@Bean
 	public Step suppressionIndicesStep(Tasklet tasklet) {
 
 		return steps.get("suppressionIndicesStep").tasklet(tasklet).build();
@@ -103,12 +139,25 @@ public class CalculIndicesBatchConfig {
 		//// @formatter:off
 				steps
 					.get("creationIndicesStep")
-					.<SousClasse, Set<Indice>>chunk(chunkSize)
+					.<SousClasse, Set<Indice>>chunk(chunkSizeCreation)
 					.reader(reader)
 					.processor(processor)
 					.writer(writer)
 				.build();
 		// @formatter:on
+
+	}
+
+	@Bean
+	public Step calculIndicesStep() {
+
+		return
+		//// @formatter:off
+						steps
+							.get("calculIndicesStep")
+							.tasklet(calculIndicesTasklet())
+						.build();
+				// @formatter:on
 
 	}
 
@@ -120,6 +169,7 @@ public class CalculIndicesBatchConfig {
 						.get("calculIndicesJob")
 						.start(suppressionIndicesStep(suppressionIndicesTasklet()))
 						.next(creationIndicesStep(itemReaderCreationIndicesSousClasse(), itemCreationIndicesProcessor(), jpaCollectionPersistWriter))
+						.next(calculIndicesStep())
 					.build();
 				// @formatter:on
 

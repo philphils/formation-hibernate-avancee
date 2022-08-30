@@ -28,7 +28,7 @@ public class CreationIndicesProcessor implements ItemProcessor<SousClasse, Set<I
 
 		LocalDate dateDebut = LocalDate.of(2022, 01, 01);
 
-		Year yearPrecedent = Year.from(dateDebut);
+		Year yearPrecedent = null;
 
 		for (int i = 0; i < nbMoisHistorique; i++) {
 
@@ -44,7 +44,8 @@ public class CreationIndicesProcessor implements ItemProcessor<SousClasse, Set<I
 
 			Year year = Year.from(yearMonth);
 
-			if (!year.equals(yearPrecedent)) {
+			if (yearPrecedent == null || !year.equals(yearPrecedent)) {
+
 				yearPrecedent = year;
 
 				IndiceAnnuel indiceAnnuel = new IndiceAnnuel();
