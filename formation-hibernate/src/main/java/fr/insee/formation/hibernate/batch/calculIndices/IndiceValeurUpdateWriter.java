@@ -29,48 +29,6 @@ public class IndiceValeurUpdateWriter implements ItemWriter<Entry<IndiceMensuel,
 	@Override
 	public void write(List<? extends Entry<IndiceMensuel, IndiceAnnuel>> collectionsIndice) throws Exception {
 
-//		jdbcTemplate.batchUpdate("UPDATE indice_mensuel SET valeur = ? WHERE id = ?",
-//				new BatchPreparedStatementSetter() {
-//
-//					@Override
-//					public void setValues(PreparedStatement ps, int i) throws SQLException {
-//						/*
-//						 * On détache l'indice du contexte de persistence pour empêcher hibernate de
-//						 * réaliser l'update
-//						 */
-//						entityManager.detach(collectionsIndice.get(i).getKey());
-//
-//						ps.setInt(1, collectionsIndice.get(i).getKey().getId());
-//						ps.setDouble(2, collectionsIndice.get(i).getKey().getValeur());
-//					}
-//
-//					@Override
-//					public int getBatchSize() {
-//						return collectionsIndice.size();
-//					}
-//				});
-//
-//		jdbcTemplate.batchUpdate("UPDATE indice_annuel SET valeur = ? WHERE id = ?",
-//				new BatchPreparedStatementSetter() {
-//
-//					@Override
-//					public void setValues(PreparedStatement ps, int i) throws SQLException {
-//						/*
-//						 * On détache l'indice du contexte de persistence pour empêcher hibernate de
-//						 * réaliser l'update
-//						 */
-//						entityManager.detach(collectionsIndice.get(i).getValue());
-//
-//						ps.setInt(1, collectionsIndice.get(i).getValue().getId());
-//						ps.setDouble(2, collectionsIndice.get(i).getValue().getValeur());
-//					}
-//
-//					@Override
-//					public int getBatchSize() {
-//						return collectionsIndice.size();
-//					}
-//				});
-
 		for (Entry<IndiceMensuel, IndiceAnnuel> entry : collectionsIndice) {
 			Query queryMensuel = entityManager.createQuery("UPDATE IndiceMensuel SET valeur = :valeur WHERE id = :id");
 			queryMensuel.setParameter("valeur", entry.getKey().getValeur());
