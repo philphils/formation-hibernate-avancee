@@ -2,23 +2,20 @@ package fr.insee.formation.hibernate.model;
 
 import java.time.Instant;
 
-import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MappedSuperclass;
 
-import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature;
+import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@MappedSuperclass
 public abstract class Indice {
 
 	@Id
@@ -27,7 +24,7 @@ public abstract class Indice {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
-	private AbstractNiveauNomenclature niveauNomenclature;
+	private SousClasse sousClasse;
 
 	private Double valeur;
 

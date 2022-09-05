@@ -37,8 +37,9 @@ public class CreationIndicesProcessor implements ItemProcessor<SousClasse, Set<I
 			IndiceMensuel indiceMensuel = new IndiceMensuel();
 
 			indiceMensuel.setMonth(yearMonth);
-			indiceMensuel.setNiveauNomenclature(sousClasse);
 			indiceMensuel.setValeur(0d);
+
+			sousClasse.addIndiceMensuel(indiceMensuel);
 
 			indices.add(indiceMensuel);
 
@@ -51,8 +52,9 @@ public class CreationIndicesProcessor implements ItemProcessor<SousClasse, Set<I
 				IndiceAnnuel indiceAnnuel = new IndiceAnnuel();
 
 				indiceAnnuel.setYear(year);
-				indiceAnnuel.setNiveauNomenclature(sousClasse);
 				indiceAnnuel.setValeur(0d);
+
+				sousClasse.addIndiceAnnuel(indiceAnnuel);
 
 				indices.add(indiceAnnuel);
 
