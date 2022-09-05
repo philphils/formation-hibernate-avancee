@@ -69,7 +69,7 @@ public class NomenclatureTest extends AbstractTestIntegration {
 
 		IndiceAnnuel indiceAnnuel = indiceAnnuelRepository.findAll().get(0);
 
-		log.info(indiceAnnuel.getNiveauNomenclature().getLibelleNomenclature());
+		log.info(indiceAnnuel.getSousClasse().getLibelleNomenclature());
 
 	}
 

@@ -93,7 +93,7 @@ public class NomenclatureCacheSecondNiveauTest extends AbstractTest {
 		 * Les requêtes de récupération des divisions ne doivent pas avoir été faîtes
 		 * car l'association doit avoir été mise en cache
 		 */
-		assertEquals(QueryCountHolder.getGrandTotal().getTotal(), 1);
+		assertEquals(QueryCountHolder.getGrandTotal().getTotal(), 0);
 
 	}
 

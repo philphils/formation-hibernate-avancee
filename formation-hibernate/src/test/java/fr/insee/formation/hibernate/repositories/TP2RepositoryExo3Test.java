@@ -61,7 +61,7 @@ public class TP2RepositoryExo3Test extends AbstractTest {
 		 */
 		Set<Declaration> declarations = declarationRepository.findAllDeclarationWithEntrepriseWithSousClasse();
 
-		assertEquals(108, declarations.size());
+		assertEquals(144, declarations.size());
 
 		for (Declaration declaration : declarations) {
 

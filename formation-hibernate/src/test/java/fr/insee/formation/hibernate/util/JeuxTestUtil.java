@@ -87,6 +87,7 @@ public class JeuxTestUtil {
 		AbstractNiveauNomenclature secteur = jeuxMappingAssociation();
 
 		entityManager.persist(secteur);
+		entityManager.flush();
 
 	}
 
@@ -119,34 +120,26 @@ public class JeuxTestUtil {
 
 		Set<Section> sections = jeuNouvelleNomenclature();
 
-		ajouterIndiceRandomNomenclature(sections);
+		ajouterIndiceRandomSousClasse(sections);
 
 		for (Section section : sections) {
 			entityManager.persist(section);
 		}
 	}
 
-	private void ajouterIndiceRandomNomenclature(Set<Section> sections) {
+	private void ajouterIndiceRandomSousClasse(Set<Section> sections) {
 
 		for (Section section : sections) {
 
-			ajouterIndiceRandomNiveauNomenclature(section);
-
 			for (Division division : section.getDivisions()) {
-
-				ajouterIndiceRandomNiveauNomenclature(division);
 
 				for (Groupe groupe : division.getGroupes()) {
 
-					ajouterIndiceRandomNiveauNomenclature(groupe);
-
 					for (Classe classe : groupe.getClasses()) {
-
-						ajouterIndiceRandomNiveauNomenclature(classe);
 
 						for (SousClasse sousClasse : classe.getSousClasses()) {
 
-							ajouterIndiceRandomNiveauNomenclature(sousClasse);
+							ajouterIndiceRandomSousClasse(sousClasse);
 
 						}
 
@@ -160,7 +153,7 @@ public class JeuxTestUtil {
 
 	}
 
-	private void ajouterIndiceRandomNiveauNomenclature(AbstractNiveauNomenclature abstractNiveauNomenclature) {
+	private void ajouterIndiceRandomSousClasse(SousClasse sousClasse) {
 
 		for (Month month : Month.values()) {
 
@@ -170,7 +163,7 @@ public class JeuxTestUtil {
 
 			indiceMensuel.setValeur(faker.random().nextDouble());
 
-			abstractNiveauNomenclature.addIndice(indiceMensuel);
+			sousClasse.addIndiceMensuel(indiceMensuel);
 
 		}
 
@@ -180,7 +173,7 @@ public class JeuxTestUtil {
 
 		indiceAnnuel.setValeur(faker.random().nextDouble());
 
-		abstractNiveauNomenclature.addIndice(indiceAnnuel);
+		sousClasse.addIndiceAnnuel(indiceAnnuel);
 
 	}
 
@@ -317,7 +310,7 @@ public class JeuxTestUtil {
 
 			indiceMensuel.setValeur(0d);
 
-			secteur.addIndice(indiceMensuel);
+			secteur.addIndiceMensuel(indiceMensuel);
 
 		}
 
@@ -327,7 +320,7 @@ public class JeuxTestUtil {
 
 		indiceAnnuel.setValeur(0d);
 
-		secteur.addIndice(indiceAnnuel);
+		secteur.addIndiceAnnuel(indiceAnnuel);
 
 		return secteur;
 

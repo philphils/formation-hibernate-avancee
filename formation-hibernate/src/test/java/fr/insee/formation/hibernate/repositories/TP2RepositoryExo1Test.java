@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.insee.formation.hibernate.config.AbstractTest;
 import fr.insee.formation.hibernate.model.Entreprise;
+import fr.insee.formation.hibernate.model.TypeVoie;
 import fr.insee.formation.hibernate.util.JeuxTestUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -77,8 +78,13 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 
 		Entreprise entreprise = optionalEntreprise.get();
 
-		assertEquals("Adresse(numero=12, typeVoie=RUE, nomVoie=Jean Jaurès, ville=PARIS, pays=FRANCE)",
-				entreprise.getAdresse().toString());
+		assertEquals("12", entreprise.getAdresse().getNumero());
+
+		assertEquals(TypeVoie.RUE, entreprise.getAdresse().getTypeVoie());
+
+		assertEquals("Jean Jaurès", entreprise.getAdresse().getNomVoie());
+
+		assertEquals("PARIS", entreprise.getAdresse().getVille());
 
 		optionalEntreprise = entrepriseRepository.findBySirenAndDenomination("faux_siren", "N'importe quoi");
 		// Remplacer "null" par votre appel à la méthode que vous

@@ -151,11 +151,11 @@ public class DeclarationRepositoryTest extends AbstractTest {
 				declaration.getEntreprise().getSousClasse().getLibelleNomenclature());
 
 		/*
-		 * On vérifie que la déclaration a bien été récupérée avec 3 requêtes Pourquoi
+		 * On vérifie que la déclaration a bien été récupérée avec 2 requêtes Pourquoi
 		 * n'a-t-on pas une seule requête ? Proposer des amléiorations pour n'avoir
 		 * qu'une requête
 		 */
-		assertEquals(3, QueryCountHolder.getGrandTotal().getSelect());
+		assertEquals(2, QueryCountHolder.getGrandTotal().getSelect());
 
 	}
 
