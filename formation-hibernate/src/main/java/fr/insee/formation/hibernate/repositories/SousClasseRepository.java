@@ -2,16 +2,20 @@ package fr.insee.formation.hibernate.repositories;
 
 import java.util.Optional;
 
+import javax.persistence.QueryHint;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.QueryHints;
 
 import fr.insee.formation.hibernate.model.Entreprise;
 import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
 
 public interface SousClasseRepository extends JpaRepository<SousClasse, Integer> {
 
+	@QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHEABLE, value = "true"))
 	public Optional<SousClasse> findByCodeNaf(String codeNaf);
 
 	@Query(value = "SELECT ssClasse FROM SousClasse ssClasse LEFT JOIN FETCH ssClasse.entreprises ent", countQuery = "SELECT count(ssClasse) FROM SousClasse ssClasse")
