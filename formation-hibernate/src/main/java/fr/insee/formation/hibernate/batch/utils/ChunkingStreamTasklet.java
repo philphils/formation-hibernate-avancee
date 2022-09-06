@@ -64,6 +64,8 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 
 	private Instant timer;
 
+	private Long totalMilliseconds = 0L;
+
 	private List<S> entryList = new ArrayList<S>();
 
 	private List<T> resultList = new ArrayList<T>();
@@ -153,7 +155,9 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 
 		if (affichageLogCompteur != null && compteur % affichageLogCompteur == 0) {
 			Long milliSeconds = Instant.now().toEpochMilli() - timer.toEpochMilli();
-			log.info(milliSeconds + " milli-secondes pour persister " + affichageLogCompteur + " objets");
+			totalMilliseconds = milliSeconds + totalMilliseconds;
+			log.info(milliSeconds + " milli-secondes pour persister " + affichageLogCompteur + " objets. Moyenne : "
+					+ Math.floor(((double) compteur / (double) totalMilliseconds) * 1000) + " objet traité / second");
 			timer = Instant.now();
 		}
 
