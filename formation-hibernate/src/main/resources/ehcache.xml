@@ -9,7 +9,14 @@
 		<expiry>
 			<tti unit="seconds">300</tti>
 		</expiry>
-		<heap unit="entries">100</heap>
+		<heap unit="entries">5000</heap>
+	</cache>
+	
+	<cache alias="nomenclature_association">
+		<expiry>
+			<tti unit="seconds">300</tti>
+		</expiry>
+		<heap unit="entries">100000</heap>
 	</cache>
 
 </config>
