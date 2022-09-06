@@ -22,12 +22,12 @@ import lombok.Setter;
 @Entity
 public class Division extends AbstractNiveauNomenclature {
 
-	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "nomenclature_association")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
 	private Section section;
 
-	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "nomenclature_association")
 	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "division", cascade = CascadeType.ALL)
 	private Set<Groupe> groupes = new HashSet<Groupe>();

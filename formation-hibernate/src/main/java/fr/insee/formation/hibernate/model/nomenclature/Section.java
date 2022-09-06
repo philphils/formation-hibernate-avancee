@@ -19,7 +19,7 @@ import lombok.Setter;
 @Entity
 public class Section extends AbstractNiveauNomenclature {
 
-	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "nomenclature_association")
 	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "section", cascade = CascadeType.ALL)
 	private Set<Division> divisions = new HashSet<Division>();

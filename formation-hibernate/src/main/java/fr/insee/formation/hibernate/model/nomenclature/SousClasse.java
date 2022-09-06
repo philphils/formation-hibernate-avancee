@@ -30,7 +30,7 @@ import lombok.Setter;
 @Entity
 public class SousClasse extends AbstractNiveauNomenclature {
 
-	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "nomenclature_association")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
 	private Classe classe;
