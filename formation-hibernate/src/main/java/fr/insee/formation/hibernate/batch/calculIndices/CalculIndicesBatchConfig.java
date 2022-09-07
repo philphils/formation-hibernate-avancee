@@ -2,7 +2,6 @@ package fr.insee.formation.hibernate.batch.calculIndices;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -24,9 +23,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Sort.Direction;
 
 import fr.insee.formation.hibernate.batch.utils.ChunkingStreamTasklet;
-import fr.insee.formation.hibernate.batch.utils.JPACollectionPersistWriter;
+import fr.insee.formation.hibernate.batch.utils.JPAPersistWriter;
 import fr.insee.formation.hibernate.model.Declaration;
-import fr.insee.formation.hibernate.model.Indice;
 import fr.insee.formation.hibernate.model.IndiceAnnuel;
 import fr.insee.formation.hibernate.model.IndiceMensuel;
 import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
@@ -66,7 +64,7 @@ public class CalculIndicesBatchConfig {
 	IndiceMensuelRepository indiceMensuelRepository;
 
 	@Autowired
-	JPACollectionPersistWriter jpaCollectionPersistWriter;
+	JPAPersistWriter<SousClasse> jpaPersistWriter;
 
 	@Autowired
 	IndiceValeurUpdateWriter indiceValeurUpdateWriter;
@@ -103,7 +101,7 @@ public class CalculIndicesBatchConfig {
 	}
 
 	@Bean
-	public ItemProcessor<SousClasse, Set<Indice>> itemCreationIndicesProcessor() {
+	public ItemProcessor<SousClasse, SousClasse> itemCreationIndicesProcessor() {
 		return new CreationIndicesProcessor();
 	}
 
@@ -133,13 +131,13 @@ public class CalculIndicesBatchConfig {
 	}
 
 	@Bean
-	public Step creationIndicesStep(ItemReader<SousClasse> reader, ItemProcessor<SousClasse, Set<Indice>> processor,
-			ItemWriter<Set<Indice>> writer) {
+	public Step creationIndicesStep(ItemReader<SousClasse> reader, ItemProcessor<SousClasse, SousClasse> processor,
+			ItemWriter<SousClasse> writer) {
 		return
 		//// @formatter:off
 				steps
 					.get("creationIndicesStep")
-					.<SousClasse, Set<Indice>>chunk(chunkSizeCreation)
+					.<SousClasse, SousClasse>chunk(chunkSizeCreation)
 					.reader(reader)
 					.processor(processor)
 					.writer(writer)
@@ -168,7 +166,7 @@ public class CalculIndicesBatchConfig {
 					jobs
 						.get("calculIndicesJob")
 						.start(suppressionIndicesStep(suppressionIndicesTasklet()))
-						.next(creationIndicesStep(itemReaderCreationIndicesSousClasse(), itemCreationIndicesProcessor(), jpaCollectionPersistWriter))
+						.next(creationIndicesStep(itemReaderCreationIndicesSousClasse(), itemCreationIndicesProcessor(), jpaPersistWriter))
 						.next(calculIndicesStep())
 					.build();
 				// @formatter:on

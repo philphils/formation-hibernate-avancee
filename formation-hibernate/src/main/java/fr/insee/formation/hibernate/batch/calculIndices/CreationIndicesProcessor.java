@@ -16,13 +16,13 @@ import fr.insee.formation.hibernate.model.IndiceMensuel;
 import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
 
 @Component
-public class CreationIndicesProcessor implements ItemProcessor<SousClasse, Set<Indice>> {
+public class CreationIndicesProcessor implements ItemProcessor<SousClasse, SousClasse> {
 
 	@Value("${batch.nbMoisHistorique}")
 	private Integer nbMoisHistorique;
 
 	@Override
-	public Set<Indice> process(SousClasse sousClasse) throws Exception {
+	public SousClasse process(SousClasse sousClasse) throws Exception {
 
 		Set<Indice> indices = new HashSet<Indice>();
 
@@ -62,7 +62,7 @@ public class CreationIndicesProcessor implements ItemProcessor<SousClasse, Set<I
 
 		}
 
-		return indices;
+		return sousClasse;
 	}
 
 }

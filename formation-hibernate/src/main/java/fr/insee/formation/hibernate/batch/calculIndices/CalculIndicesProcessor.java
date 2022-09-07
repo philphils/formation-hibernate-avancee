@@ -41,9 +41,9 @@ public class CalculIndicesProcessor implements ItemProcessor<Declaration, Entry<
 		 */
 		LocalDate date = declaration.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-		IndiceMensuel indiceMensuel = sousClasse.getIndicesMensuels().get(YearMonth.from(date));
+		IndiceMensuel indiceMensuel = sousClasse.getMapIndicesMensuels().get(YearMonth.from(date));
 
-		IndiceAnnuel indiceAnnuel = sousClasse.getIndicesAnnuels().get(Year.from(date));
+		IndiceAnnuel indiceAnnuel = sousClasse.getMapIndicesAnnuels().get(Year.from(date));
 
 		/*
 		 * Ajout de la valeur en cours
