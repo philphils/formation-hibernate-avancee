@@ -13,12 +13,12 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import fr.insee.formation.hibernate.model.Entreprise;
+import fr.insee.formation.hibernate.model.Indice;
 import fr.insee.formation.hibernate.model.IndiceAnnuel;
 import fr.insee.formation.hibernate.model.IndiceMensuel;
 import lombok.AccessLevel;
@@ -41,13 +41,11 @@ public class SousClasse extends AbstractNiveauNomenclature {
 
 	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "sousClasse", cascade = CascadeType.ALL)
-	@MapKeyColumn(name = "year")
-	private Map<Year, IndiceAnnuel> indicesAnnuels = new HashMap<>();
+	private Set<IndiceAnnuel> indicesAnnuels = new HashSet<>();
 
 	@Setter(value = AccessLevel.NONE)
 	@OneToMany(mappedBy = "sousClasse", cascade = CascadeType.ALL)
-	@MapKeyColumn(name = "month")
-	private Map<YearMonth, IndiceMensuel> indicesMensuels = new HashMap<>();
+	private Set<IndiceMensuel> indicesMensuels = new HashSet<>();
 
 	public Entreprise addEntreprise(Entreprise entreprise) {
 		entreprises.add(entreprise);
@@ -66,7 +64,7 @@ public class SousClasse extends AbstractNiveauNomenclature {
 	}
 
 	public IndiceAnnuel addIndiceAnnuel(IndiceAnnuel indiceAnnuel) {
-		indicesAnnuels.put(indiceAnnuel.getYear(), indiceAnnuel);
+		indicesAnnuels.add(indiceAnnuel);
 		indiceAnnuel.setSousClasse(this);
 		return indiceAnnuel;
 	}
@@ -77,12 +75,12 @@ public class SousClasse extends AbstractNiveauNomenclature {
 		return indiceAnnuel;
 	}
 
-	public Map<Year, IndiceAnnuel> getIndicesAnnuels() {
-		return Collections.unmodifiableMap(indicesAnnuels);
+	public Set<IndiceAnnuel> getIndicesAnnuels() {
+		return Collections.unmodifiableSet(indicesAnnuels);
 	}
 
 	public IndiceMensuel addIndiceMensuel(IndiceMensuel indiceMensuel) {
-		indicesMensuels.put(indiceMensuel.getMonth(), indiceMensuel);
+		indicesMensuels.add(indiceMensuel);
 		indiceMensuel.setSousClasse(this);
 		return indiceMensuel;
 	}
@@ -93,8 +91,31 @@ public class SousClasse extends AbstractNiveauNomenclature {
 		return indiceMensuel;
 	}
 
-	public Map<YearMonth, IndiceMensuel> getIndicesMensuels() {
-		return Collections.unmodifiableMap(indicesMensuels);
+	public Set<IndiceMensuel> getIndicesMensuels() {
+		return Collections.unmodifiableSet(indicesMensuels);
+	}
+
+	public Map<Year, IndiceAnnuel> getMapIndicesAnnuels() {
+
+		Map<Year, IndiceAnnuel> indiceAnnuels = new HashMap<Year, IndiceAnnuel>();
+
+		for (Indice indice : indicesAnnuels) {
+			indiceAnnuels.put(((IndiceAnnuel) indice).getYear(), (IndiceAnnuel) indice);
+		}
+
+		return Collections.unmodifiableMap(indiceAnnuels);
+	}
+
+	public Map<YearMonth, IndiceMensuel> getMapIndicesMensuels() {
+
+		Map<YearMonth, IndiceMensuel> indiceMensuels = new HashMap<YearMonth, IndiceMensuel>();
+
+		for (Indice indice : indicesMensuels) {
+			indiceMensuels.put(((IndiceMensuel) indice).getMonth(), (IndiceMensuel) indice);
+		}
+
+		return Collections.unmodifiableMap(indiceMensuels);
+
 	}
 
 }
