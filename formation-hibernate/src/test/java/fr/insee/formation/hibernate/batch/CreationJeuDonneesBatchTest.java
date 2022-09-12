@@ -1,7 +1,10 @@
 package fr.insee.formation.hibernate.batch;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
@@ -24,8 +27,9 @@ public class CreationJeuDonneesBatchTest extends AbstractTestIntegration {
 
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
-		jobLauncher.run(creationJeuDonneesJob, jobParameters);
+		JobExecution jobExecution = jobLauncher.run(creationJeuDonneesJob, jobParameters);
 
+		assertEquals(jobExecution.getAllFailureExceptions().size(), 0);
 	}
 
 }
