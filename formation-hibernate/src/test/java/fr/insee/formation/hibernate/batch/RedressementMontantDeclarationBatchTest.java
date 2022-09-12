@@ -70,8 +70,8 @@ public class RedressementMontantDeclarationBatchTest extends AbstractTest {
 								.entrySet().iterator().next().getValue();
 
 						Double montantApresRedressement = declaration.getMontant()
-								* declaration.getEntreprise().getCoeffRedressementEntreprise()
-								* declaration.getEntreprise().getSousClasse().getCoeffRedressementNiveau();
+								* (1d + (declaration.getEntreprise().getCoeffRedressementEntreprise()
+										* declaration.getEntreprise().getSousClasse().getCoeffRedressementNiveau()));
 
 						return new AbstractMap.SimpleEntry<Declaration, Double>(declaration, montantApresRedressement);
 

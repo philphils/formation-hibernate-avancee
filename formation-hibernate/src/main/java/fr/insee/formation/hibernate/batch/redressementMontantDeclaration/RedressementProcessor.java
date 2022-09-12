@@ -11,13 +11,13 @@ public class RedressementProcessor implements ItemProcessor<Declaration, Declara
 	@Override
 	public Declaration process(Declaration declaration) throws Exception {
 
-		//// @formatter:off
+		/*
+		 * Formule Redressement : ancienMontant * ( 1 +
+		 * (coeffEntreprise*coeffSousClasse))
+		 */
 		declaration.setMontant(
-				declaration.getMontant() 
-				* declaration.getEntreprise().getCoeffRedressementEntreprise()
-				* declaration.getEntreprise().getSousClasse().getCoeffRedressementNiveau()
-				);
-		// @formatter:on
+				declaration.getMontant() * (1d + (declaration.getEntreprise().getCoeffRedressementEntreprise()
+						* declaration.getEntreprise().getSousClasse().getCoeffRedressementNiveau())));
 
 		return declaration;
 	}
