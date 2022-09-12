@@ -72,6 +72,8 @@ public class Entreprise {
 
 	private Double coeffRedressementEntreprise;
 
+	private Double coeffCalculIndice;
+
 	public Map<Date, Declaration> getDeclarations() {
 		return Collections.unmodifiableMap(declarations);
 	}

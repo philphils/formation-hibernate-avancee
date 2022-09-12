@@ -115,8 +115,7 @@ public class CreationEntrepriseDeclarationProcessor implements ItemProcessor<Sou
 
 		entreprise.setCoeffRedressementEntreprise(random.nextDouble());
 
-		// TODO gérer l'ajout entreprise pour le niveau sous-classe
-		// secteur.addEntreprise(entreprise);
+		entreprise.setCoeffCalculIndice(random.nextDouble());
 
 		/*
 		 * Création des déclarations
