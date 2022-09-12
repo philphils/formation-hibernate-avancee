@@ -3,9 +3,11 @@ package fr.insee.formation.hibernate.model.nomenclature;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.SequenceGenerator;
 
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -21,7 +23,8 @@ import lombok.Setter;
 public abstract class AbstractNiveauNomenclature {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hib_seq")
+	@SequenceGenerator(name = "hib_seq", sequenceName = "hib_seq", allocationSize = 100)
 	private int id;
 
 	private String codeNaf;

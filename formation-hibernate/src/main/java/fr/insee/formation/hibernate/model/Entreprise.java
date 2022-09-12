@@ -33,8 +33,8 @@ import lombok.Setter;
 public class Entreprise {
 
 	@Id
-	@GeneratedValue(generator = "hib_seq", strategy = GenerationType.SEQUENCE)
-	@SequenceGenerator(name = "hib_seq", initialValue = 1, allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hib_seq")
+	@SequenceGenerator(name = "hib_seq", sequenceName = "hib_seq", allocationSize = 100)
 	private int id;
 
 	private String denomination;
