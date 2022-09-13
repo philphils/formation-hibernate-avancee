@@ -1,9 +1,14 @@
 package fr.insee.formation.hibernate.model;
 
+import java.time.Year;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -88,6 +93,44 @@ public class Entreprise {
 		declarations.remove(declaration.getDate(), declaration);
 		declaration.setEntreprise(null);
 		return declaration;
+	}
+
+	public Declaration getDeclarationsByYearMonth(YearMonth yearMonth) {
+
+		Declaration declaration = null;
+
+		for (Declaration declaration2 : declarations.values()) {
+
+			if (declaration2.getDate().toInstant().atZone(ZoneId.of("Europe/Paris")).getMonth()
+					.equals(yearMonth.getMonth())
+					&& declaration2.getDate().toInstant().atZone(ZoneId.of("Europe/Paris")).getYear() == yearMonth
+							.getYear()) {
+
+				if (declaration != null) {
+					throw new RuntimeException(
+							"2 declarations pour l'entreprise " + id + " pour le même mois " + yearMonth);
+				}
+
+				declaration = declaration2;
+
+			}
+
+		}
+
+		return declaration;
+	}
+
+	public Set<Declaration> getDeclarationsByYear(Year year) {
+
+		Set<Declaration> declarationsSet = new HashSet<>();
+
+		for (Declaration declaration : declarations.values()) {
+			if (declaration.getDate().toInstant().atZone(ZoneId.of("Europe/Paris")).getYear() == year.getValue()) {
+				declarationsSet.add(declaration);
+			}
+		}
+
+		return Collections.unmodifiableSet(declarationsSet);
 	}
 
 }

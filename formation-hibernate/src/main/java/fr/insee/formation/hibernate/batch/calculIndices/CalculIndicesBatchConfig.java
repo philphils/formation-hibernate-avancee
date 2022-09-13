@@ -1,7 +1,5 @@
 package fr.insee.formation.hibernate.batch.calculIndices;
 
-import java.util.Map.Entry;
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
@@ -19,11 +17,8 @@ import org.springframework.context.annotation.PropertySource;
 
 import fr.insee.formation.hibernate.batch.utils.ChunkingStreamTasklet;
 import fr.insee.formation.hibernate.batch.utils.JPAPersistWriter;
-import fr.insee.formation.hibernate.model.Declaration;
-import fr.insee.formation.hibernate.model.IndiceAnnuel;
 import fr.insee.formation.hibernate.model.IndiceMensuel;
 import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
-import fr.insee.formation.hibernate.repositories.DeclarationRepository;
 import fr.insee.formation.hibernate.repositories.IndiceAnnuelRepository;
 import fr.insee.formation.hibernate.repositories.IndiceMensuelRepository;
 import fr.insee.formation.hibernate.repositories.SousClasseRepository;
@@ -59,10 +54,7 @@ public class CalculIndicesBatchConfig {
 	JPAPersistWriter<SousClasse> jpaPersistWriter;
 
 	@Autowired
-	IndiceValeurUpdateWriter indiceValeurUpdateWriter;
-
-	@Autowired
-	DeclarationRepository declarationRepository;
+	IndiceMensuelValeurUpdateWriter indiceMensuelValeurUpdateWriter;
 
 	@Bean
 	public Tasklet remiseAZeroIndicesTasklet() {
@@ -82,16 +74,16 @@ public class CalculIndicesBatchConfig {
 	}
 
 	@Bean
-	public ItemProcessor<Declaration, Entry<IndiceMensuel, IndiceAnnuel>> itemCalculIndicesProcessor() {
+	public ItemProcessor<IndiceMensuel, IndiceMensuel> itemCalculIndicesProcessor() {
 		return new CalculIndicesProcessor();
 	}
 
 	@Bean
 	public Tasklet calculIndicesTasklet() {
 
-		ChunkingStreamTasklet taskletCalculIndices = new ChunkingStreamTasklet<Declaration, Entry<IndiceMensuel, IndiceAnnuel>>(
-				declarationRepository::streamAllDeclarationWithEntrepriseAndSousClasseAndIndices,
-				itemCalculIndicesProcessor(), indiceValeurUpdateWriter, chunkSizeCalcul, true);
+		ChunkingStreamTasklet taskletCalculIndices = new ChunkingStreamTasklet<IndiceMensuel, IndiceMensuel>(
+				indiceMensuelRepository::findAllIndicesMensuelWithSousClasseAndEntrepriseAndDeclaration,
+				itemCalculIndicesProcessor(), indiceMensuelValeurUpdateWriter, chunkSizeCalcul, true);
 
 		taskletCalculIndices.setAffichageLogCompteur(affichageCalculIndices);
 

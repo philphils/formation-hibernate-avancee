@@ -1,7 +1,6 @@
 package fr.insee.formation.hibernate.batch.calculIndices;
 
 import java.util.List;
-import java.util.Map.Entry;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -12,13 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import fr.insee.formation.hibernate.model.IndiceAnnuel;
+import fr.insee.formation.hibernate.model.Indice;
 import fr.insee.formation.hibernate.model.IndiceMensuel;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Component
-public class IndiceValeurUpdateWriter implements ItemWriter<Entry<IndiceMensuel, IndiceAnnuel>> {
+public class IndiceMensuelValeurUpdateWriter implements ItemWriter<IndiceMensuel> {
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;
@@ -27,18 +26,13 @@ public class IndiceValeurUpdateWriter implements ItemWriter<Entry<IndiceMensuel,
 	EntityManager entityManager;
 
 	@Override
-	public void write(List<? extends Entry<IndiceMensuel, IndiceAnnuel>> collectionsIndice) throws Exception {
+	public void write(List<? extends IndiceMensuel> collectionsIndice) throws Exception {
 
-		for (Entry<IndiceMensuel, IndiceAnnuel> entry : collectionsIndice) {
+		for (Indice indice : collectionsIndice) {
 			Query queryMensuel = entityManager.createQuery("UPDATE IndiceMensuel SET valeur = :valeur WHERE id = :id");
-			queryMensuel.setParameter("valeur", entry.getKey().getValeur());
-			queryMensuel.setParameter("id", entry.getKey().getId());
+			queryMensuel.setParameter("valeur", indice.getValeur());
+			queryMensuel.setParameter("id", indice.getId());
 			queryMensuel.executeUpdate();
-
-			Query queryAnnuel = entityManager.createQuery("UPDATE IndiceAnnuel SET valeur = :valeur WHERE id = :id");
-			queryAnnuel.setParameter("valeur", entry.getValue().getValeur());
-			queryAnnuel.setParameter("id", entry.getValue().getId());
-			queryAnnuel.executeUpdate();
 		}
 
 		entityManager.flush();
