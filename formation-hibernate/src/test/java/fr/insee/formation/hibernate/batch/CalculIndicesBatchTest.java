@@ -29,8 +29,6 @@ import fr.insee.formation.hibernate.config.AbstractTest;
 import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.model.Entreprise;
 import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
-import fr.insee.formation.hibernate.repositories.IndiceAnnuelRepository;
-import fr.insee.formation.hibernate.repositories.IndiceMensuelRepository;
 import fr.insee.formation.hibernate.repositories.SousClasseRepository;
 
 public class CalculIndicesBatchTest extends AbstractTest {
@@ -43,12 +41,6 @@ public class CalculIndicesBatchTest extends AbstractTest {
 
 	@Autowired
 	Job calculIndicesJob;
-
-	@Autowired
-	IndiceAnnuelRepository indiceAnnuelRepository;
-
-	@Autowired
-	IndiceMensuelRepository indiceMensuelRepository;
 
 	@Autowired
 	SousClasseRepository sousClasseRepository;
@@ -66,19 +58,11 @@ public class CalculIndicesBatchTest extends AbstractTest {
 
 		assertEquals(jobExecution.getAllFailureExceptions().size(), 0);
 
-		assertEquals(0, indiceAnnuelRepository.count());
-
-		assertEquals(0, indiceMensuelRepository.count());
-
 		JobParameters jobParameters2 = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
 		JobExecution jobExecution2 = jobLauncher.run(calculIndicesJob, jobParameters2);
 
 		assertEquals(jobExecution2.getAllFailureExceptions().size(), 0);
-
-		assertEquals(20, indiceAnnuelRepository.count());
-
-		assertEquals(180, indiceMensuelRepository.count());
 
 		transactionTemplate.execute(new TransactionCallbackWithoutResult() {
 
