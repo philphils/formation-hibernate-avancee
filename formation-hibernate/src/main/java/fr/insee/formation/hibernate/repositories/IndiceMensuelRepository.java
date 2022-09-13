@@ -9,7 +9,7 @@ import fr.insee.formation.hibernate.model.IndiceMensuel;
 public interface IndiceMensuelRepository extends JpaRepository<IndiceMensuel, Integer> {
 
 	@Modifying
-	@Query("DELETE FROM IndiceMensuel")
-	public void deleteAllInOneQuery();
+	@Query("UPDATE IndiceMensuel SET valeur = 0")
+	public void remiseZeroInOneQuery();
 
 }

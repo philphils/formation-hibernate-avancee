@@ -1,6 +1,5 @@
 package fr.insee.formation.hibernate.batch.calculIndices;
 
-import java.util.Map;
 import java.util.Map.Entry;
 
 import org.springframework.batch.core.Job;
@@ -11,16 +10,12 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.data.RepositoryItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.domain.Sort.Direction;
 
 import fr.insee.formation.hibernate.batch.utils.ChunkingStreamTasklet;
 import fr.insee.formation.hibernate.batch.utils.JPAPersistWriter;
@@ -38,9 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 @PropertySource(value = "classpath:batch.properties")
 public class CalculIndicesBatchConfig {
-
-	@Value("${batch.chunkSizeCreationIndices}")
-	private Integer chunkSizeCreation;
 
 	@Value("${batch.chunkSizeCalculIndices}")
 	private Integer chunkSizeCalcul;
@@ -73,36 +65,20 @@ public class CalculIndicesBatchConfig {
 	DeclarationRepository declarationRepository;
 
 	@Bean
-	public Tasklet suppressionIndicesTasklet() {
+	public Tasklet remiseAZeroIndicesTasklet() {
 
 		return new Tasklet() {
 
 			@Override
 			public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 
-				indiceAnnuelRepository.deleteAllInOneQuery();
-				indiceMensuelRepository.deleteAllInOneQuery();
+				indiceAnnuelRepository.remiseZeroInOneQuery();
+				indiceMensuelRepository.remiseZeroInOneQuery();
 
 				return null;
 			}
 		};
 
-	}
-
-	@Bean
-	public ItemReader<SousClasse> itemReaderCreationIndicesSousClasse() {
-		RepositoryItemReader<SousClasse> itemReaderSousClasse = new RepositoryItemReader<SousClasse>();
-
-		itemReaderSousClasse.setRepository(sousClasseRepository);
-		itemReaderSousClasse.setMethodName("findAll");
-		itemReaderSousClasse.setSort(Map.of("codeNaf", Direction.ASC));
-
-		return itemReaderSousClasse;
-	}
-
-	@Bean
-	public ItemProcessor<SousClasse, SousClasse> itemCreationIndicesProcessor() {
-		return new CreationIndicesProcessor();
 	}
 
 	@Bean
@@ -124,25 +100,9 @@ public class CalculIndicesBatchConfig {
 	}
 
 	@Bean
-	public Step suppressionIndicesStep(Tasklet tasklet) {
+	public Step remiseAZeroIndicesStep(Tasklet tasklet) {
 
-		return steps.get("suppressionIndicesStep").tasklet(tasklet).build();
-
-	}
-
-	@Bean
-	public Step creationIndicesStep(ItemReader<SousClasse> reader, ItemProcessor<SousClasse, SousClasse> processor,
-			ItemWriter<SousClasse> writer) {
-		return
-		//// @formatter:off
-				steps
-					.get("creationIndicesStep")
-					.<SousClasse, SousClasse>chunk(chunkSizeCreation)
-					.reader(reader)
-					.processor(processor)
-					.writer(writer)
-				.build();
-		// @formatter:on
+		return steps.get("remiseAZeroIndicesStep").tasklet(tasklet).build();
 
 	}
 
@@ -165,8 +125,7 @@ public class CalculIndicesBatchConfig {
 		//// @formatter:off
 					jobs
 						.get("calculIndicesJob")
-						.start(suppressionIndicesStep(suppressionIndicesTasklet()))
-						.next(creationIndicesStep(itemReaderCreationIndicesSousClasse(), itemCreationIndicesProcessor(), jpaPersistWriter))
+						.start(remiseAZeroIndicesStep(remiseAZeroIndicesTasklet()))
 						.next(calculIndicesStep())
 					.build();
 				// @formatter:on

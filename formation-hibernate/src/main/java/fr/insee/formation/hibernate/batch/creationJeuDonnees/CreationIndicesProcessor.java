@@ -1,4 +1,4 @@
-package fr.insee.formation.hibernate.batch.calculIndices;
+package fr.insee.formation.hibernate.batch.creationJeuDonnees;
 
 import java.time.LocalDate;
 import java.time.Year;

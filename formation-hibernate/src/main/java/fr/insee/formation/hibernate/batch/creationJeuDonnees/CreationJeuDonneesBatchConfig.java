@@ -39,6 +39,9 @@ public class CreationJeuDonneesBatchConfig {
 	@Value("${batch.chunkSize}")
 	private Integer chunkSize;
 
+	@Value("${batch.chunkSizeCreationIndices}")
+	private Integer chunkSizeCreation;
+
 	@Autowired
 	private JobBuilderFactory jobs;
 
@@ -68,6 +71,22 @@ public class CreationJeuDonneesBatchConfig {
 		itemReaderSousClasse.setSort(Map.of("codeNaf", Direction.ASC));
 
 		return itemReaderSousClasse;
+	}
+
+	@Bean
+	public ItemReader<SousClasse> itemReaderCreationIndicesSousClasse() {
+		RepositoryItemReader<SousClasse> itemReaderSousClasse = new RepositoryItemReader<SousClasse>();
+
+		itemReaderSousClasse.setRepository(sousClasseRepository);
+		itemReaderSousClasse.setMethodName("findAll");
+		itemReaderSousClasse.setSort(Map.of("codeNaf", Direction.ASC));
+
+		return itemReaderSousClasse;
+	}
+
+	@Bean
+	public ItemProcessor<SousClasse, SousClasse> itemCreationIndicesProcessor() {
+		return new CreationIndicesProcessor();
 	}
 
 	@Bean
@@ -115,6 +134,22 @@ public class CreationJeuDonneesBatchConfig {
 	}
 
 	@Bean
+	public Step creationIndicesStep(ItemReader<SousClasse> reader, ItemProcessor<SousClasse, SousClasse> processor,
+			ItemWriter<SousClasse> writer) {
+		return
+		//// @formatter:off
+				steps
+					.get("creationIndicesStep")
+					.<SousClasse, SousClasse>chunk(chunkSizeCreation)
+					.reader(reader)
+					.processor(processor)
+					.writer(writer)
+				.build();
+		// @formatter:on
+
+	}
+
+	@Bean
 	public Job creationJeuDonneesJob() {
 		return
 		//// @formatter:off
@@ -122,6 +157,7 @@ public class CreationJeuDonneesBatchConfig {
 				.get("chunksJob")
 				.start(creationNomenclatureStep(itemReader(), itemProcessor(), jpaPersistWriter))
 				.next(creationEntrepriseAndDeclarationStep(itemReaderSousClasse(), itemProcessorEntreprise(), jpaCollectionPersistWriter))
+				.next(creationIndicesStep(itemReaderCreationIndicesSousClasse(), itemCreationIndicesProcessor(), jpaPersistWriter))
 			.build();
 		// @formatter:on
 

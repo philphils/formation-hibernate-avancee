@@ -9,7 +9,7 @@ import fr.insee.formation.hibernate.model.IndiceAnnuel;
 public interface IndiceAnnuelRepository extends JpaRepository<IndiceAnnuel, Integer> {
 
 	@Modifying
-	@Query("DELETE FROM IndiceAnnuel")
-	public void deleteAllInOneQuery();
+	@Query("UPDATE IndiceAnnuel SET valeur = 0")
+	public void remiseZeroInOneQuery();
 
 }
