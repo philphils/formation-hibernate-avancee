@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import fr.insee.formation.hibernate.batch.listener.ChunkTimingListener;
 import fr.insee.formation.hibernate.batch.listener.TimingItemProcessListener;
 import fr.insee.formation.hibernate.batch.utils.ChunkingStreamTasklet;
 import fr.insee.formation.hibernate.batch.utils.JPAUpdateWriter;
@@ -82,7 +81,6 @@ public class RedressementMontantDeclarationConfig {
 					.processor(processor)
 					.listener(itemProcessListener)
 					.writer(writer)
-					.listener(new ChunkTimingListener(chunkSize))
 				.build();
 		// @formatter:on
 
