@@ -157,7 +157,7 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 			Long milliSeconds = Instant.now().toEpochMilli() - timer.toEpochMilli();
 			totalMilliseconds = milliSeconds + totalMilliseconds;
 			log.info(milliSeconds + " milli-secondes pour persister " + affichageLogCompteur + " objets. Moyenne : "
-					+ Math.floor(((double) compteur / (double) totalMilliseconds) * 1000) + " objet traité / second");
+					+ Math.floor(((double) compteur / (double) totalMilliseconds) * 1000) + " objets traités / second");
 			timer = Instant.now();
 		}
 
