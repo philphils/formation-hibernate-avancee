@@ -30,7 +30,7 @@ public class RedressementItemReader implements ItemReader<Declaration>, ItemStre
 			throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
 
 		if (premierPassage) {
-			log.info("La requête a été exécuté, le traitement des items commence");
+			log.info("La requête a été exécutée, le traitement des items commence");
 			premierPassage = false;
 		}
 
