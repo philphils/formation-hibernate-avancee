@@ -13,17 +13,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.repositories.DeclarationRepository;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class RedressementItemReader implements ItemReader<Declaration>, ItemStream {
 
 	@Autowired
 	DeclarationRepository declarationRepository;
+
+	private Boolean premierPassage = true;
 
 	private Iterator<Declaration> iterator;
 
 	@Override
 	public Declaration read()
 			throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+
+		if (premierPassage) {
+			log.info("La requête a été exécuté, le traitement des items commence");
+			premierPassage = false;
+		}
+
 		if (iterator.hasNext())
 			return iterator.next();
 		else
