@@ -3,7 +3,6 @@ package fr.insee.formation.hibernate.batch.creationJeuDonnees;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -27,14 +26,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CreationEntrepriseDeclarationProcessor implements ItemProcessor<SousClasse, Set<Entreprise>> {
-
-	/*
-	 * Variable pour mesurer la vitesse de création des déclarations
-	 */
-	@Value("${batch.affichageDeclarationsCreees}")
-	private Integer compteurAffichageDeclarationsCrees;
-
-	private Integer compteurDeclarationsCreees = 1;
 
 	@Value("${batch.dataScale}")
 	private Integer dataScale;
@@ -126,10 +117,6 @@ public class CreationEntrepriseDeclarationProcessor implements ItemProcessor<Sou
 
 			entreprise.addDeclaration(creerDeclaration(montantMoyen, nbMois));
 
-			comptageDeclarationsCreees();
-
-			compteurDeclarationsCreees++;
-
 		}
 
 		return entreprise;
@@ -150,35 +137,6 @@ public class CreationEntrepriseDeclarationProcessor implements ItemProcessor<Sou
 		declaration.setMontant(montant);
 
 		return declaration;
-	}
-
-	private void comptageDeclarationsCreees() {
-
-		if (compteurDeclarationsCreees % compteurAffichageDeclarationsCrees == 0) {
-
-			if (localTimeFinBoucle == null)
-				/* Premier passage -> on prend la date de début du job */
-				localTimeDebutBoucle = localTimeDebutJob;
-			else
-				/* Sinon on récupère la date de fin de la dernière boucle */
-				localTimeDebutBoucle = localTimeFinBoucle;
-
-			localTimeFinBoucle = LocalTime.now(ZoneId.of("Europe/Paris"));
-
-			Long secondesPourCetteBoucle = ChronoUnit.SECONDS.between(localTimeDebutBoucle, localTimeFinBoucle);
-
-			if (secondesPourCetteBoucle != 0)
-				log.debug("{} déclarations par seconde pour les {} dernières",
-						compteurAffichageDeclarationsCrees / secondesPourCetteBoucle,
-						compteurAffichageDeclarationsCrees);
-
-			Long secondesDepuisDebutJob = ChronoUnit.SECONDS.between(localTimeDebutJob, localTimeFinBoucle);
-
-			if (secondesDepuisDebutJob != 0)
-				log.debug("{} déclarations par seconde en moyenne depuis le début et {} déclarations créées au total.",
-						compteurDeclarationsCreees / secondesDepuisDebutJob, compteurDeclarationsCreees);
-
-		}
 	}
 
 }

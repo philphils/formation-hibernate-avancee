@@ -1,6 +1,5 @@
 package fr.insee.formation.hibernate.batch.creationJeuDonnees;
 
-import java.util.Map;
 import java.util.Set;
 
 import org.springframework.batch.core.Job;
@@ -10,19 +9,18 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.item.data.RepositoryItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.domain.Sort.Direction;
 
-import fr.insee.formation.hibernate.batch.listener.ChunkTimingListener;
+import fr.insee.formation.hibernate.batch.listener.TimingItemProcessListener;
 import fr.insee.formation.hibernate.batch.utils.CSVLineReader;
 import fr.insee.formation.hibernate.batch.utils.JPACollectionPersistWriter;
 import fr.insee.formation.hibernate.batch.utils.JPAPersistWriter;
 import fr.insee.formation.hibernate.model.Entreprise;
+import fr.insee.formation.hibernate.model.Indice;
 import fr.insee.formation.hibernate.model.nomenclature.AbstractNiveauNomenclature;
 import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
 import fr.insee.formation.hibernate.repositories.SousClasseRepository;
@@ -40,7 +38,13 @@ public class CreationJeuDonneesBatchConfig {
 	private Integer chunkSize;
 
 	@Value("${batch.chunkSizeCreationIndices}")
-	private Integer chunkSizeCreation;
+	private Integer chunkSizeCreationIndices;
+
+	@Value("${batch.affichageSecteurCrees}")
+	private Integer compteurAffichageSecteurCrees;
+
+	@Value("${batch.affichageDeclarationsCrees}")
+	private Integer compteurAffichageDeclarationsCrees;
 
 	@Autowired
 	private JobBuilderFactory jobs;
@@ -58,44 +62,32 @@ public class CreationJeuDonneesBatchConfig {
 	JPACollectionPersistWriter jpaCollectionPersistWriter;
 
 	@Bean
-	public ItemReader<String[]> itemReader() {
+	public ItemReader<String[]> creationSecteurItemReader() {
 		return new CSVLineReader(nomFichierCreationJeuDonnees);
 	}
 
 	@Bean
-	public ItemReader<SousClasse> itemReaderSousClasse() {
-		RepositoryItemReader<SousClasse> itemReaderSousClasse = new RepositoryItemReader<SousClasse>();
-
-		itemReaderSousClasse.setRepository(sousClasseRepository);
-		itemReaderSousClasse.setMethodName("findAllWithEntreprises");
-		itemReaderSousClasse.setSort(Map.of("codeNaf", Direction.ASC));
-
-		return itemReaderSousClasse;
+	public ItemReader<SousClasse> creationEntreprisesItemReader() {
+		return new CreationEntreprisesItemReader();
 	}
 
 	@Bean
-	public ItemReader<SousClasse> itemReaderCreationIndicesSousClasse() {
-		RepositoryItemReader<SousClasse> itemReaderSousClasse = new RepositoryItemReader<SousClasse>();
-
-		itemReaderSousClasse.setRepository(sousClasseRepository);
-		itemReaderSousClasse.setMethodName("findAll");
-		itemReaderSousClasse.setSort(Map.of("codeNaf", Direction.ASC));
-
-		return itemReaderSousClasse;
+	public ItemReader<SousClasse> creationIndicesItemReader() {
+		return new CreationIndicesItemReader();
 	}
 
 	@Bean
-	public ItemProcessor<SousClasse, SousClasse> itemCreationIndicesProcessor() {
+	public ItemProcessor<SousClasse, Set<Indice>> creationIndicesItemProcessor() {
 		return new CreationIndicesProcessor();
 	}
 
 	@Bean
-	public ItemProcessor<String[], AbstractNiveauNomenclature> itemProcessor() {
+	public ItemProcessor<String[], AbstractNiveauNomenclature> creationSecteurItemProcessor() {
 		return new CreationSecteurProcessor();
 	}
 
 	@Bean
-	public ItemProcessor<SousClasse, Set<Entreprise>> itemProcessorEntreprise() {
+	public ItemProcessor<SousClasse, Set<Entreprise>> creationEntrepriseItemProcessor() {
 		return new CreationEntrepriseDeclarationProcessor();
 	}
 
@@ -103,6 +95,11 @@ public class CreationJeuDonneesBatchConfig {
 	protected Step creationNomenclatureStep(ItemReader<String[]> reader,
 			ItemProcessor<String[], AbstractNiveauNomenclature> processor,
 			ItemWriter<AbstractNiveauNomenclature> writer) {
+
+		TimingItemProcessListener itemProcessListener = new TimingItemProcessListener();
+
+		itemProcessListener.setAffichageLogCompteur(compteurAffichageSecteurCrees);
+
 		return
 		//// @formatter:off
 				steps
@@ -110,6 +107,7 @@ public class CreationJeuDonneesBatchConfig {
 					.<String[], AbstractNiveauNomenclature>chunk(chunkSize)
 					.reader(reader)
 					.processor(processor)
+					.listener(itemProcessListener)
 					.writer(writer)
 				.build();
 		// @formatter:on
@@ -119,6 +117,11 @@ public class CreationJeuDonneesBatchConfig {
 	@Bean
 	protected Step creationEntrepriseAndDeclarationStep(ItemReader<SousClasse> reader,
 			ItemProcessor<SousClasse, Set<Entreprise>> processor, ItemWriter<Set<Entreprise>> writer) {
+
+		TimingItemProcessListener itemProcessListener = new TimingItemProcessListener();
+
+		itemProcessListener.setAffichageLogCompteur(compteurAffichageDeclarationsCrees);
+
 		return
 		//// @formatter:off
 				steps
@@ -126,23 +129,29 @@ public class CreationJeuDonneesBatchConfig {
 					.<SousClasse, Set<Entreprise>>chunk(chunkSize)
 					.reader(reader)
 					.processor(processor)
+					.listener(itemProcessListener)
 					.writer(writer)
-					.listener(new ChunkTimingListener(chunkSize))
 				.build();
 		// @formatter:on
 
 	}
 
 	@Bean
-	public Step creationIndicesStep(ItemReader<SousClasse> reader, ItemProcessor<SousClasse, SousClasse> processor,
-			ItemWriter<SousClasse> writer) {
+	public Step creationIndicesStep(ItemReader<SousClasse> reader, ItemProcessor<SousClasse, Set<Indice>> processor,
+			ItemWriter<Set<Indice>> writer) {
+
+		TimingItemProcessListener itemProcessListener = new TimingItemProcessListener();
+
+		itemProcessListener.setAffichageLogCompteur(compteurAffichageSecteurCrees);
+
 		return
 		//// @formatter:off
 				steps
 					.get("creationIndicesStep")
-					.<SousClasse, SousClasse>chunk(chunkSizeCreation)
+					.<SousClasse, Set<Indice>>chunk(chunkSizeCreationIndices)
 					.reader(reader)
 					.processor(processor)
+					.listener(itemProcessListener)
 					.writer(writer)
 				.build();
 		// @formatter:on
@@ -155,9 +164,9 @@ public class CreationJeuDonneesBatchConfig {
 		//// @formatter:off
 			jobs
 				.get("chunksJob")
-				.start(creationNomenclatureStep(itemReader(), itemProcessor(), jpaPersistWriter))
-				.next(creationEntrepriseAndDeclarationStep(itemReaderSousClasse(), itemProcessorEntreprise(), jpaCollectionPersistWriter))
-				.next(creationIndicesStep(itemReaderCreationIndicesSousClasse(), itemCreationIndicesProcessor(), jpaPersistWriter))
+				.start(creationNomenclatureStep(creationSecteurItemReader(), creationSecteurItemProcessor(), jpaPersistWriter))
+				.next(creationEntrepriseAndDeclarationStep(creationEntreprisesItemReader(), creationEntrepriseItemProcessor(), jpaCollectionPersistWriter))
+				.next(creationIndicesStep(creationIndicesItemReader(), creationIndicesItemProcessor(), jpaCollectionPersistWriter))
 			.build();
 		// @formatter:on
 
