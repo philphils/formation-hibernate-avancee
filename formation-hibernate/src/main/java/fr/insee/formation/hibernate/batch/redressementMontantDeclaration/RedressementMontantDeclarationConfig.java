@@ -16,6 +16,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import fr.insee.formation.hibernate.batch.listener.ChunkTimingListener;
+import fr.insee.formation.hibernate.batch.listener.TimingItemProcessListener;
 import fr.insee.formation.hibernate.batch.utils.ChunkingStreamTasklet;
 import fr.insee.formation.hibernate.batch.utils.JPAUpdateWriter;
 import fr.insee.formation.hibernate.model.Declaration;
@@ -28,6 +29,9 @@ public class RedressementMontantDeclarationConfig {
 
 	@Value("${batch.chunkSizeRedressement}")
 	private Integer chunkSize;
+
+	@Value("${batch.affichageDeclarationRedressees}")
+	private Integer affichageLogCompteur;
 
 	@Autowired
 	private JobBuilderFactory jobs;
@@ -64,6 +68,11 @@ public class RedressementMontantDeclarationConfig {
 	@Bean
 	protected Step redressementProcessLines(ItemReader<Declaration> reader,
 			ItemProcessor<Declaration, Declaration> processor, ItemWriter<Declaration> writer) {
+
+		TimingItemProcessListener itemProcessListener = new TimingItemProcessListener();
+
+		itemProcessListener.setAffichageLogCompteur(affichageLogCompteur);
+
 		return
 		//// @formatter:off
 				steps
@@ -71,6 +80,7 @@ public class RedressementMontantDeclarationConfig {
 					.<Declaration, Declaration>chunk(chunkSize)
 					.reader(reader)
 					.processor(processor)
+					.listener(itemProcessListener)
 					.writer(writer)
 					.listener(new ChunkTimingListener(chunkSize))
 				.build();
@@ -105,9 +115,14 @@ public class RedressementMontantDeclarationConfig {
 
 	@Bean
 	public Tasklet redressementTasklet() {
-		return new ChunkingStreamTasklet<Declaration, Declaration>(
+
+		ChunkingStreamTasklet tasklet = new ChunkingStreamTasklet<Declaration, Declaration>(
 				declarationRepository::streamAllDeclarationWithEntrepriseWithSousClasse, redressementItemProcessor(),
 				redressementItemWriter(), chunkSize, false);
+
+		tasklet.setAffichageLogCompteur(affichageLogCompteur);
+
+		return tasklet;
 	}
 
 	@Bean
