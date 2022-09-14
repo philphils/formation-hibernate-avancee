@@ -1,5 +1,7 @@
 package fr.insee.formation.hibernate.batch.listener;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Instant;
 
 import org.springframework.batch.core.ItemProcessListener;
@@ -36,7 +38,9 @@ public class TimingItemProcessListener implements ItemProcessListener {
 			Long milliSeconds = Instant.now().toEpochMilli() - timer.toEpochMilli();
 			totalMilliseconds = milliSeconds + totalMilliseconds;
 			log.info(milliSeconds + " milli-secondes pour persister " + affichageLogCompteur + " objets. Moyenne : "
-					+ Math.floor(((double) compteur / (double) totalMilliseconds) * 1000) + " objets traités / second");
+					+ (new BigDecimal(((double) compteur / (double) totalMilliseconds) * 1000)).setScale(2,
+							RoundingMode.DOWN)
+					+ " objets traités / second");
 			timer = Instant.now();
 		}
 
