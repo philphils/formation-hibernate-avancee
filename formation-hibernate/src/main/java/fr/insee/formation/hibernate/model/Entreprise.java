@@ -133,4 +133,21 @@ public class Entreprise {
 		return Collections.unmodifiableSet(declarationsSet);
 	}
 
+	/**
+	 * Permet de calculer le coefficient moyen de la hiérarchie dans la nomenclature
+	 * utilisé pour la calcul des {@link Indice}
+	 * 
+	 * @return
+	 */
+	public Double calculCoeffMoyen() {
+
+		Double coeffMoyen = (coeffCalculIndice + sousClasse.getCoeffCalculIndice()
+				+ sousClasse.getClasse().getCoeffCalculIndice()
+				+ sousClasse.getClasse().getGroupe().getCoeffCalculIndice()
+				+ sousClasse.getClasse().getGroupe().getDivision().getCoeffCalculIndice()
+				+ sousClasse.getClasse().getGroupe().getDivision().getSection().getCoeffCalculIndice()) / 6;
+
+		return coeffMoyen;
+	}
+
 }

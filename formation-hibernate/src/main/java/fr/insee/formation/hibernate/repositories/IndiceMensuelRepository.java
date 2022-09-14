@@ -21,6 +21,6 @@ public interface IndiceMensuelRepository extends JpaRepository<IndiceMensuel, In
 					+ " JOIN FETCH entreprises.declarations declarations "
 					)
 		/// @formatter:on
-	public Stream<IndiceMensuel> findAllIndicesMensuelWithSousClasseAndEntrepriseAndDeclaration();
+	public Stream<IndiceMensuel> streamAllIndicesMensuelWithSousClasseAndEntrepriseAndDeclaration();
 
 }
