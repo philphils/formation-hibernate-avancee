@@ -1,0 +1,43 @@
+package fr.insee.formation.hibernate.batch.calculIndices;
+
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Component;
+
+import fr.insee.formation.hibernate.model.Indice;
+import fr.insee.formation.hibernate.model.IndiceAnnuel;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Component
+public class IndiceAnnuelValeurUpdateWriter implements ItemWriter<IndiceAnnuel> {
+
+	@Autowired
+	JdbcTemplate jdbcTemplate;
+
+	@PersistenceContext
+	EntityManager entityManager;
+
+	@Override
+	public void write(List<? extends IndiceAnnuel> collectionsIndice) throws Exception {
+
+		for (Indice indice : collectionsIndice) {
+			Query queryMensuel = entityManager.createQuery("UPDATE IndiceAnnuel SET valeur = :valeur WHERE id = :id");
+			queryMensuel.setParameter("valeur", indice.getValeur());
+			queryMensuel.setParameter("id", indice.getId());
+			queryMensuel.executeUpdate();
+		}
+
+		entityManager.flush();
+		entityManager.clear();
+
+	}
+
+}

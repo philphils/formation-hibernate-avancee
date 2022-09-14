@@ -17,6 +17,7 @@ import org.springframework.context.annotation.PropertySource;
 
 import fr.insee.formation.hibernate.batch.utils.ChunkingStreamTasklet;
 import fr.insee.formation.hibernate.batch.utils.JPAPersistWriter;
+import fr.insee.formation.hibernate.model.IndiceAnnuel;
 import fr.insee.formation.hibernate.model.IndiceMensuel;
 import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
 import fr.insee.formation.hibernate.repositories.IndiceAnnuelRepository;
@@ -56,6 +57,9 @@ public class CalculIndicesBatchConfig {
 	@Autowired
 	IndiceMensuelValeurUpdateWriter indiceMensuelValeurUpdateWriter;
 
+	@Autowired
+	IndiceAnnuelValeurUpdateWriter indiceAnnuelValeurUpdateWriter;
+
 	@Bean
 	public Tasklet remiseAZeroIndicesTasklet() {
 
@@ -74,20 +78,38 @@ public class CalculIndicesBatchConfig {
 	}
 
 	@Bean
-	public ItemProcessor<IndiceMensuel, IndiceMensuel> itemCalculIndicesProcessor() {
-		return new CalculIndicesProcessor();
+	public ItemProcessor<IndiceMensuel, IndiceMensuel> itemCalculIndicesMensuelsProcessor() {
+		return new CalculIndicesMensuelsProcessor();
 	}
 
 	@Bean
-	public Tasklet calculIndicesTasklet() {
+	public ItemProcessor<IndiceAnnuel, IndiceAnnuel> itemCalculIndicesAnnuelsProcessor() {
+		return new CalculIndicesAnnuelsProcessor();
+	}
 
-		ChunkingStreamTasklet taskletCalculIndices = new ChunkingStreamTasklet<IndiceMensuel, IndiceMensuel>(
-				indiceMensuelRepository::findAllIndicesMensuelWithSousClasseAndEntrepriseAndDeclaration,
-				itemCalculIndicesProcessor(), indiceMensuelValeurUpdateWriter, chunkSizeCalcul, true);
+	@Bean
+	public Tasklet calculIndicesMensuelsTasklet() {
 
-		taskletCalculIndices.setAffichageLogCompteur(affichageCalculIndices);
+		ChunkingStreamTasklet taskletCalculIndicesMensuels = new ChunkingStreamTasklet<IndiceMensuel, IndiceMensuel>(
+				indiceMensuelRepository::streamAllIndicesMensuelWithSousClasseAndEntrepriseAndDeclaration,
+				itemCalculIndicesMensuelsProcessor(), indiceMensuelValeurUpdateWriter, chunkSizeCalcul, true);
 
-		return taskletCalculIndices;
+		taskletCalculIndicesMensuels.setAffichageLogCompteur(affichageCalculIndices);
+
+		return taskletCalculIndicesMensuels;
+
+	}
+
+	@Bean
+	public Tasklet calculIndicesAnnuelsTasklet() {
+
+		ChunkingStreamTasklet taskletCalculIndicesAnnuels = new ChunkingStreamTasklet<IndiceAnnuel, IndiceAnnuel>(
+				indiceAnnuelRepository::streamAllIndicesAnnuelsWithSousClasseAndEntrepriseAndDeclaration,
+				itemCalculIndicesAnnuelsProcessor(), indiceAnnuelValeurUpdateWriter, chunkSizeCalcul, true);
+
+		taskletCalculIndicesAnnuels.setAffichageLogCompteur(affichageCalculIndices);
+
+		return taskletCalculIndicesAnnuels;
 
 	}
 
@@ -99,15 +121,28 @@ public class CalculIndicesBatchConfig {
 	}
 
 	@Bean
-	public Step calculIndicesStep() {
+	public Step calculIndicesMensuelsStep() {
 
 		return
 		//// @formatter:off
 						steps
-							.get("calculIndicesStep")
-							.tasklet(calculIndicesTasklet())
+							.get("calculIndicesMensuelsStep")
+							.tasklet(calculIndicesMensuelsTasklet())
 						.build();
-				// @formatter:on
+		// @formatter:on
+
+	}
+
+	@Bean
+	public Step calculIndicesAnnuelsStep() {
+
+		return
+		//// @formatter:off
+						steps
+							.get("calculIndicesAnnuelsStep")
+							.tasklet(calculIndicesAnnuelsTasklet())
+						.build();
+		// @formatter:on
 
 	}
 
@@ -118,9 +153,10 @@ public class CalculIndicesBatchConfig {
 					jobs
 						.get("calculIndicesJob")
 						.start(remiseAZeroIndicesStep(remiseAZeroIndicesTasklet()))
-						.next(calculIndicesStep())
+						.next(calculIndicesMensuelsStep())
+						.next(calculIndicesAnnuelsStep())
 					.build();
-				// @formatter:on
+		// @formatter:on
 
 	}
 
