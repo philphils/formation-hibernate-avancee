@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.transaction.annotation.Transactional;
 
 import fr.insee.formation.hibernate.config.AbstractTest;
 import fr.insee.formation.hibernate.model.Declaration;
@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.ttddyy.dsproxy.QueryCountHolder;
 
 @Slf4j
-@Transactional
 public class DeclarationRepositoryTest extends AbstractTest {
 
 	@Autowired
@@ -50,6 +49,7 @@ public class DeclarationRepositoryTest extends AbstractTest {
 	}
 
 	@Test
+	@Transactional
 	public void testCount() {
 
 		Long total = declarationRepository.count();
@@ -63,6 +63,7 @@ public class DeclarationRepositoryTest extends AbstractTest {
 	}
 
 	@Test
+	@Transactional
 	public void testFindByEntreprise() {
 
 		Declaration declaration = declarationRepository.findAll().get(0);
@@ -84,6 +85,7 @@ public class DeclarationRepositoryTest extends AbstractTest {
 	}
 
 	@Test
+	@Transactional
 	public void testFindDeclarationWithEntreprise() {
 
 		Declaration declaration = declarationRepository.findAll().get(0);
@@ -102,6 +104,7 @@ public class DeclarationRepositoryTest extends AbstractTest {
 	}
 
 	@Test
+	@Transactional
 	public void testFindAllPage() {
 
 		Page<Declaration> page = declarationRepository.findAll(PageRequest.of(0, 2, Sort.by("date")));
@@ -120,6 +123,7 @@ public class DeclarationRepositoryTest extends AbstractTest {
 	}
 
 	@Test
+	@Transactional
 	public void testFindDeclarationByEntreprisePage() {
 
 		Declaration declaration = declarationRepository.findAll().get(0);
@@ -143,6 +147,7 @@ public class DeclarationRepositoryTest extends AbstractTest {
 	}
 
 	@Test
+	@Transactional
 	public void testLazy() {
 
 		Declaration declaration = declarationRepository.findAll().get(0);
@@ -151,11 +156,11 @@ public class DeclarationRepositoryTest extends AbstractTest {
 				declaration.getEntreprise().getSousClasse().getLibelleNomenclature());
 
 		/*
-		 * On vérifie que la déclaration a bien été récupérée avec 2 requêtes Pourquoi
+		 * On vérifie que la déclaration a bien été récupérée avec 3 requêtes Pourquoi
 		 * n'a-t-on pas une seule requête ? Proposer des amléiorations pour n'avoir
 		 * qu'une requête
 		 */
-		assertEquals(2, QueryCountHolder.getGrandTotal().getSelect());
+		assertEquals(3, QueryCountHolder.getGrandTotal().getSelect());
 
 	}
 
