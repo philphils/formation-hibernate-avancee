@@ -17,7 +17,7 @@ import fr.insee.formation.hibernate.repositories.SousClasseRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class CreationJeuDonneesBatchTest extends AbstractTest {
+public class TP1CreationJeuDonneesBatchTest extends AbstractTest {
 
 	@Autowired
 	JobLauncher jobLauncher;
