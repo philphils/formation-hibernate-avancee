@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.ttddyy.dsproxy.QueryCountHolder;
 
 @Slf4j
-public class NomenclatureCacheSecondNiveauTest extends AbstractTest {
+public class TP3NomenclatureCacheSecondNiveauTest extends AbstractTest {
 
 	@Autowired
 	private JeuxTestUtil jeuxTestUtil;
