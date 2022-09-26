@@ -14,7 +14,8 @@ import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
 
 public interface SousClasseRepository extends JpaRepository<SousClasse, Integer> {
 
-	@QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHEABLE, value = "true"))
+	@QueryHints({ @QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHEABLE, value = "true"),
+			@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHE_REGION, value = "sous_classe_query") })
 	public Optional<SousClasse> findByCodeNaf(String codeNaf);
 
 	//// @formatter:off

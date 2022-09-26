@@ -16,7 +16,21 @@
 		<expiry>
 			<tti unit="seconds">300</tti>
 		</expiry>
-		<heap unit="entries">100000</heap>
+		<heap unit="entries">2000</heap>
+	</cache>
+	
+	<cache alias="sous_classe_query">
+		<expiry>
+			<tti unit="seconds">300</tti>
+		</expiry>
+		<heap unit="entries">1000</heap>
+	</cache>
+	
+	<cache alias="section_query">
+		<expiry>
+			<tti unit="seconds">300</tti>
+		</expiry>
+		<heap unit="entries">50</heap>
 	</cache>
 
 </config>

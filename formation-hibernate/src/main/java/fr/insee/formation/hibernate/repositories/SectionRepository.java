@@ -12,10 +12,12 @@ import fr.insee.formation.hibernate.model.nomenclature.Section;
 
 public interface SectionRepository extends JpaRepository<Section, Integer> {
 
-	@QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHEABLE, value = "true"))
+	@QueryHints({ @QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHEABLE, value = "true"),
+			@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHE_REGION, value = "section_query") })
 	public Optional<Section> findByCodeNaf(String codeNaf);
 
-	@QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHEABLE, value = "true"))
+	@QueryHints({ @QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHEABLE, value = "true"),
+			@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHE_REGION, value = "section_query") })
 	public List<Section> findAll();
 
 }
