@@ -8,15 +8,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import fr.insee.formation.hibernate.model.Entreprise;
 import fr.insee.formation.hibernate.model.Indice;
@@ -29,11 +26,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Cacheable
-@org.hibernate.annotations.Cache(region = "nomenclature", usage = CacheConcurrencyStrategy.READ_ONLY)
 public class SousClasse extends AbstractNiveauNomenclature {
 
-	@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.READ_ONLY, region = "nomenclature_association")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
 	private Classe classe;
