@@ -1,8 +1,5 @@
 package fr.insee.formation.hibernate.batch;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -13,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.insee.formation.hibernate.repositories.EntrepriseRepository;
-import fr.insee.formation.hibernate.repositories.SectionRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -35,21 +30,6 @@ public class BatchControllers {
 
 	@Autowired
 	Job redressementMontantDeclarationStreamJob;
-
-	@Autowired
-	Job calculIndicesJob;
-
-	@Autowired
-	private SectionRepository sectionRepository;
-
-	@Autowired
-	EntrepriseRepository entrepriseRepository;
-//
-//	@Autowired
-//	CacheManager cacheManager;
-
-	@PersistenceUnit
-	EntityManagerFactory entityManagerFactory;
 
 	@RequestMapping("/helloWorldJob")
 	public String helloWorldJob() throws Exception {
@@ -89,16 +69,6 @@ public class BatchControllers {
 		JobExecution jobExecution = jobLauncher.run(redressementMontantDeclarationStreamJob, jobParameters);
 
 		return returnMessageIfNotFailed("Les déclarations ont bien été redressées", jobExecution);
-	}
-
-	@RequestMapping("/CalculIndices")
-	public String calculIndices() throws Exception {
-
-		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
-				.toJobParameters();
-		JobExecution jobExecution = jobLauncher.run(calculIndicesJob, jobParameters);
-
-		return returnMessageIfNotFailed("Les indices ont bien été calculés", jobExecution);
 	}
 
 	private String returnMessageIfNotFailed(String message, JobExecution jobExecution) {
