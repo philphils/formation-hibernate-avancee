@@ -19,6 +19,8 @@ public class TimingItemProcessListener implements ItemProcessListener {
 
 	private Long totalMilliseconds = 0L;
 
+	private Boolean firstTime = true;
+
 	public void setAffichageLogCompteur(Integer affichageLogCompteur) {
 		this.affichageLogCompteur = affichageLogCompteur;
 	}
@@ -35,15 +37,25 @@ public class TimingItemProcessListener implements ItemProcessListener {
 		compteur = compteur + 1;
 
 		if (affichageLogCompteur != null && compteur % affichageLogCompteur == 0) {
-			Long milliSeconds = Instant.now().toEpochMilli() - timer.toEpochMilli();
-			totalMilliseconds = milliSeconds + totalMilliseconds;
-			log.info(milliSeconds + " milli-secondes pour persister " + affichageLogCompteur + " objets. Moyenne : "
-					+ (new BigDecimal(((double) compteur / (double) totalMilliseconds) * 1000)).setScale(2,
-							RoundingMode.DOWN)
-					+ " objets traités / second");
-			timer = Instant.now();
-		}
 
+			/* Gestion des effets de bord */
+			if (firstTime) {
+				compteur = 1;
+				timer = Instant.now();
+				totalMilliseconds = 0L;
+				firstTime = false;
+			}
+
+			else {
+				Long milliSeconds = Instant.now().toEpochMilli() - timer.toEpochMilli();
+				totalMilliseconds = milliSeconds + totalMilliseconds;
+				timer = Instant.now();
+				log.info(milliSeconds + " milli-secondes pour persister " + affichageLogCompteur + " objets. Moyenne : "
+						+ (new BigDecimal(((double) compteur / (double) totalMilliseconds) * 1000)).setScale(2,
+								RoundingMode.DOWN)
+						+ " objets traités / second");
+			}
+		}
 	}
 
 	@Override
