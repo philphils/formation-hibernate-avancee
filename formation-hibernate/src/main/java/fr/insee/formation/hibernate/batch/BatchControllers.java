@@ -25,12 +25,6 @@ public class BatchControllers {
 	@Autowired
 	Job creationJeuDonneesJob;
 
-	@Autowired
-	Job redressementMontantDeclarationJob;
-
-	@Autowired
-	Job redressementMontantDeclarationStreamJob;
-
 	@RequestMapping("/helloWorldJob")
 	public String helloWorldJob() throws Exception {
 
@@ -49,26 +43,6 @@ public class BatchControllers {
 		JobExecution jobExecution = jobLauncher.run(creationJeuDonneesJob, jobParameters);
 
 		return returnMessageIfNotFailed("Données correctement créées", jobExecution);
-	}
-
-	@RequestMapping("/RedressementMontantDeclarationJob")
-	public String redressementMontantDeclarationJob() throws Exception {
-
-		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
-				.toJobParameters();
-		JobExecution jobExecution = jobLauncher.run(redressementMontantDeclarationJob, jobParameters);
-
-		return returnMessageIfNotFailed("Les déclarations ont bien été redressées", jobExecution);
-	}
-
-	@RequestMapping("/RedressementMontantDeclarationStreamJob")
-	public String redressementMontantDeclarationStreamJob() throws Exception {
-
-		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
-				.toJobParameters();
-		JobExecution jobExecution = jobLauncher.run(redressementMontantDeclarationStreamJob, jobParameters);
-
-		return returnMessageIfNotFailed("Les déclarations ont bien été redressées", jobExecution);
 	}
 
 	private String returnMessageIfNotFailed(String message, JobExecution jobExecution) {
