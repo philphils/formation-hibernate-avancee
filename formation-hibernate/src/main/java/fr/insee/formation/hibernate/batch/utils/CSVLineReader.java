@@ -14,9 +14,20 @@ public class CSVLineReader implements ItemReader<String[]>, StepExecutionListene
 
 	private String filePath;
 
+	private Integer limit;
+
+	private Integer compteur;
+
 	public CSVLineReader(String filePath) {
 		super();
 		this.filePath = filePath;
+	}
+
+	public CSVLineReader(String filePath, Integer limit) {
+		super();
+		this.filePath = filePath;
+		this.limit = limit;
+		this.compteur = 1;
 	}
 
 	@Override
@@ -27,8 +38,16 @@ public class CSVLineReader implements ItemReader<String[]>, StepExecutionListene
 
 	@Override
 	public String[] read() throws Exception {
+
+		if (compteur != null && compteur >= limit)
+			return null;
+
 		String[] line = fu.readLine();
 		log.trace("Read line: {}", line);
+
+		if (compteur != null)
+			compteur = compteur + 1;
+
 		return line;
 	}
 

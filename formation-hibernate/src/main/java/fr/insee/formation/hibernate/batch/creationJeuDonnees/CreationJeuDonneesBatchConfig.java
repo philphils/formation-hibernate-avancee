@@ -34,6 +34,9 @@ public class CreationJeuDonneesBatchConfig {
 	@Value("${batch.nomFichierCreationJeuDonnees}")
 	private String nomFichierCreationJeuDonnees;
 
+	@Value("${batch.nombreSecteur}")
+	private Integer nombreSecteur;
+
 	@Value("${batch.chunkSize}")
 	private Integer chunkSize;
 
@@ -63,7 +66,10 @@ public class CreationJeuDonneesBatchConfig {
 
 	@Bean
 	public ItemReader<String[]> creationSecteurItemReader() {
-		return new CSVLineReader(nomFichierCreationJeuDonnees);
+		if (nombreSecteur != null)
+			return new CSVLineReader(nomFichierCreationJeuDonnees, nombreSecteur);
+		else
+			return new CSVLineReader(nomFichierCreationJeuDonnees);
 	}
 
 	@Bean
