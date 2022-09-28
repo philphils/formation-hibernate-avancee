@@ -11,7 +11,11 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.JobParametersInvalidException;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
@@ -38,6 +42,9 @@ public class RedressementMontantDeclarationBatchTest extends AbstractTest {
 	Job redressementMontantDeclarationJob;
 
 	@Autowired
+	Job redressementMontantDeclarationStreamJob;
+
+	@Autowired
 	SousClasseRepository sousClasseRepository;
 
 	@Autowired
@@ -49,6 +56,20 @@ public class RedressementMontantDeclarationBatchTest extends AbstractTest {
 	@Test
 	public void redressementMontantDeclarationBatchTest() throws Exception {
 
+		batchRedressementTest(redressementMontantDeclarationJob);
+
+	}
+
+	@Test
+	public void redressementMontantDeclarationBatchStreamTest() throws Exception {
+
+		batchRedressementTest(redressementMontantDeclarationStreamJob);
+
+	}
+
+	private void batchRedressementTest(Job redressementMontantDeclarationJob2)
+			throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException,
+			JobParametersInvalidException {
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
 		JobExecution jobExecution = jobLauncher.run(creationJeuDonneesJob, jobParameters);
@@ -66,8 +87,18 @@ public class RedressementMontantDeclarationBatchTest extends AbstractTest {
 						/*
 						 * On récupère une déclaration au hasard
 						 */
-						Declaration declaration = sousClasse.get().getEntreprises().iterator().next().getDeclarations()
-								.entrySet().iterator().next().getValue();
+				//// @formatter:off
+						Declaration declaration = sousClasse
+								.get()
+								.getEntreprises()
+								.iterator()
+								.next()
+								.getDeclarations()
+								.entrySet()
+								.iterator()
+								.next()
+								.getValue();
+						// @formatter:on
 
 						Double montantApresRedressement = declaration.getMontant()
 								* (1d + (declaration.getEntreprise().getCoeffRedressementEntreprise()
@@ -95,7 +126,6 @@ public class RedressementMontantDeclarationBatchTest extends AbstractTest {
 
 			}
 		});
-
 	}
 
 }

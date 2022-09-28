@@ -6,8 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.batch.core.Job;
@@ -25,15 +23,6 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 
 	@Autowired
 	private JeuxTestUtil jeuxTestUtil;
-
-	@Autowired
-	private SousClasseRepository secteurRepository;
-
-	@Autowired
-	private EntrepriseRepository entrepriseRepository;
-
-	@Autowired
-	private EntityManager entityManager;
 
 	@Autowired
 	JobLauncher jobLauncher;
@@ -58,19 +47,19 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 
 		String denomination = "Le bar à Momo";
 
-		Optional<Entreprise> optionalEntreprise = entrepriseRepository.findBySirenAndDenomination(siren, null);
+		Optional<Entreprise> optionalEntreprise = null;
 		// Remplacer "null" par votre appel à la méthode que vous
 		// écrirez dans EntrepriseRepository avec les paramètres (siren, null)
 
 		assertFalse(optionalEntreprise.isPresent());
 
-		optionalEntreprise = entrepriseRepository.findBySirenAndDenomination(null, denomination);
+		optionalEntreprise = null;
 		// Remplacer "null" par votre appel à la méthode que vous
 		// écrirez dans EntrepriseRepository avec les paramètres (null, denomination)
 
 		assertFalse(optionalEntreprise.isPresent());
 
-		optionalEntreprise = entrepriseRepository.findBySirenAndDenomination(siren, denomination);
+		optionalEntreprise = null;
 		// Remplacer "null" par votre appel à la méthode que vous
 		// écrirez dans EntrepriseRepository avec les paramètres (siren, denomination)
 
@@ -86,7 +75,7 @@ public class TP2RepositoryExo1Test extends AbstractTest {
 
 		assertEquals("PARIS", entreprise.getAdresse().getVille());
 
-		optionalEntreprise = entrepriseRepository.findBySirenAndDenomination("faux_siren", "N'importe quoi");
+		optionalEntreprise = null;
 		// Remplacer "null" par votre appel à la méthode que vous
 		// écrirez dans EntrepriseRepository avec les paramètres ("faux_siren",
 		// "N'importe quoi")

@@ -1,7 +1,10 @@
 package fr.insee.formation.hibernate.repositories;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.EntityManager;
 
@@ -13,23 +16,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import fr.insee.formation.hibernate.config.AbstractTest;
-import fr.insee.formation.hibernate.model.Entreprise;
-import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
+import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.util.JeuxTestUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.ttddyy.dsproxy.QueryCountHolder;
 
 @Slf4j
-public class TP2RepositoryExo2Test extends AbstractTest {
+public class TP2RepositoryExo4Test extends AbstractTest {
 
 	@Autowired
 	private JeuxTestUtil jeuxTestUtil;
 
 	@Autowired
-	private SousClasseRepository sousClasseRepository;
+	DeclarationRepository declarationRepository;
 
 	@Autowired
-	private EntityManager entityManager;
+	EntityManager entityManager;
 
 	@Autowired
 	JobLauncher jobLauncher;
@@ -45,37 +47,39 @@ public class TP2RepositoryExo2Test extends AbstractTest {
 			jeuxTestUtil.creerJeux3Secteurs();
 			databaseIsInitialized = true;
 		}
+
+		ouvrirNouvelleTransaction();
+
+		QueryCountHolder.clear();
+
 	}
 
 	@Test
 	@Transactional
-	public void testExercice2() {
+	public void testExercice4() {
 
 		/*
-		 * Récupération d'une entreprise au hasard
+		 * Récupération des déclarations
 		 */
-		SousClasse secteur = sousClasseRepository.findAll().get(0);
+		Stream<Declaration> declarationsStream = declarationRepository
+				.streamAllDeclarationWithEntrepriseWithSousClasse();
 
-		Entreprise entreprise = secteur.getEntreprises().iterator().next();
+		Set<Declaration> declarations = declarationsStream.collect(Collectors.toSet());
 
-		entityManager.clear();
+		assertEquals(108, declarations.size());
 
-		QueryCountHolder.clear();
+		for (Declaration declaration : declarations) {
 
-		/*
-		 * Remplacer null par l'appel à votre méthode :
-		 * findByEntrepriseWithAllEntreprises(entreprise)
-		 */
-		SousClasse secteur2 = null;
+			String denomination = declaration.getEntreprise().getDenomination();
 
-		for (Entreprise entreprise2 : secteur2.getEntreprises()) {
-			log.info("L'Entreprise {} est dans le secteur {}", entreprise2.getDenomination(),
-					secteur2.getLibelleNomenclature());
+			String libelle = declaration.getEntreprise().getSousClasse().getLibelleNomenclature();
+
+			log.debug("Entreprise {} du Secteur {}", denomination, libelle);
+
 		}
 
-		assertEquals(3, secteur2.getEntreprises().size());
-
-		assertTrue(secteur2.getEntreprises().stream().anyMatch(ent -> ent.getId() == entreprise.getId()));
+		// TODO Comprendre pourquoi on a pas les requetes select pour les entreprises et
+		// les secteur
 
 		/*
 		 * On vérifie qu'il n'y a bien eu qu'une seule requête effectuée
