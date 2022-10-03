@@ -23,7 +23,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.MapKeyTemporal;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -39,7 +38,10 @@ public class Entreprise {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hib_seq")
-	@SequenceGenerator(name = "hib_seq", sequenceName = "hib_seq", allocationSize = 100)
+	/*
+	 * TP1 : Spécifier l'allocationSize pour économiser les allers-retours avec la
+	 * BDD
+	 */
 	private int id;
 
 	private String denomination;

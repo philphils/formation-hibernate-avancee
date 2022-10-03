@@ -4,7 +4,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.SequenceGenerator;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +15,10 @@ public abstract class AbstractNiveauNomenclature {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hib_seq")
-	@SequenceGenerator(name = "hib_seq", sequenceName = "hib_seq", allocationSize = 100)
+	/*
+	 * TP1 : Spécifier l'allocationSize pour économiser les allers-retours avec la
+	 * BDD
+	 */
 	private int id;
 
 	private String codeNaf;
