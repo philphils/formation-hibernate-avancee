@@ -26,8 +26,9 @@ public class JPACollectionPersistWriter<X> implements ItemWriter<Collection<X>> 
 				entityManager.persist(item);
 		}
 
-		entityManager.flush();
-		entityManager.clear();
+		/*
+		 * Ici rafraîchir l'entity Manager
+		 */
 
 	}
 
