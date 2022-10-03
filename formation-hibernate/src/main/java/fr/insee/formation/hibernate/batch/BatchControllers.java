@@ -1,8 +1,5 @@
 package fr.insee.formation.hibernate.batch;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
@@ -13,8 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import fr.insee.formation.hibernate.repositories.EntrepriseRepository;
-import fr.insee.formation.hibernate.repositories.SectionRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -38,18 +33,6 @@ public class BatchControllers {
 
 	@Autowired
 	Job calculIndicesJob;
-
-	@Autowired
-	private SectionRepository sectionRepository;
-
-	@Autowired
-	EntrepriseRepository entrepriseRepository;
-//
-//	@Autowired
-//	CacheManager cacheManager;
-
-	@PersistenceUnit
-	EntityManagerFactory entityManagerFactory;
 
 	@RequestMapping("/helloWorldJob")
 	public String helloWorldJob() throws Exception {
