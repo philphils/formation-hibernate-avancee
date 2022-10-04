@@ -53,14 +53,4 @@ public interface DeclarationRepository extends JpaRepository<Declaration, Intege
 	// @formatter:on
 	public Stream<Declaration> streamAllDeclarationWithEntrepriseWithSousClasse();
 
-	/// @formatter:off
-		@Query(" SELECT declaration FROM Declaration declaration "
-				+ " JOIN FETCH declaration.entreprise entreprise "
-//				+ " JOIN FETCH entreprise.sousClasse sousClasse "
-//				+ " JOIN FETCH sousClasse.indicesAnnuels indicesAnnuels "
-//				+ " JOIN FETCH sousClasse.indicesMensuels indicesMensuels "
-				)
-	/// @formatter:on
-	public Stream<Declaration> streamAllDeclarationWithEntrepriseAndSousClasseAndIndices();
-
 }
