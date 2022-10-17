@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import fr.insee.formation.hibernate.batch.listener.TimingItemProcessListener;
 import fr.insee.formation.hibernate.batch.utils.ChunkingStreamTasklet;
 import fr.insee.formation.hibernate.batch.utils.JPAPersistWriter;
 import fr.insee.formation.hibernate.model.IndiceAnnuel;
@@ -94,7 +95,9 @@ public class CalculIndicesBatchConfig {
 				indiceMensuelRepository::streamAllIndicesMensuelWithSousClasseAndEntrepriseAndDeclaration,
 				itemCalculIndicesMensuelsProcessor(), indiceMensuelValeurUpdateWriter, chunkSizeCalcul, true);
 
-		taskletCalculIndicesMensuels.setAffichageLogCompteur(affichageCalculIndices);
+//		taskletCalculIndicesMensuels.setAffichageLogCompteur(affichageCalculIndices);
+
+		taskletCalculIndicesMensuels.addItemProcessListener(new TimingItemProcessListener(affichageCalculIndices));
 
 		return taskletCalculIndicesMensuels;
 
@@ -107,7 +110,9 @@ public class CalculIndicesBatchConfig {
 				indiceAnnuelRepository::streamAllIndicesAnnuelsWithSousClasseAndEntrepriseAndDeclaration,
 				itemCalculIndicesAnnuelsProcessor(), indiceAnnuelValeurUpdateWriter, chunkSizeCalcul, true);
 
-		taskletCalculIndicesAnnuels.setAffichageLogCompteur(affichageCalculIndices);
+//		taskletCalculIndicesAnnuels.setAffichageLogCompteur(affichageCalculIndices);
+
+		taskletCalculIndicesAnnuels.addItemProcessListener(new TimingItemProcessListener(affichageCalculIndices));
 
 		return taskletCalculIndicesAnnuels;
 

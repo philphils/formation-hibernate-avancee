@@ -21,7 +21,7 @@ public class TimingItemProcessListener implements ItemProcessListener {
 
 	private Boolean firstTime = true;
 
-	public void setAffichageLogCompteur(Integer affichageLogCompteur) {
+	public TimingItemProcessListener(Integer affichageLogCompteur) {
 		this.affichageLogCompteur = affichageLogCompteur;
 	}
 

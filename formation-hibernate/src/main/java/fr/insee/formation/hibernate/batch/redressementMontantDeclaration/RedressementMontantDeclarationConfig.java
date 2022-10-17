@@ -68,10 +68,6 @@ public class RedressementMontantDeclarationConfig {
 	protected Step redressementProcessLines(ItemReader<Declaration> reader,
 			ItemProcessor<Declaration, Declaration> processor, ItemWriter<Declaration> writer) {
 
-		TimingItemProcessListener itemProcessListener = new TimingItemProcessListener();
-
-		itemProcessListener.setAffichageLogCompteur(affichageLogCompteur);
-
 		return
 		//// @formatter:off
 				steps
@@ -79,7 +75,7 @@ public class RedressementMontantDeclarationConfig {
 					.<Declaration, Declaration>chunk(chunkSize)
 					.reader(reader)
 					.processor(processor)
-					.listener(itemProcessListener)
+					.listener(new TimingItemProcessListener(affichageLogCompteur))
 					.writer(writer)
 				.build();
 		// @formatter:on
@@ -118,7 +114,7 @@ public class RedressementMontantDeclarationConfig {
 				declarationRepository::streamAllDeclarationWithEntrepriseWithSousClasse, redressementItemProcessor(),
 				redressementItemWriter(), chunkSize, false);
 
-		tasklet.setAffichageLogCompteur(affichageLogCompteur);
+		tasklet.addItemProcessListener(new TimingItemProcessListener(affichageLogCompteur));
 
 		return tasklet;
 	}

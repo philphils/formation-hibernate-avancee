@@ -1,16 +1,18 @@
 package fr.insee.formation.hibernate.batch.utils;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.batch.operations.BatchRuntimeException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.springframework.batch.core.ChunkListener;
 import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.ItemProcessListener;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.StepExecutionListener;
@@ -54,17 +56,21 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 
 	private ItemWriter<T> itemWriter;
 
+	private List<ChunkListener> chunkListeners = new ArrayList<>();
+
+	private List<ItemProcessListener> itemProcessListeners = new ArrayList<>();
+
 	private Integer chunkSize;
 
 	private Boolean newTransactionForEachChunk;
 
 	private Integer compteur = 1;
 
-	private Integer affichageLogCompteur;
-
-	private Instant timer;
-
-	private Long totalMilliseconds = 0L;
+//	private Integer affichageLogCompteur;
+//
+//	private Instant timer;
+//
+//	private Long totalMilliseconds = 0L;
 
 	private List<S> entryList = new ArrayList<S>();
 
@@ -88,14 +94,22 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 		this.newTransactionForEachChunk = newTransactionForEachChunk;
 	}
 
-	public void setAffichageLogCompteur(Integer affichageLogCompteur) {
-		this.affichageLogCompteur = affichageLogCompteur;
+//	public void setAffichageLogCompteur(Integer affichageLogCompteur) {
+//		this.affichageLogCompteur = affichageLogCompteur;
+//	}
+
+	public void addChunkListener(ChunkListener chunkListener) {
+		chunkListeners.add(chunkListener);
+	}
+
+	public void addItemProcessListener(ItemProcessListener itemProcessListener) {
+		itemProcessListeners.add(itemProcessListener);
 	}
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 
-		timer = Instant.now();
+//		timer = Instant.now();
 
 		streamSupplier.get().forEach(entry -> {
 			try {
@@ -105,7 +119,7 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 				 * la taille définie des chunks
 				 */
 				if (compteur % chunkSize == 0) {
-					processAndWrite(entryList);
+					processAndWrite(entryList, chunkContext);
 					entryList.removeAll(entryList);
 				}
 				compteur++;
@@ -119,14 +133,18 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 		 * chunks
 		 */
 		if (!entryList.isEmpty()) {
-			processAndWrite(entryList);
+			processAndWrite(entryList, chunkContext);
 			entryList.removeAll(entryList);
 		}
 
 		return RepeatStatus.FINISHED;
 	}
 
-	private void processAndWrite(List<S> entryList) throws Exception {
+	private void processAndWrite(List<S> entryList, ChunkContext chunkContext) throws Exception {
+
+		for (ChunkListener chunkListener : chunkListeners) {
+			chunkListener.beforeChunk(chunkContext);
+		}
 
 		/*
 		 * On ouvre une transaction pour le traitement de chaque chunk
@@ -138,13 +156,38 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 					log.debug("Writing {} objects", chunkSize);
 					resultList = entryList.stream().map(e -> {
 						try {
-							return itemProcessor.process(e);
+
+							for (ItemProcessListener itemProcessListener : itemProcessListeners) {
+								itemProcessListener.beforeProcess(e);
+							}
+
+							T result = itemProcessor.process(e);
+
+							for (ItemProcessListener itemProcessListener : itemProcessListeners) {
+								itemProcessListener.afterProcess(e, result);
+							}
+
+							return result;
 						} catch (Exception e1) {
+
+							for (ItemProcessListener itemProcessListener : itemProcessListeners) {
+								try {
+									itemProcessListener.onProcessError(e, e1);
+								} catch (Exception e2) {
+									throw new BatchRuntimeException(e2);
+								}
+							}
+
 							throw new RuntimeException(e1);
 						}
 					}).collect(Collectors.toList());
 					itemWriter.write(resultList);
 				} catch (Exception e) {
+
+					for (ChunkListener chunkListener : chunkListeners) {
+						chunkListener.afterChunkError(chunkContext);
+					}
+
 					throw new RuntimeException(e);
 				}
 			}
@@ -153,13 +196,17 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 		if (newTransactionForEachChunk)
 			entityManager.clear();
 
-		if (affichageLogCompteur != null && compteur % affichageLogCompteur == 0) {
-			Long milliSeconds = Instant.now().toEpochMilli() - timer.toEpochMilli();
-			totalMilliseconds = milliSeconds + totalMilliseconds;
-			log.info(milliSeconds + " milli-secondes pour persister " + affichageLogCompteur + " objets. Moyenne : "
-					+ Math.floor(((double) compteur / (double) totalMilliseconds) * 1000) + " objets traités / second");
-			timer = Instant.now();
+		for (ChunkListener chunkListener : chunkListeners) {
+			chunkListener.afterChunk(chunkContext);
 		}
+
+//		if (affichageLogCompteur != null && compteur % affichageLogCompteur == 0) {
+//			Long milliSeconds = Instant.now().toEpochMilli() - timer.toEpochMilli();
+//			totalMilliseconds = milliSeconds + totalMilliseconds;
+//			log.info(milliSeconds + " milli-secondes pour persister " + affichageLogCompteur + " objets. Moyenne : "
+//					+ Math.floor(((double) compteur / (double) totalMilliseconds) * 1000) + " objets traités / second");
+//			timer = Instant.now();
+//		}
 
 	}
 

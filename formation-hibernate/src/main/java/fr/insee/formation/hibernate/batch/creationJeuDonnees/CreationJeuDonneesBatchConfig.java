@@ -102,10 +102,6 @@ public class CreationJeuDonneesBatchConfig {
 			ItemProcessor<String[], AbstractNiveauNomenclature> processor,
 			ItemWriter<AbstractNiveauNomenclature> writer) {
 
-		TimingItemProcessListener itemProcessListener = new TimingItemProcessListener();
-
-		itemProcessListener.setAffichageLogCompteur(compteurAffichageSecteurCrees);
-
 		return
 		//// @formatter:off
 				steps
@@ -113,7 +109,7 @@ public class CreationJeuDonneesBatchConfig {
 					.<String[], AbstractNiveauNomenclature>chunk(chunkSize)
 					.reader(reader)
 					.processor(processor)
-					.listener(itemProcessListener)
+					.listener(new TimingItemProcessListener(compteurAffichageSecteurCrees))
 					.writer(writer)
 				.build();
 		// @formatter:on
@@ -124,10 +120,6 @@ public class CreationJeuDonneesBatchConfig {
 	protected Step creationEntrepriseAndDeclarationStep(ItemReader<SousClasse> reader,
 			ItemProcessor<SousClasse, Set<Entreprise>> processor, ItemWriter<Set<Entreprise>> writer) {
 
-		TimingItemProcessListener itemProcessListener = new TimingItemProcessListener();
-
-		itemProcessListener.setAffichageLogCompteur(compteurAffichageDeclarationsCrees);
-
 		return
 		//// @formatter:off
 				steps
@@ -135,7 +127,7 @@ public class CreationJeuDonneesBatchConfig {
 					.<SousClasse, Set<Entreprise>>chunk(chunkSize)
 					.reader(reader)
 					.processor(processor)
-					.listener(itemProcessListener)
+					.listener(new TimingItemProcessListener(compteurAffichageDeclarationsCrees))
 					.writer(writer)
 				.build();
 		// @formatter:on
@@ -146,10 +138,6 @@ public class CreationJeuDonneesBatchConfig {
 	public Step creationIndicesStep(ItemReader<SousClasse> reader, ItemProcessor<SousClasse, Set<Indice>> processor,
 			ItemWriter<Set<Indice>> writer) {
 
-		TimingItemProcessListener itemProcessListener = new TimingItemProcessListener();
-
-		itemProcessListener.setAffichageLogCompteur(compteurAffichageSecteurCrees);
-
 		return
 		//// @formatter:off
 				steps
@@ -157,7 +145,7 @@ public class CreationJeuDonneesBatchConfig {
 					.<SousClasse, Set<Indice>>chunk(chunkSizeCreationIndices)
 					.reader(reader)
 					.processor(processor)
-					.listener(itemProcessListener)
+					.listener(new TimingItemProcessListener(compteurAffichageSecteurCrees))
 					.writer(writer)
 				.build();
 		// @formatter:on
