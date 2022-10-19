@@ -66,12 +66,6 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 
 	private Integer compteur = 1;
 
-//	private Integer affichageLogCompteur;
-//
-//	private Instant timer;
-//
-//	private Long totalMilliseconds = 0L;
-
 	private List<S> entryList = new ArrayList<S>();
 
 	private List<T> resultList = new ArrayList<T>();
@@ -94,10 +88,6 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 		this.newTransactionForEachChunk = newTransactionForEachChunk;
 	}
 
-//	public void setAffichageLogCompteur(Integer affichageLogCompteur) {
-//		this.affichageLogCompteur = affichageLogCompteur;
-//	}
-
 	public void addChunkListener(ChunkListener chunkListener) {
 		chunkListeners.add(chunkListener);
 	}
@@ -108,8 +98,6 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-
-//		timer = Instant.now();
 
 		streamSupplier.get().forEach(entry -> {
 			try {
@@ -199,14 +187,6 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 		for (ChunkListener chunkListener : chunkListeners) {
 			chunkListener.afterChunk(chunkContext);
 		}
-
-//		if (affichageLogCompteur != null && compteur % affichageLogCompteur == 0) {
-//			Long milliSeconds = Instant.now().toEpochMilli() - timer.toEpochMilli();
-//			totalMilliseconds = milliSeconds + totalMilliseconds;
-//			log.info(milliSeconds + " milli-secondes pour persister " + affichageLogCompteur + " objets. Moyenne : "
-//					+ Math.floor(((double) compteur / (double) totalMilliseconds) * 1000) + " objets traités / second");
-//			timer = Instant.now();
-//		}
 
 	}
 
