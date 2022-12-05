@@ -91,7 +91,7 @@ public class BatchControllers {
 		return returnMessageIfNotFailed("Les déclarations ont bien été redressées", jobExecution);
 	}
 
-	@RequestMapping("/CalculIndices")
+	@RequestMapping("/CalculIndicesJob")
 	public String calculIndices() throws Exception {
 
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
