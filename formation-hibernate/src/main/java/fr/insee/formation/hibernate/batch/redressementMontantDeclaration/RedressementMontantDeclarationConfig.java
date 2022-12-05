@@ -112,7 +112,7 @@ public class RedressementMontantDeclarationConfig {
 
 		ChunkingStreamTasklet tasklet = new ChunkingStreamTasklet<Declaration, Declaration>(
 				declarationRepository::streamAllDeclarationWithEntrepriseWithSousClasse, redressementItemProcessor(),
-				redressementItemWriter(), chunkSize, false);
+				redressementItemWriter(), chunkSize, true);
 
 		tasklet.addItemProcessListener(new TimingItemProcessListener(affichageLogCompteur));
 

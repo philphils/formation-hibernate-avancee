@@ -26,7 +26,7 @@ import fr.insee.formation.hibernate.repositories.SousClasseRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RedressementMontantDeclarationBatchTest extends AbstractTest {
+public class RedressementMontantDeclarationBatchStreamTest extends AbstractTest {
 
 	@Autowired
 	JobLauncher jobLauncher;
@@ -35,7 +35,7 @@ public class RedressementMontantDeclarationBatchTest extends AbstractTest {
 	Job creationJeuDonneesJob;
 
 	@Autowired
-	Job redressementMontantDeclarationJob;
+	Job redressementMontantDeclarationStreamJob;
 
 	@Autowired
 	SousClasseRepository sousClasseRepository;
@@ -47,7 +47,7 @@ public class RedressementMontantDeclarationBatchTest extends AbstractTest {
 	TransactionTemplate transactionTemplate;
 
 	@Test
-	public void redressementMontantDeclarationBatchTest() throws Exception {
+	public void redressementMontantDeclarationBatchStreamTest() throws Exception {
 
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
@@ -90,7 +90,7 @@ public class RedressementMontantDeclarationBatchTest extends AbstractTest {
 
 		JobParameters jobParameters2 = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
-		JobExecution jobExecution2 = jobLauncher.run(redressementMontantDeclarationJob, jobParameters2);
+		JobExecution jobExecution2 = jobLauncher.run(redressementMontantDeclarationStreamJob, jobParameters2);
 
 		assertEquals(jobExecution2.getAllFailureExceptions().size(), 0);
 
