@@ -52,7 +52,7 @@ public class DeclarationVersionControlTest extends AbstractTest {
 		// WHEN
 
 		/*
-		 * On lance 2 Thread qui modifie la même déclaration, avec un ayant une pause
+		 * On lance 2 Thread qui modifient la même déclaration, avec un ayant une pause
 		 * d'une seconde. On doit nécessairement récupérer une
 		 * ObjectOptimisticLockingFailureException si les déclarations sont bien
 		 * versionnées
