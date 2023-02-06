@@ -22,7 +22,7 @@ import fr.insee.formation.hibernate.repositories.EntrepriseRepository;
 import fr.insee.formation.hibernate.services.IEntrepriseServices;
 import fr.insee.formation.hibernate.util.JeuxTestUtil;
 
-public class EntrepriseVersionControlTest extends AbstractTest {
+public class TP4EntrepriseVersionControlTest extends AbstractTest {
 
 	@Autowired
 	private JeuxTestUtil jeuxTestUtil;

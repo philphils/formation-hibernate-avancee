@@ -20,7 +20,7 @@ import fr.insee.formation.hibernate.config.AbstractTest;
 import fr.insee.formation.hibernate.repositories.DeclarationRepository;
 import fr.insee.formation.hibernate.util.JeuxTestUtil;
 
-public class DeclarationVersionControlTest extends AbstractTest {
+public class TP4DeclarationVersionControlTest extends AbstractTest {
 
 	@Autowired
 	private JeuxTestUtil jeuxTestUtil;
