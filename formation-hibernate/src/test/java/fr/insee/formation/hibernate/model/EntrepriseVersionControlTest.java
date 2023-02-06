@@ -60,9 +60,8 @@ public class EntrepriseVersionControlTest extends AbstractTest {
 
 		/*
 		 * On lance 2 Thread qui ajoutent une déclaration à la même entreprise, avec un
-		 * ayant une pause d'une seconde. On doit nécessairement récupérer une
-		 * ObjectOptimisticLockingFailureException si l'option FORCE_INCREMENT est bien
-		 * activée
+		 * ayant une pause d'une seconde. On veut récupérer une
+		 * ObjectOptimisticLockingFailureException le verrou est correctement posé
 		 * 
 		 */
 		List<Future<Object>> futures = executor
@@ -71,8 +70,11 @@ public class EntrepriseVersionControlTest extends AbstractTest {
 					@Override
 					protected void doInTransactionWithoutResult(TransactionStatus status) {
 
-						Entreprise entreprise = entrepriseRepository
-								.getEntrepriseWithOptimisticLockForceIncrement(idEntreprise);
+						/*
+						 * Remplacer par l'appel à la méthode que vous aurez définie dans
+						 * EntrepriseRepository
+						 */
+						Entreprise entreprise = null;
 
 						entrepriseServices.ajouterDeclarationEntreprise(entreprise, 150d, new Date());
 
@@ -89,10 +91,12 @@ public class EntrepriseVersionControlTest extends AbstractTest {
 
 					@Override
 					protected void doInTransactionWithoutResult(TransactionStatus status) {
-						// TODO Auto-generated method stub
 
-						Entreprise entreprise = entrepriseRepository
-								.getEntrepriseWithOptimisticLockForceIncrement(idEntreprise);
+						/*
+						 * Remplacer par l'appel à la méthode que vous aurez définie dans
+						 * EntrepriseRepository
+						 */
+						Entreprise entreprise = null;
 
 						entrepriseServices.ajouterDeclarationEntreprise(entreprise, 170d, new Date());
 
@@ -105,6 +109,7 @@ public class EntrepriseVersionControlTest extends AbstractTest {
 		// THEN
 		try {
 			futures.get(0).get();
+
 			/*
 			 * Si aucune Exception n'a été levée alors le versionnement n'est pas opérant
 			 * --> le test échoue
