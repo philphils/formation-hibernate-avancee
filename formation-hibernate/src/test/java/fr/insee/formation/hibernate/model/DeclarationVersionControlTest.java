@@ -68,6 +68,10 @@ public class DeclarationVersionControlTest extends AbstractTest {
 						declaration.setMontant(120d);
 
 						try {
+							/*
+							 * On fait un pause avec Thread.sleep(1000) pour être sûr que les 2 transactions
+							 * se chevauchent
+							 */
 							Thread.sleep(1000);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block

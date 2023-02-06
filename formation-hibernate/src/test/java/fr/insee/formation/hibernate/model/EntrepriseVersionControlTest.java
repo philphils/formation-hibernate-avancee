@@ -46,6 +46,16 @@ public class EntrepriseVersionControlTest extends AbstractTest {
 		}
 	}
 
+	private void ajouterDeclarationEntreprise(Integer idEntreprise, Double montant) {
+		/*
+		 * TODO : Remplacer par l'appel à la méthode que vous aurez définie dans
+		 * EntrepriseRepository
+		 */
+		Entreprise entreprise = null;
+
+		entrepriseServices.ajouterDeclarationEntreprise(entreprise, montant, new Date());
+	}
+
 	@Test
 	public void testOptimisticForceIncrement() throws InterruptedException {
 
@@ -70,15 +80,13 @@ public class EntrepriseVersionControlTest extends AbstractTest {
 					@Override
 					protected void doInTransactionWithoutResult(TransactionStatus status) {
 
-						/*
-						 * Remplacer par l'appel à la méthode que vous aurez définie dans
-						 * EntrepriseRepository
-						 */
-						Entreprise entreprise = null;
-
-						entrepriseServices.ajouterDeclarationEntreprise(entreprise, 150d, new Date());
+						ajouterDeclarationEntreprise(idEntreprise, 170d);
 
 						try {
+							/*
+							 * On fait un pause avec Thread.sleep(100) pour être sûr que les 2 transactions
+							 * se chevauchent
+							 */
 							Thread.sleep(100);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
@@ -92,13 +100,7 @@ public class EntrepriseVersionControlTest extends AbstractTest {
 					@Override
 					protected void doInTransactionWithoutResult(TransactionStatus status) {
 
-						/*
-						 * Remplacer par l'appel à la méthode que vous aurez définie dans
-						 * EntrepriseRepository
-						 */
-						Entreprise entreprise = null;
-
-						entrepriseServices.ajouterDeclarationEntreprise(entreprise, 170d, new Date());
+						ajouterDeclarationEntreprise(idEntreprise, 150d);
 
 					}
 
