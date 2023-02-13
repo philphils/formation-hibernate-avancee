@@ -142,8 +142,6 @@ public class TP4EntrepriseVersionControlTest extends AbstractTest {
 	@Test
 	public void testOptimisticForceIncrementPhantomRead() throws InterruptedException {
 
-		Object semaphore = new Object();
-
 		// GIVEN
 		/*
 		 * On récupère un identifiant d'entreprise
