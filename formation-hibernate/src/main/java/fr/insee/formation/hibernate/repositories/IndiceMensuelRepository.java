@@ -23,4 +23,9 @@ public interface IndiceMensuelRepository extends JpaRepository<IndiceMensuel, In
 		/// @formatter:on
 	public Stream<IndiceMensuel> streamAllIndicesMensuelWithSousClasseAndEntrepriseAndDeclaration();
 
+	/**
+	 * TP4 exo3 : Ecrivez une méthode qui permet de récupérer un indice mensuel en
+	 * posant un verrou pessimiste en écriture dessus
+	 */
+
 }

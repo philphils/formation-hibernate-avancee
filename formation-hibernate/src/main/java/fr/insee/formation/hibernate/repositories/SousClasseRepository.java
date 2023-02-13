@@ -47,4 +47,10 @@ public interface SousClasseRepository extends JpaRepository<SousClasse, Integer>
 	// @formatter:on
 	public SousClasse findByEntrepriseWithAllEntreprises(Entreprise entreprise);
 
+	/**
+	 * TP4 exo3 : Ecrivez une méthode qui permet de récupérer les données
+	 * nécessaires au calcul d'un indice : la sous-classe, les entreprises et les
+	 * déclarations à la date recherchée
+	 */
+
 }
