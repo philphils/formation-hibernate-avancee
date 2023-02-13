@@ -64,7 +64,7 @@ public class TP4IndiceConcurrenceControlTest extends AbstractTestIntegration {
 	@Autowired
 	EntityManagerFactory entityManagerFactory;
 
-	private static Boolean attendreRecupIndice = true;
+	private static Object attendreRecupIndice = new Object();
 
 	@Autowired
 	CalculIndicesMensuelsProcessor calculIndicesMensuelsProcessor;
@@ -77,17 +77,40 @@ public class TP4IndiceConcurrenceControlTest extends AbstractTestIntegration {
 		 * TODO : Remplacer par l'appel à votre méthode qui pose un verrou en écriture
 		 * sur l'indice
 		 */
-		IndiceMensuel indiceMensuel = null;
+		IndiceMensuel indiceMensuel = indiceMensuelRepository.getIndiceMensuelWithPessimisticWriteLock(idIndice);
 
 		/*
 		 * TODO : Remplacer par l'appel à votre méthode qui pose un verrou en lecture
-		 * sur la sous-classe, avec ses entreprises et leurs déclarations
+		 * sur la sous-classe, avec ses entreprises et les déclarations de la date
+		 * concernée
 		 */
-		SousClasse sousClasse = null;
+		SousClasse sousClasse = sousClasseRepository.findForCalculIndiceWithPessimisticReadLock(idSousClasse, mois);
 
-		attendreRecupIndice = false;
+		/*
+		 * On synchronise les threads pour être sûr que les verrous sont posés avant
+		 * l'exécution des autres Thread
+		 */
+		synchronized (attendreRecupIndice) {
+			attendreRecupIndice.notifyAll();
+		}
 
 		indiceMensuel = calculIndicesMensuelsProcessor.process(indiceMensuel);
+	}
+
+	private void waitRecupIndice() {
+		try {
+			/*
+			 * On synchronise les threads pour être sûr que les verrous sont posés avant
+			 * l'exécution des autres Thread
+			 */
+			synchronized (attendreRecupIndice) {
+				attendreRecupIndice.wait();
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			Assert.fail();
+		}
 	}
 
 	@Test
@@ -130,6 +153,7 @@ public class TP4IndiceConcurrenceControlTest extends AbstractTestIntegration {
 						log.info("Début Thread 1");
 
 						try {
+							Thread.sleep(100);
 
 							calculIndice(idIndice,
 									Date.from(yearMonth.atDay(1).atStartOfDay(ZoneId.systemDefault()).toInstant()),
@@ -158,7 +182,7 @@ public class TP4IndiceConcurrenceControlTest extends AbstractTestIntegration {
 
 						log.info("Début Thread 2");
 
-						waitForIndiceLock();
+						waitRecupIndice();
 
 						IndiceMensuel indiceMensuel = indiceMensuelRepository.findById(idIndice).get();
 
@@ -186,7 +210,7 @@ public class TP4IndiceConcurrenceControlTest extends AbstractTestIntegration {
 
 						log.info("Début Thread 3");
 
-						waitForIndiceLock();
+						waitRecupIndice();
 
 						EntityManager entityManager = EntityManagerFactoryUtils
 								.getTransactionalEntityManager(entityManagerFactory);
@@ -220,7 +244,7 @@ public class TP4IndiceConcurrenceControlTest extends AbstractTestIntegration {
 
 						log.info("Début Thread 4");
 
-						waitForIndiceLock();
+						waitRecupIndice();
 
 						SousClasse sousClasse = sousClasseRepository.getById(idSousClasse);
 
@@ -250,7 +274,7 @@ public class TP4IndiceConcurrenceControlTest extends AbstractTestIntegration {
 
 						log.info("Début Thread 5");
 
-						waitForIndiceLock();
+						waitRecupIndice();
 
 						SousClasse sousClasse = sousClasseRepository.getById(idSousClasse);
 
@@ -321,17 +345,6 @@ public class TP4IndiceConcurrenceControlTest extends AbstractTestIntegration {
 			Assert.fail();
 		}
 
-	}
-
-	private static void waitForIndiceLock() {
-		while (attendreRecupIndice) {
-			try {
-				Thread.sleep(10);
-			} catch (InterruptedException e) {
-				log.error(e.getLocalizedMessage(), e);
-				throw new RuntimeException("Problème à l'exécution");
-			}
-		}
 	}
 
 }

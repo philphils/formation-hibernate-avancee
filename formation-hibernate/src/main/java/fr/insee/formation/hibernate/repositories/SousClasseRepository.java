@@ -1,11 +1,14 @@
 package fr.insee.formation.hibernate.repositories;
 
+import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.LockModeType;
 import javax.persistence.QueryHint;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
 
@@ -46,5 +49,13 @@ public interface SousClasseRepository extends JpaRepository<SousClasse, Integer>
 			+ "WHERE entreprise = :entreprise ")
 	// @formatter:on
 	public SousClasse findByEntrepriseWithAllEntreprises(Entreprise entreprise);
+
+	//// @formatter:off
+	@Query("SELECT sousClasse FROM SousClasse sousClasse " + " JOIN FETCH sousClasse.entreprises entreprise "
+			+ " JOIN FETCH entreprise.declarations declaration " + " WHERE sousClasse.id = :idSousClasse "
+			+ " AND declaration.date = :date ")
+	// @formatter:on
+	@Lock(LockModeType.PESSIMISTIC_READ)
+	public SousClasse findForCalculIndiceWithPessimisticReadLock(Integer idSousClasse, Date date);
 
 }
