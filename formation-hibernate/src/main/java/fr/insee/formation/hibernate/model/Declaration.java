@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Version;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,9 @@ public class Declaration {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hib_seq")
 	@SequenceGenerator(name = "hib_seq", sequenceName = "hib_seq", allocationSize = 100)
 	private int id;
+
+	@Version
+	private Long version;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
