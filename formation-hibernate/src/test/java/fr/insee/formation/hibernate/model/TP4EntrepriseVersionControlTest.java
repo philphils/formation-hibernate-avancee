@@ -1,5 +1,7 @@
 package fr.insee.formation.hibernate.model;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -21,7 +23,9 @@ import fr.insee.formation.hibernate.config.AbstractTest;
 import fr.insee.formation.hibernate.repositories.EntrepriseRepository;
 import fr.insee.formation.hibernate.services.IEntrepriseServices;
 import fr.insee.formation.hibernate.util.JeuxTestUtil;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class TP4EntrepriseVersionControlTest extends AbstractTest {
 
 	@Autowired
@@ -46,14 +50,21 @@ public class TP4EntrepriseVersionControlTest extends AbstractTest {
 		}
 	}
 
-	private void ajouterDeclarationEntreprise(Integer idEntreprise, Double montant) {
+	private Entreprise getEntrepriseWithOptimisticLockForceIncrement(Integer idEntreprise) {
 		/*
-		 * TODO : Remplacer par l'appel à la méthode que vous aurez définie dans
+		 * TODO : Remplacer null par l'appel à la méthode que vous aurez définie dans
 		 * EntrepriseRepository
 		 */
-		Entreprise entreprise = null;
+		return null;
+
+	}
+
+	private void ajouterDeclarationEntreprise(Integer idEntreprise, Double montant) {
+
+		Entreprise entreprise = getEntrepriseWithOptimisticLockForceIncrement(idEntreprise);
 
 		entrepriseServices.ajouterDeclarationEntreprise(entreprise, montant, new Date());
+
 	}
 
 	@Test
@@ -124,6 +135,69 @@ public class TP4EntrepriseVersionControlTest extends AbstractTest {
 			}
 			Assert.assertEquals(ObjectOptimisticLockingFailureException.class,
 					executionException.getCause().getClass());
+		}
+
+	}
+
+	@Test
+	public void testOptimisticForceIncrementPhantomRead() throws InterruptedException {
+
+		Object semaphore = new Object();
+
+		// GIVEN
+		/*
+		 * On récupère un identifiant d'entreprise
+		 */
+		Integer idEntreprise = entrepriseRepository.findAll().get(0).getId();
+
+		// WHEN
+		final ExecutorService executor = Executors.newFixedThreadPool(2);
+
+		/*
+		 * On lance 2 Thread qui ajoutent une déclaration à la même entreprise, avec un
+		 * ayant une pause d'une seconde. On veut récupérer une
+		 * ObjectOptimisticLockingFailureException le verrou est correctement posé
+		 * 
+		 */
+		List<Future<Object>> futures = executor
+				.invokeAll(Arrays.asList(() -> transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+					@Override
+					protected void doInTransactionWithoutResult(TransactionStatus status) {
+
+						Entreprise entreprise = getEntrepriseWithOptimisticLockForceIncrement(idEntreprise);
+
+						entrepriseServices.ajouterDeclarationEntreprise(entreprise, 170d, new Date());
+
+					}
+
+				}), () -> transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+
+					@Override
+					protected void doInTransactionWithoutResult(TransactionStatus status) {
+
+						Entreprise entreprise = getEntrepriseWithOptimisticLockForceIncrement(idEntreprise);
+
+					}
+
+				})
+
+				));
+
+		// THEN
+		try {
+			futures.get(0).get();
+			futures.get(1).get();
+
+			/*
+			 * Si aucune Exception n'a été levée alors le versionnement n'est pas opérant
+			 * --> le test échoue
+			 */
+			Assert.fail(
+					"On aurait du avoir une ObjectOptimisticLockingFailureException levée, le contrôle de version n'a pas fonctionné");
+		} catch (Exception exception) {
+			assertEquals("On devrait avoir une ObjectOptimisticLockingFailureException",
+					ObjectOptimisticLockingFailureException.class, exception.getCause().getClass());
 		}
 
 	}
