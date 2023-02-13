@@ -55,7 +55,7 @@ public class TP4EntrepriseVersionControlTest extends AbstractTest {
 		 * TODO : Remplacer null par l'appel à la méthode que vous aurez définie dans
 		 * EntrepriseRepository
 		 */
-		return null;
+		return entrepriseRepository.getEntrepriseWithOptimistLockForceIncrement(idEntreprise);
 
 	}
 
@@ -141,8 +141,6 @@ public class TP4EntrepriseVersionControlTest extends AbstractTest {
 
 	@Test
 	public void testOptimisticForceIncrementPhantomRead() throws InterruptedException {
-
-		Object semaphore = new Object();
 
 		// GIVEN
 		/*

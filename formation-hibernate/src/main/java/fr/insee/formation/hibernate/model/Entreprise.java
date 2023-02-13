@@ -26,6 +26,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
 import lombok.AccessLevel;
@@ -41,6 +42,9 @@ public class Entreprise {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hib_seq")
 	@SequenceGenerator(name = "hib_seq", sequenceName = "hib_seq", allocationSize = 100)
 	private int id;
+
+	@Version
+	private Long version;
 
 	private String denomination;
 
