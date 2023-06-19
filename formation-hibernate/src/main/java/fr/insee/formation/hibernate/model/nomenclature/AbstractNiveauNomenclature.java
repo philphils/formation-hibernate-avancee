@@ -1,7 +1,6 @@
 package fr.insee.formation.hibernate.model.nomenclature;
 
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
@@ -14,7 +13,7 @@ import lombok.Setter;
 public abstract class AbstractNiveauNomenclature {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hib_seq")
+	@GeneratedValue
 	/*
 	 * TP1 : Spécifier l'allocationSize pour économiser les allers-retours avec la
 	 * BDD
