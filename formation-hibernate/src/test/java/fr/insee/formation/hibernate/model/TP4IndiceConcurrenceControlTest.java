@@ -316,9 +316,6 @@ public class TP4IndiceConcurrenceControlTest extends AbstractTestIntegration {
 
 			Long timeRecupIndiceThread5 = (Long) futures.get(4).get();
 
-			/*
-			 * On doit avoir une TimeoutException
-			 */
 			log.info("Temps d'exécution du thread 2 : " + timeRecupIndiceThread2 + "ms");
 			log.info("Temps d'exécution du thread 3 : " + timeRecupIndiceThread3 + "ms");
 			log.info("Temps d'exécution du thread 4 : " + timeRecupIndiceThread4 + "ms");
