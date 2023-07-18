@@ -5,13 +5,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.hibernate.envers.AuditReader;
-import org.hibernate.envers.AuditReaderFactory;
-import org.hibernate.envers.RevisionType;
-import org.hibernate.envers.query.AuditEntity;
-import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.envers.query.criteria.AuditConjunction;
-
 import fr.insee.formation.hibernate.model.Entreprise;
 import fr.insee.formation.hibernate.repositories.custom.CustomEntrepriseRepository;
 
@@ -23,40 +16,35 @@ public class CustomEntrepriseRepositoryImpl implements CustomEntrepriseRepositor
 	@Override
 	public List<Entreprise> findAllRevisionsOfEntreprise(Integer idEntreprise) {
 
-		AuditReader auditReader = AuditReaderFactory.get(entityManager);
+		/**
+		 * TP5 , exo4 : Cette méthode doit permettre de récupérer toutes les versions
+		 * d'une entreprise à partir de son identifiant
+		 */
 
-		AuditQuery auditQuery = auditReader.createQuery().forRevisionsOfEntity(Entreprise.class, true, true)
-				.add(AuditEntity.id().eq(idEntreprise));
-
-		return auditQuery.getResultList();
+		return null;
 	}
 
 	@Override
 	public List<Entreprise> findAllEntreprisesOfRevision(Number number) {
 
-		AuditReader auditReader = AuditReaderFactory.get(entityManager);
+		/**
+		 * TP5, exo4 : Cette méthode doit permettre de récupérer toutes les entreprises
+		 * modifiées lors d'une révision donnée
+		 */
 
-		AuditQuery auditQuery = auditReader.createQuery().forEntitiesModifiedAtRevision(Entreprise.class, number);
-
-		return auditQuery.getResultList();
+		return null;
 	}
 
 	@Override
 	public List<Object[]> findAllRevisionsModifyingDenomination() {
 
-		AuditReader auditReader = AuditReaderFactory.get(entityManager);
+		/**
+		 * TP5, exo4 : Cette méthode doit permettre de retrouver toutes les révisions
+		 * qui ont modifiées le champ dénomination d'une entreprise. Il faudra exclure
+		 * les insertions.
+		 */
 
-		AuditQuery auditQuery = auditReader.createQuery().forRevisionsOfEntityWithChanges(Entreprise.class, false);
-
-		AuditConjunction auditDisjunction = AuditEntity.conjunction();
-
-		auditDisjunction.add(AuditEntity.property("denomination").hasChanged());
-
-		auditDisjunction.add(AuditEntity.revisionType().ne(RevisionType.ADD));
-
-		auditQuery.add(auditDisjunction);
-
-		return auditQuery.getResultList();
+		return null;
 	}
 
 }
