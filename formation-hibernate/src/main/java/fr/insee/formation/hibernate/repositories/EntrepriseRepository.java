@@ -9,8 +9,9 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 
 import fr.insee.formation.hibernate.model.Entreprise;
+import fr.insee.formation.hibernate.repositories.custom.CustomEntrepriseRepository;
 
-public interface EntrepriseRepository extends JpaRepository<Entreprise, Integer> {
+public interface EntrepriseRepository extends JpaRepository<Entreprise, Integer>, CustomEntrepriseRepository {
 
 	Optional<Entreprise> findBySirenAndDenomination(String siren, Object object);
 
