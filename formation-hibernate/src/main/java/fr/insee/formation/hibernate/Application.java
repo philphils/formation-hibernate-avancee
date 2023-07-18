@@ -5,10 +5,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import fr.insee.formation.hibernate.repositories.custom.impl.JPAHistoRepositoryImpl;
-
 @SpringBootApplication
-@EnableJpaRepositories(basePackages = "fr.insee.formation.hibernate.repositories", repositoryBaseClass = JPAHistoRepositoryImpl.class, considerNestedRepositories = true)
+@EnableJpaRepositories(basePackages = "fr.insee.formation.hibernate.repositories")
 @EnableBatchProcessing
 public class Application {
 
