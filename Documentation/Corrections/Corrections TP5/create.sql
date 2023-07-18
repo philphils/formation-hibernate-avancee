@@ -25,6 +25,7 @@ create sequence hib_seq start with 1 increment by 100;
         revtype tinyint,
         date timestamp,
         montant double,
+        montant_mod boolean,
         entreprise_id integer,
         primary key (id, rev)
     );
