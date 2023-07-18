@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Audited
+@Audited(withModifiedFlag = true)
 public class Declaration {
 
 	@Id
