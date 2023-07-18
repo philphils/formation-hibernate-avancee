@@ -28,6 +28,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+
 import fr.insee.formation.hibernate.model.nomenclature.SousClasse;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,6 +39,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
+@Audited(withModifiedFlag = true)
 public class Entreprise {
 
 	@Id
@@ -71,6 +75,7 @@ public class Entreprise {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn
+	@NotAudited
 	private SousClasse sousClasse;
 
 	@Setter(value = AccessLevel.NONE)
