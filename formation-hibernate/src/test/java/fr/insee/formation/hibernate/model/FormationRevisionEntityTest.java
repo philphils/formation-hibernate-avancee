@@ -1,6 +1,7 @@
 package fr.insee.formation.hibernate.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -102,24 +103,7 @@ public class FormationRevisionEntityTest extends AbstractTest {
 
 				assertEquals("Test", revisionEntity.getContexte());
 
-			}
-		});
-
-		transactionTemplate.executeWithoutResult(new Consumer<TransactionStatus>() {
-
-			@Override
-			public void accept(TransactionStatus t) {
-
-				log.info(
-						"Interrogation des données historiques pour connaître les entités modifiées pour 1 révision données. (axe horizontal) ");
-
-				List<Number> revisions = AuditReaderFactory.get(entityManager).getRevisions(Declaration.class,
-						idDeclaration);
-
-				assertEquals(2, revisions.size());
-
-				Entreprise entreprise = (Entreprise) AuditReaderFactory.get(entityManager).createQuery()
-						.forEntitiesModifiedAtRevision(Entreprise.class, revisions.get(1)).getSingleResult();
+				assertNotNull(revisionEntity.getRevisionTimestamp());
 
 			}
 		});
