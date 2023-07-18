@@ -17,13 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import fr.insee.formation.hibernate.config.AbstractTestIntegration;
+import fr.insee.formation.hibernate.config.AbstractTest;
 import fr.insee.formation.hibernate.repositories.DeclarationRepository;
 import fr.insee.formation.hibernate.util.JeuxTestUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class HistorisationDeclarationTest extends AbstractTestIntegration {
+public class HistorisationDeclarationTest extends AbstractTest {
 
 	@Autowired
 	private JeuxTestUtil jeuxTestUtil;
