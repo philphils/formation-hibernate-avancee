@@ -1,4 +1,4 @@
-package fr.insee.formation.hibernate.repositories.custom.impl;
+package fr.insee.formation.hibernate.repositories.histo.impl;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -15,7 +15,7 @@ import org.hibernate.envers.query.criteria.AuditDisjunction;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 
-import fr.insee.formation.hibernate.repositories.custom.JPAHistoRepository;
+import fr.insee.formation.hibernate.repositories.histo.JPAHistoRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

@@ -15,6 +15,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import fr.insee.formation.hibernate.config.AbstractTest;
 import fr.insee.formation.hibernate.model.Declaration;
+import fr.insee.formation.hibernate.repositories.histo.DeclarationHistoRepository;
 import fr.insee.formation.hibernate.util.JeuxTestUtil;
 import lombok.extern.slf4j.Slf4j;
 

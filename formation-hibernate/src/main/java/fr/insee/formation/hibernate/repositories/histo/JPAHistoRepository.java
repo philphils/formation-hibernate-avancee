@@ -1,4 +1,4 @@
-package fr.insee.formation.hibernate.repositories.custom;
+package fr.insee.formation.hibernate.repositories.histo;
 
 import java.io.Serializable;
 import java.util.Date;
