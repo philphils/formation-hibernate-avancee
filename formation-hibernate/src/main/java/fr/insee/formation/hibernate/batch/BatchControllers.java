@@ -27,6 +27,9 @@ public class BatchControllers {
 
 	@Autowired
 	Job redressementMontantDeclarationJob;
+	
+	@Autowired
+	Job redressementMontantDeclarationCursorJob;
 
 	@Autowired
 	Job redressementMontantDeclarationStreamJob;
@@ -60,6 +63,16 @@ public class BatchControllers {
 		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
 				.toJobParameters();
 		JobExecution jobExecution = jobLauncher.run(redressementMontantDeclarationJob, jobParameters);
+
+		return returnMessageIfNotFailed("Les déclarations ont bien été redressées", jobExecution);
+	}
+	
+	@RequestMapping("/RedressementMontantDeclarationCursorJob")
+	public String redressementMontantDeclarationCursorJob() throws Exception {
+
+		JobParameters jobParameters = new JobParametersBuilder().addLong("time", System.currentTimeMillis())
+				.toJobParameters();
+		JobExecution jobExecution = jobLauncher.run(redressementMontantDeclarationCursorJob, jobParameters);
 
 		return returnMessageIfNotFailed("Les déclarations ont bien été redressées", jobExecution);
 	}

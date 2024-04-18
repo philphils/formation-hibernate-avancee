@@ -1,6 +1,10 @@
 package fr.insee.formation.hibernate.batch.redressementMontantDeclaration;
 
+import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -17,6 +21,7 @@ import org.springframework.context.annotation.Configuration;
 
 import fr.insee.formation.hibernate.batch.listener.TimingItemProcessListener;
 import fr.insee.formation.hibernate.batch.utils.ChunkingStreamTasklet;
+import fr.insee.formation.hibernate.batch.utils.JPAHibernateSpecificCursorItemReader;
 import fr.insee.formation.hibernate.batch.utils.JPAUpdateWriter;
 import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.repositories.DeclarationRepository;
@@ -41,6 +46,9 @@ public class RedressementMontantDeclarationConfig {
 	@Autowired
 	DeclarationRepository declarationRepository;
 
+	@PersistenceUnit
+	private EntityManagerFactory entityManagerFactory;
+
 	@Bean
 	public ItemProcessor<Declaration, Declaration> redressementItemProcessor() {
 		return new RedressementProcessor();
@@ -53,7 +61,7 @@ public class RedressementMontantDeclarationConfig {
 
 	//// @formatter:off
 	/**
-	 * ---------------PARTIE CHUNK---------------------------- 
+	 * ---------------PARTIE CHUNK SANS CURSOR---------------------------- 
 	 * Ici est défini le batch de redressement en mode Chunk "classique", avec donc un reader qui
 	 * s'appuie sur une requête renvoyant une liste de {@link Declaration}
 	 */
@@ -95,7 +103,52 @@ public class RedressementMontantDeclarationConfig {
 	}
 
 	/**
-	 * ---------------FIN PARTIE CHUNK----------------------------
+	 * ---------------FIN PARTIE CHUNK SANS CURSOR----------------------------
+	 */
+
+	//// @formatter:off
+	/**
+	 * ---------------PARTIE CHUNK AVEC CURSOR---------------------------- 
+	 * Ici est défini le batch de redressement en mode Chunk "classique", avec donc un reader qui
+	 * s'appuie sur une requête renvoyant une liste de {@link Declaration}
+	 */
+	// @formatter:on
+
+	@Bean
+	public ItemReader<Declaration> redressementItemReaderWithCursor() {
+
+		String requete = "SELECT declaration FROM Declaration declaration JOIN FETCH declaration.entreprise entreprise JOIN FETCH entreprise.sousClasse sousClasse";
+
+//		//// @formatter:off
+//		ItemReader<Declaration> itemReader = new HibernateCursorItemReaderBuilder()
+//				.fetchSize(200)
+//				.queryString(requete)
+//				.sessionFactory(entityManagerFactory.unwrap(SessionFactory.class))
+//				.name("requete_decl_cursor")
+//				.build();
+//		// @formatter:on
+
+		JPAHibernateSpecificCursorItemReader<Declaration> itemReader = new JPAHibernateSpecificCursorItemReader<>(
+				requete);
+
+		return itemReader;
+
+	}
+
+	@Bean
+	public Job redressementMontantDeclarationCursorJob() {
+		return
+		//// @formatter:off
+			jobs
+				.get("chunksJob")
+				.start(redressementProcessLines(redressementItemReaderWithCursor(), redressementItemProcessor(), redressementItemWriter()))
+			.build();
+		// @formatter:on
+
+	}
+
+	/**
+	 * ---------------PARTIE CHUNK AVEC CURSOR----------------------------
 	 */
 
 	//// @formatter:off
