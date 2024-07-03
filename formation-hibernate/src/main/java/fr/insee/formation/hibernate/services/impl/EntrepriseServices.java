@@ -2,8 +2,6 @@ package fr.insee.formation.hibernate.services.impl;
 
 import java.util.Date;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +9,7 @@ import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.model.Entreprise;
 import fr.insee.formation.hibernate.repositories.EntrepriseRepository;
 import fr.insee.formation.hibernate.services.IEntrepriseServices;
+import jakarta.transaction.Transactional;
 
 @Service
 public class EntrepriseServices implements IEntrepriseServices {

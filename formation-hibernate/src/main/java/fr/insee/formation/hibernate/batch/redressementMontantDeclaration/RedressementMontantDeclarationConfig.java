@@ -3,8 +3,8 @@ package fr.insee.formation.hibernate.batch.redressementMontantDeclaration;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

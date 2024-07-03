@@ -1,13 +1,13 @@
 package fr.insee.formation.hibernate;
 
-import javax.persistence.EntityManagerFactory;
-import javax.servlet.ServletContext;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.servlet.ServletContext;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.stat.CacheRegionStatistics;
 import org.hibernate.stat.CollectionStatistics;
 import org.hibernate.stat.EntityStatistics;
 import org.hibernate.stat.QueryStatistics;
-import org.hibernate.stat.SecondLevelCacheStatistics;
 import org.hibernate.stat.Statistics;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,8 +51,8 @@ public class HibernateStatisticsMBean implements InitializingBean {
 	}
 
 	@ManagedOperation
-	public SecondLevelCacheStatistics getSecondLevelCacheStatistics(String regionName) {
-		return stats.getSecondLevelCacheStatistics(regionName);
+	public CacheRegionStatistics getSecondLevelCacheStatistics(String regionName) {
+		return stats.getCacheRegionStatistics(regionName);
 	}
 
 	@ManagedOperation

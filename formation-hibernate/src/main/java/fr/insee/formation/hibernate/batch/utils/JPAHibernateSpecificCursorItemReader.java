@@ -3,11 +3,11 @@ package fr.insee.formation.hibernate.batch.utils;
 import java.io.Closeable;
 import java.io.IOException;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import javax.persistence.Query;
+import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
+import jakarta.persistence.Query;
 
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
@@ -70,7 +70,7 @@ public class JPAHibernateSpecificCursorItemReader<T> implements ItemReader<T>, C
 //		}
 
 		if (scrollableResults != null && scrollableResults.next()) {
-			return (T) scrollableResults.get(0);
+			return (T) scrollableResults.get();
 		} else {
 			close();
 			return null;

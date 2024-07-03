@@ -5,8 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-import javax.transaction.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 
 import org.junit.Before;
 import org.junit.Test;

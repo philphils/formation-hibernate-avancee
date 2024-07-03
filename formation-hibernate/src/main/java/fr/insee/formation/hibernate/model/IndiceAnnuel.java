@@ -2,7 +2,7 @@ package fr.insee.formation.hibernate.model;
 
 import java.time.Year;
 
-import javax.persistence.Entity;
+import jakarta.persistence.Entity;
 
 import lombok.Getter;
 import lombok.Setter;

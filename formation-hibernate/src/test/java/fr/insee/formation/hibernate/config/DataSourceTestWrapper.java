@@ -36,7 +36,7 @@ public class DataSourceTestWrapper implements BeanPostProcessor {
 
 	@Override
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
-		if (bean instanceof DataSource) {
+		if (beanName.contains("postgres") && bean instanceof DataSource) {
 
 			DataSource dataSource = (DataSource) bean;
 

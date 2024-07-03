@@ -10,6 +10,7 @@ import org.springframework.test.context.transaction.TestTransaction;
 import fr.insee.formation.hibernate.Application;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase.DatabaseProvider;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase.DatabaseType;
 
 /**
  * Classe abstraite dont doivent hériter toutes les classes de test
@@ -24,7 +25,7 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase.DatabaseProvider;
 @SpringBootTest(classes = { Application.class })
 @ActiveProfiles("test-integration")
 @Rollback
-@AutoConfigureEmbeddedDatabase(provider = DatabaseProvider.ZONKY)
+@AutoConfigureEmbeddedDatabase(provider = DatabaseProvider.ZONKY, type = DatabaseType.POSTGRES)
 public abstract class AbstractTestIntegration {
 
 	/**

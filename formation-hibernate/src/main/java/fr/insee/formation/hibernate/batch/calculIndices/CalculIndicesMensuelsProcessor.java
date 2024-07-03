@@ -1,6 +1,6 @@
 package fr.insee.formation.hibernate.batch.calculIndices;
 
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;

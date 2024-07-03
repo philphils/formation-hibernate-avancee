@@ -5,8 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import fr.insee.formation.hibernate.model.nomenclature.Section;
 import fr.insee.formation.hibernate.repositories.IndiceAnnuelRepository;
 import fr.insee.formation.hibernate.repositories.SectionRepository;
 import fr.insee.formation.hibernate.util.JeuxTestUtil;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import net.ttddyy.dsproxy.QueryCountHolder;
 

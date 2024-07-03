@@ -2,9 +2,10 @@ package fr.insee.formation.hibernate.batch.utils;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 
@@ -18,13 +19,17 @@ public class JPAPersistWriter<X> implements ItemWriter<X> {
 	EntityManager entityManager;
 
 	@Override
-	public void write(List<? extends X> items) throws Exception {
+	public void write(Chunk<? extends X> items) throws Exception {
+
+		String className = null;
 
 		for (X item : items) {
 			entityManager.persist(item);
+			if (className == null)
+				className = item.getClass().getName();
 		}
 
-		log.debug("{} items de type {} sont persistés", items.size(), items.get(0).getClass().getName());
+		log.debug("{} items de type {} sont persistés", items.size(), className);
 		entityManager.flush();
 		entityManager.clear();
 

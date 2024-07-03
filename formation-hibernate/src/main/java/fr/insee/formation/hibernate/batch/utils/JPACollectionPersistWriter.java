@@ -3,9 +3,10 @@ package fr.insee.formation.hibernate.batch.utils;
 import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,7 @@ public class JPACollectionPersistWriter<X> implements ItemWriter<Collection<X>> 
 	EntityManager entityManager;
 
 	@Override
-	public void write(List<? extends Collection<X>> collections) throws Exception {
+	public void write(Chunk<? extends Collection<X>> collections) throws Exception {
 
 		for (Collection<X> collection : collections) {
 			for (X item : collection)

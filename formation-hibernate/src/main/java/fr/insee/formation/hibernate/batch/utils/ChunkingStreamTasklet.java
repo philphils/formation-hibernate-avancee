@@ -1,36 +1,30 @@
 package fr.insee.formation.hibernate.batch.utils;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.batch.operations.BatchRuntimeException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.springframework.batch.core.ChunkListener;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.ItemProcessListener;
-import org.springframework.batch.core.StepContribution;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.StepExecutionListener;
+import org.springframework.batch.core.*;
+import org.springframework.batch.core.listener.ChunkListenerSupport;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.core.step.item.Chunk;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import lombok.extern.slf4j.Slf4j;
+import jakarta.persistence.EntityManager;
 
 /**
  * Classe permettant de réaliser un {@link Chunk} avec un {@link Stream} pour
@@ -48,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 
 @Slf4j
+@Component
 public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListener {
 
 	private Supplier<Stream<S>> streamSupplier;
@@ -58,7 +53,7 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 
 	private List<ChunkListener> chunkListeners = new ArrayList<>();
 
-	private List<ItemProcessListener> itemProcessListeners = new ArrayList<>();
+	private List<ItemProcessListener<S, T>> itemProcessListeners = new ArrayList<>();
 
 	private Integer chunkSize;
 
@@ -66,12 +61,12 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 
 	private Integer compteur = 1;
 
-	private List<S> entryList = new ArrayList<S>();
+	private List<S> entryList = new ArrayList<>();
 
-	private List<T> resultList = new ArrayList<T>();
+	private List<T> resultList = new ArrayList<>();
 
 	@Autowired
-	EntityManager entityManager;
+	private EntityManager entityManager;
 
 	@Autowired
 	private PlatformTransactionManager transactionManager;
@@ -92,13 +87,12 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 		chunkListeners.add(chunkListener);
 	}
 
-	public void addItemProcessListener(ItemProcessListener itemProcessListener) {
+	public void addItemProcessListener(ItemProcessListener<S, T> itemProcessListener) {
 		itemProcessListeners.add(itemProcessListener);
 	}
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-
 		streamSupplier.get().forEach(entry -> {
 			try {
 				entryList.add(entry);
@@ -108,7 +102,7 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 				 */
 				if (compteur % chunkSize == 0) {
 					processAndWrite(entryList, chunkContext);
-					entryList.removeAll(entryList);
+					entryList.clear();
 				}
 				compteur++;
 			} catch (Exception e) {
@@ -122,14 +116,13 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 		 */
 		if (!entryList.isEmpty()) {
 			processAndWrite(entryList, chunkContext);
-			entryList.removeAll(entryList);
+			entryList.clear();
 		}
 
 		return RepeatStatus.FINISHED;
 	}
 
 	private void processAndWrite(List<S> entryList, ChunkContext chunkContext) throws Exception {
-
 		for (ChunkListener chunkListener : chunkListeners) {
 			chunkListener.beforeChunk(chunkContext);
 		}
@@ -144,38 +137,33 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 					log.debug("Writing {} objects", chunkSize);
 					resultList = entryList.stream().map(e -> {
 						try {
-
-							for (ItemProcessListener itemProcessListener : itemProcessListeners) {
+							for (ItemProcessListener<S, T> itemProcessListener : itemProcessListeners) {
 								itemProcessListener.beforeProcess(e);
 							}
 
 							T result = itemProcessor.process(e);
 
-							for (ItemProcessListener itemProcessListener : itemProcessListeners) {
+							for (ItemProcessListener<S, T> itemProcessListener : itemProcessListeners) {
 								itemProcessListener.afterProcess(e, result);
 							}
 
 							return result;
 						} catch (Exception e1) {
-
-							for (ItemProcessListener itemProcessListener : itemProcessListeners) {
+							for (ItemProcessListener<S, T> itemProcessListener : itemProcessListeners) {
 								try {
 									itemProcessListener.onProcessError(e, e1);
 								} catch (Exception e2) {
-									throw new BatchRuntimeException(e2);
+									throw new RuntimeException(e2);
 								}
 							}
-
 							throw new RuntimeException(e1);
 						}
 					}).collect(Collectors.toList());
-					itemWriter.write(resultList);
+					itemWriter.write(new Chunk<>(resultList));
 				} catch (Exception e) {
-
 					for (ChunkListener chunkListener : chunkListeners) {
 						chunkListener.afterChunkError(chunkContext);
 					}
-
 					throw new RuntimeException(e);
 				}
 			}
@@ -187,7 +175,6 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 		for (ChunkListener chunkListener : chunkListeners) {
 			chunkListener.afterChunk(chunkContext);
 		}
-
 	}
 
 	@Override
@@ -199,8 +186,6 @@ public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListen
 
 	@Override
 	public ExitStatus afterStep(StepExecution stepExecution) {
-		// TODO Auto-generated method stub
-		return null;
+		return ExitStatus.COMPLETED;
 	}
-
 }
