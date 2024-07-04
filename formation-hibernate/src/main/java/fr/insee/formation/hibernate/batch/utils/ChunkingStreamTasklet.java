@@ -42,7 +42,6 @@ import jakarta.persistence.EntityManager;
  */
 
 @Slf4j
-@Component
 public class ChunkingStreamTasklet<S, T> implements Tasklet, StepExecutionListener {
 
 	private Supplier<Stream<S>> streamSupplier;

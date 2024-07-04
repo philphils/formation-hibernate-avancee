@@ -5,7 +5,10 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.repeat.RepeatStatus;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import fr.insee.formation.hibernate.batch.listener.TimingItemProcessListener;
 import fr.insee.formation.hibernate.batch.utils.ChunkingStreamTasklet;
@@ -38,10 +42,10 @@ public class CalculIndicesBatchConfig {
 	private Integer affichageCalculIndices;
 
 	@Autowired
-	private JobBuilderFactory jobs;
+	private JobRepository jobRepository;
 
 	@Autowired
-	private StepBuilderFactory steps;
+	private PlatformTransactionManager platformTransactionManager;
 
 	@Autowired
 	SousClasseRepository sousClasseRepository;
@@ -121,7 +125,8 @@ public class CalculIndicesBatchConfig {
 	@Bean
 	public Step remiseAZeroIndicesStep(Tasklet tasklet) {
 
-		return steps.get("remiseAZeroIndicesStep").tasklet(tasklet).build();
+		return new StepBuilder("remiseAZeroIndicesStep", jobRepository).tasklet(tasklet, platformTransactionManager)
+				.build();
 
 	}
 
@@ -130,9 +135,8 @@ public class CalculIndicesBatchConfig {
 
 		return
 		//// @formatter:off
-						steps
-							.get("calculIndicesMensuelsStep")
-							.tasklet(calculIndicesMensuelsTasklet())
+						new StepBuilder("calculIndicesMensuelsStep", jobRepository)
+							.tasklet(calculIndicesMensuelsTasklet(), platformTransactionManager)
 						.build();
 		// @formatter:on
 
@@ -143,9 +147,8 @@ public class CalculIndicesBatchConfig {
 
 		return
 		//// @formatter:off
-						steps
-							.get("calculIndicesAnnuelsStep")
-							.tasklet(calculIndicesAnnuelsTasklet())
+				new StepBuilder("calculIndicesAnnuelsStep", jobRepository)
+							.tasklet(calculIndicesAnnuelsTasklet(), platformTransactionManager)
 						.build();
 		// @formatter:on
 
@@ -155,8 +158,7 @@ public class CalculIndicesBatchConfig {
 	public Job calculIndicesJob() {
 		return
 		//// @formatter:off
-					jobs
-						.get("calculIndicesJob")
+					new JobBuilder("calculIndicesJob", jobRepository)
 						.start(remiseAZeroIndicesStep(remiseAZeroIndicesTasklet()))
 						.next(calculIndicesMensuelsStep())
 						.next(calculIndicesAnnuelsStep())

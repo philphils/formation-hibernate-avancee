@@ -11,13 +11,14 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.insee.formation.hibernate.config.AbstractTest;
+import fr.insee.formation.hibernate.config.AbstractTestIntegration;
 import fr.insee.formation.hibernate.repositories.IndiceAnnuelRepository;
 import fr.insee.formation.hibernate.repositories.IndiceMensuelRepository;
 import fr.insee.formation.hibernate.repositories.SousClasseRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TP1CreationJeuDonneesBatchTest extends AbstractTest {
+public class TP1CreationJeuDonneesBatchTest extends AbstractTestIntegration {
 
 	@Autowired
 	JobLauncher jobLauncher;

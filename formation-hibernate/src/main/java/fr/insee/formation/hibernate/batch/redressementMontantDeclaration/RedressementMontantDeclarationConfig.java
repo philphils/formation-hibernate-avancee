@@ -3,13 +3,11 @@ package fr.insee.formation.hibernate.batch.redressementMontantDeclaration;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.PersistenceUnit;
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
-import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
@@ -18,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import fr.insee.formation.hibernate.batch.listener.TimingItemProcessListener;
 import fr.insee.formation.hibernate.batch.utils.ChunkingStreamTasklet;
@@ -25,6 +24,8 @@ import fr.insee.formation.hibernate.batch.utils.JPAHibernateSpecificCursorItemRe
 import fr.insee.formation.hibernate.batch.utils.JPAUpdateWriter;
 import fr.insee.formation.hibernate.model.Declaration;
 import fr.insee.formation.hibernate.repositories.DeclarationRepository;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.PersistenceUnit;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -38,10 +39,10 @@ public class RedressementMontantDeclarationConfig {
 	private Integer affichageLogCompteur;
 
 	@Autowired
-	private JobBuilderFactory jobs;
+	private JobRepository jobRepository;
 
 	@Autowired
-	private StepBuilderFactory steps;
+	private PlatformTransactionManager platformTransactionManager;
 
 	@Autowired
 	DeclarationRepository declarationRepository;
@@ -78,9 +79,8 @@ public class RedressementMontantDeclarationConfig {
 
 		return
 		//// @formatter:off
-				steps
-					.get("redressementProcessLines")
-					.<Declaration, Declaration>chunk(chunkSize)
+				new StepBuilder("redressementProcessLines", jobRepository)
+					.<Declaration, Declaration>chunk(chunkSize, platformTransactionManager)
 					.reader(reader)
 					.processor(processor)
 					.listener(new TimingItemProcessListener(affichageLogCompteur))
@@ -94,8 +94,7 @@ public class RedressementMontantDeclarationConfig {
 	public Job redressementMontantDeclarationJob() {
 		return
 		//// @formatter:off
-			jobs
-				.get("chunksJob")
+			new JobBuilder("redressementMontantDeclarationJob", jobRepository)
 				.start(redressementProcessLines(redressementItemReader(), redressementItemProcessor(), redressementItemWriter()))
 			.build();
 		// @formatter:on
@@ -139,8 +138,7 @@ public class RedressementMontantDeclarationConfig {
 	public Job redressementMontantDeclarationCursorJob() {
 		return
 		//// @formatter:off
-			jobs
-				.get("chunksJob")
+			new JobBuilder("redressementMontantDeclarationCursorJob", jobRepository)
 				.start(redressementProcessLines(redressementItemReaderWithCursor(), redressementItemProcessor(), redressementItemWriter()))
 			.build();
 		// @formatter:on
@@ -174,15 +172,15 @@ public class RedressementMontantDeclarationConfig {
 
 	@Bean
 	protected Step redressementStreamProcessLines() {
-		return steps.get("processLines").tasklet(redressementTasklet()).build();
+		return new StepBuilder("processLines", jobRepository).tasklet(redressementTasklet(), platformTransactionManager)
+				.build();
 	}
 
 	@Bean
 	public Job redressementMontantDeclarationStreamJob() {
 		return
 		//// @formatter:off
-			jobs
-				.get("chunksJob")
+			new JobBuilder("redressementMontantDeclarationStreamJob", jobRepository)
 				.start(redressementStreamProcessLines())
 			.build();
 		// @formatter:on

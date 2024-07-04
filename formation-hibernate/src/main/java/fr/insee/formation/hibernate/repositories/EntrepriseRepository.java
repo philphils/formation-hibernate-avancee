@@ -13,7 +13,7 @@ import fr.insee.formation.hibernate.repositories.custom.CustomEntrepriseReposito
 
 public interface EntrepriseRepository extends JpaRepository<Entreprise, Integer>, CustomEntrepriseRepository {
 
-	Optional<Entreprise> findBySirenAndDenomination(String siren, Object object);
+	Optional<Entreprise> findBySirenAndDenomination(String siren, String denomination);
 
 	/**
 	 * Creer une méthode qui récupère l' Entreprise avec le bon verrou permettant de

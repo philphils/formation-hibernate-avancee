@@ -1,36 +1,44 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://www.ehcache.org/v3"
-	xmlns:jsr107="http://www.ehcache.org/v3/jsr107"
-	xsi:schemaLocation="
+        xmlns="http://www.ehcache.org/v3"
+        xmlns:jsr107="http://www.ehcache.org/v3/jsr107"
+        xsi:schemaLocation="
             http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd
             http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.0.xsd">
 
-	<cache alias="nomenclature">
-		<expiry>
-			<tti unit="seconds">300</tti>
-		</expiry>
-		<heap unit="entries">5000</heap>
-	</cache>
-	
-	<cache alias="nomenclature_association">
-		<expiry>
-			<tti unit="seconds">300</tti>
-		</expiry>
-		<heap unit="entries">2000</heap>
-	</cache>
-	
-	<cache alias="sous_classe_query">
-		<expiry>
-			<tti unit="seconds">300</tti>
-		</expiry>
-		<heap unit="entries">1000</heap>
-	</cache>
-	
-	<cache alias="section_query">
-		<expiry>
-			<tti unit="seconds">300</tti>
-		</expiry>
-		<heap unit="entries">50</heap>
-	</cache>
+    <cache alias="nomenclature">
+        <expiry>
+            <tti unit="seconds">300</tti>
+        </expiry>
+        <resources>
+            <heap unit="entries">5000</heap>
+        </resources>
+    </cache>
+
+    <cache alias="nomenclature_association">
+        <expiry>
+            <tti unit="seconds">300</tti>
+        </expiry>
+        <resources>
+            <heap unit="entries">2000</heap>
+        </resources>
+    </cache>
+
+    <cache alias="sous_classe_query">
+        <expiry>
+            <tti unit="seconds">300</tti>
+        </expiry>
+        <resources>
+            <heap unit="entries">1000</heap>
+        </resources>
+    </cache>
+
+    <cache alias="section_query">
+        <expiry>
+            <tti unit="seconds">300</tti>
+        </expiry>
+        <resources>
+            <heap unit="entries">50</heap>
+        </resources>
+    </cache>
 
 </config>

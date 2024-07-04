@@ -6,6 +6,9 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.transaction.PlatformTransactionManager;
 
 import fr.insee.formation.hibernate.batch.listener.TimingItemProcessListener;
 import fr.insee.formation.hibernate.batch.utils.CSVLineReader;
@@ -50,10 +54,10 @@ public class CreationJeuDonneesBatchConfig {
 	private Integer compteurAffichageDeclarationsCrees;
 
 	@Autowired
-	private JobBuilderFactory jobs;
+	private JobRepository jobRepository;
 
 	@Autowired
-	private StepBuilderFactory steps;
+	private PlatformTransactionManager platformTransactionManager;
 
 	@Autowired
 	SousClasseRepository sousClasseRepository;
@@ -104,9 +108,8 @@ public class CreationJeuDonneesBatchConfig {
 
 		return
 		//// @formatter:off
-				steps
-					.get("creationNomenclatureStep")
-					.<String[], AbstractNiveauNomenclature>chunk(chunkSize)
+				new StepBuilder("creationNomenclatureStep", jobRepository)
+					.<String[], AbstractNiveauNomenclature>chunk(chunkSize, platformTransactionManager)
 					.reader(reader)
 					.processor(processor)
 					.listener(new TimingItemProcessListener(compteurAffichageSecteurCrees))
@@ -122,9 +125,8 @@ public class CreationJeuDonneesBatchConfig {
 
 		return
 		//// @formatter:off
-				steps
-					.get("creationEntrepriseAndDeclarationStep")
-					.<SousClasse, Set<Entreprise>>chunk(chunkSize)
+				new StepBuilder("creationEntrepriseAndDeclarationStep", jobRepository)
+					.<SousClasse, Set<Entreprise>>chunk(chunkSize, platformTransactionManager)
 					.reader(reader)
 					.processor(processor)
 					.listener(new TimingItemProcessListener(compteurAffichageDeclarationsCrees))
@@ -140,9 +142,8 @@ public class CreationJeuDonneesBatchConfig {
 
 		return
 		//// @formatter:off
-				steps
-					.get("creationIndicesStep")
-					.<SousClasse, Set<Indice>>chunk(chunkSizeCreationIndices)
+				new StepBuilder("creationIndicesStep", jobRepository)
+					.<SousClasse, Set<Indice>>chunk(chunkSizeCreationIndices, platformTransactionManager)
 					.reader(reader)
 					.processor(processor)
 					.listener(new TimingItemProcessListener(compteurAffichageSecteurCrees))
@@ -156,8 +157,7 @@ public class CreationJeuDonneesBatchConfig {
 	public Job creationJeuDonneesJob() {
 		return
 		//// @formatter:off
-			jobs
-				.get("chunksJob")
+			new JobBuilder("creationJeuDonneesJob", jobRepository)
 				.start(creationNomenclatureStep(creationSecteurItemReader(), creationSecteurItemProcessor(), jpaPersistWriter))
 				.next(creationEntrepriseAndDeclarationStep(creationEntreprisesItemReader(), creationEntrepriseItemProcessor(), jpaCollectionPersistWriter))
 				.next(creationIndicesStep(creationIndicesItemReader(), creationIndicesItemProcessor(), jpaCollectionPersistWriter))
