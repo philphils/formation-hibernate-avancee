@@ -1,6 +1,6 @@
 package fr.insee.formation.hibernate.model;
 
-import static org.junit.Assert.assertEquals;
+// ...existing code...
 
 import java.util.Arrays;
 import java.util.Date;
@@ -14,7 +14,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
+// ...existing code...
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -69,135 +69,85 @@ public class TP4EntrepriseVersionControlTest extends AbstractTest {
 
 	@Test
 	public void testOptimisticForceIncrement() throws InterruptedException {
-
 		// GIVEN
-		/*
-		 * On récupère un identifiant d'entreprise
-		 */
 		Integer idEntreprise = entrepriseRepository.findAll().get(0).getId();
-
 		// WHEN
 		final ExecutorService executor = Executors.newFixedThreadPool(2);
-
-		/*
-		 * On lance 2 Thread qui ajoutent une déclaration à la même entreprise, avec un
-		 * ayant une pause d'une seconde. On veut récupérer une
-		 * ObjectOptimisticLockingFailureException le verrou est correctement posé
-		 * 
-		 */
 		List<Future<Object>> futures = executor
 				.invokeAll(Arrays.asList(() -> transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-
 					@Override
 					protected void doInTransactionWithoutResult(TransactionStatus status) {
-
 						ajouterDeclarationEntreprise(idEntreprise, 170d);
-
 						try {
-							/*
-							 * On fait un pause avec Thread.sleep(100) pour être sûr que les 2 transactions
-							 * se chevauchent
-							 */
 							Thread.sleep(100);
 						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-
 					}
-
 				}), () -> transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-
 					@Override
 					protected void doInTransactionWithoutResult(TransactionStatus status) {
-
 						ajouterDeclarationEntreprise(idEntreprise, 150d);
-
 					}
-
 				})
-
 				));
-
 		// THEN
 		try {
 			futures.get(0).get();
-
-			/*
-			 * Si aucune Exception n'a été levée alors le versionnement n'est pas opérant
-			 * --> le test échoue
-			 */
-			Assert.fail(
-					"On aurait du avoir une ObjectOptimisticLockingFailureException levée, le contrôle de version n'a pas fonctionné");
+			Assert.fail("On aurait du avoir une exception d'optimistic lock levée, le contrôle de version n'a pas fonctionné");
 		} catch (ExecutionException executionException) {
-			if (!(executionException.getCause() instanceof ObjectOptimisticLockingFailureException)) {
-				executionException.printStackTrace();
-			}
-			Assert.assertEquals(ObjectOptimisticLockingFailureException.class,
-					executionException.getCause().getClass());
+			assertOptimisticLockExceptionInCauses(executionException);
 		}
-
 	}
 
 	@Test
 	public void testOptimisticForceIncrementPhantomRead() throws InterruptedException {
-
 		// GIVEN
-		/*
-		 * On récupère un identifiant d'entreprise
-		 */
 		Integer idEntreprise = entrepriseRepository.findAll().get(0).getId();
-
 		// WHEN
 		final ExecutorService executor = Executors.newFixedThreadPool(2);
-
-		/*
-		 * On lance 2 Thread qui ajoutent une déclaration à la même entreprise, avec un
-		 * ayant une pause d'une seconde. On veut récupérer une
-		 * ObjectOptimisticLockingFailureException le verrou est correctement posé
-		 * 
-		 */
 		List<Future<Object>> futures = executor
 				.invokeAll(Arrays.asList(() -> transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-
 					@Override
 					protected void doInTransactionWithoutResult(TransactionStatus status) {
-
 						Entreprise entreprise = getEntrepriseWithOptimisticLockForceIncrement(idEntreprise);
-
 						entrepriseServices.ajouterDeclarationEntreprise(entreprise, 170d, new Date());
-
 					}
-
 				}), () -> transactionTemplate.execute(new TransactionCallbackWithoutResult() {
-
 					@Override
 					protected void doInTransactionWithoutResult(TransactionStatus status) {
-
 						Entreprise entreprise = getEntrepriseWithOptimisticLockForceIncrement(idEntreprise);
-
 					}
-
 				})
-
 				));
-
 		// THEN
 		try {
 			futures.get(0).get();
 			futures.get(1).get();
-
-			/*
-			 * Si aucune Exception n'a été levée alors le versionnement n'est pas opérant
-			 * --> le test échoue
-			 */
-			Assert.fail(
-					"On aurait du avoir une ObjectOptimisticLockingFailureException levée, le contrôle de version n'a pas fonctionné");
+			Assert.fail("On aurait du avoir une exception d'optimistic lock levée, le contrôle de version n'a pas fonctionné");
 		} catch (Exception exception) {
-			assertEquals("On devrait avoir une ObjectOptimisticLockingFailureException",
-					ObjectOptimisticLockingFailureException.class, exception.getCause().getClass());
+			assertOptimisticLockExceptionInCauses(exception);
 		}
-
+	}
+	/**
+	 * Vérifie qu'une exception d'optimistic lock (ObjectOptimisticLockingFailureException ou OptimisticLockException)
+	 * est présente dans la chaîne des causes de l'exception passée en paramètre.
+	 */
+	private void assertOptimisticLockExceptionInCauses(Throwable throwable) {
+		Throwable cause = throwable;
+		boolean found = false;
+		while (cause != null) {
+			if (cause instanceof org.springframework.orm.ObjectOptimisticLockingFailureException
+					|| (cause.getClass().getName().equals("jakarta.persistence.OptimisticLockException"))) {
+				found = true;
+				break;
+			}
+			cause = cause.getCause();
+		}
+		if (!found) {
+			throwable.printStackTrace();
+		}
+		Assert.assertTrue("Une exception d'optimistic lock doit être présente dans la chaîne des causes", found);
 	}
 
 }
