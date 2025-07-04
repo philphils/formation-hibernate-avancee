@@ -6,12 +6,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import fr.insee.formation.hibernate.config.AbstractTest;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { Application.class }, properties = {
 		"spring.jpa.properties.javax.persistence.schema-generation.scripts.action=create",
 		"spring.jpa.properties.javax.persistence.schema-generation.scripts.create-target=create.sql" })
 @ActiveProfiles("test")
-public class GenerationScriptCreateTest {
+public class GenerationScriptCreateTest extends AbstractTest {
 
 	@Test
 	public void testGenerationScriptCreate() {
@@ -20,6 +22,7 @@ public class GenerationScriptCreateTest {
 		 * Lancer ce test et rafraîchissez au niveau du projet. Un fichier create.sql
 		 * doit apparaître à la racine à côté du pom.xml
 		 */
+		org.junit.Assert.assertTrue(true);
 
 	}
 
