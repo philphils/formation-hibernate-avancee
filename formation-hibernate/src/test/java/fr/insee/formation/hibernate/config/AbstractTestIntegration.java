@@ -10,7 +10,6 @@ import org.springframework.test.context.transaction.TestTransaction;
 
 import fr.insee.formation.hibernate.Application;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
-import io.zonky.test.db.AutoConfigureEmbeddedDatabase.DatabaseProvider;
 import io.zonky.test.db.AutoConfigureEmbeddedDatabase.DatabaseType;
 
 /**
@@ -26,7 +25,7 @@ import io.zonky.test.db.AutoConfigureEmbeddedDatabase.DatabaseType;
 @SpringBootTest(classes = { Application.class })
 @ActiveProfiles("test-integration")
 @Rollback
-@AutoConfigureEmbeddedDatabase(provider = DatabaseProvider.ZONKY, type = DatabaseType.POSTGRES)
+@AutoConfigureEmbeddedDatabase(type = DatabaseType.POSTGRES)
 @DirtiesContext
 public abstract class AbstractTestIntegration {
 
