@@ -150,6 +150,9 @@ public class DeclarationRepositoryTest extends AbstractTest {
 	@Transactional
 	public void testLazy() {
 
+		entityManager.clear();
+		entityManager.getEntityManagerFactory().getCache().evictAll();
+
 		Declaration declaration = declarationRepository.findAll().get(0);
 
 		log.info("{} {}", declaration.getEntreprise().getDenomination(),
