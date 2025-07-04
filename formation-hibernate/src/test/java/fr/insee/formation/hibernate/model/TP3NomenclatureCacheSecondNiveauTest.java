@@ -71,7 +71,10 @@ public class TP3NomenclatureCacheSecondNiveauTest extends AbstractTest {
 
 		List<Section> sections = sectionRepository.findAll();
 
-		assertTrue(entityManagerFactory.getCache().contains(Section.class, 1));
+		assertTrue("No Section entities found", !sections.isEmpty());
+		
+		Integer sectionId = sections.get(0).getId();
+		assertTrue(entityManagerFactory.getCache().contains(Section.class, sectionId));
 
 	}
 
